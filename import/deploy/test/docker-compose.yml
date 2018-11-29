@@ -1,0 +1,21 @@
+version: '3.0'
+services:
+
+  database:
+    image: amsterdam/postgres
+    environment:
+      POSTGRES_PASSWORD: insecure
+      POSTGRES_DB: zuidas
+      POSTGRES_USER: zuidas
+
+  importer:
+    build: ../../
+    links:
+      - database
+    environment:
+      DATABASE_NAME: external-data-scraper
+      DATABASE_USER: external-data-scraper
+      DATABASE_PASSWORD: insecure
+      DATABASE_HOST_OVERRIDE: database
+      DATABASE_PORT_OVERRIDE: 5432
+      PYTHONPATH: /app/

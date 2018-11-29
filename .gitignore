@@ -1,0 +1,46 @@
+# Created by .ignore support plugin (hsz.mobi)
+venv/
+.idea/
+.mypy*
+
+# Python ephemerals:
+*.pyc
+__pycache__
+*__pycache__*
+*__pycache__
+*.egg-info
+.eggs
+*.pytest*
+.pytest_cache
+*.pytest_cache*
+
+# Python setuptools
+/build
+/dist
+
+# PyTest
+/.cache
+
+# tox
+.tox
+
+# coverage
+htmlcov
+*.coverage
+
+# PyDev/Eclipse
+.project
+.pydevproject
+
+# PyCharm/IntelliJ
+.idea
+*.iml
+
+# Python virtual environement:
+/.venv
+
+# Generated documentation:
+/docs/_build
+# Downloaded intersphinx inventory files:
+/docs/*.inv
+/docs/*.inv.txt

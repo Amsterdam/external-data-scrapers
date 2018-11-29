@@ -1,0 +1,13 @@
+version: '2.0'
+services:
+  database:
+    image: amsterdam/postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: external-data-scraper
+      POSTGRES_USER: external-data-scraper
+      POSTGRES_PASSWORD: insecure
+    volumes:
+      - ~/.ssh/datapunt.key:/root/.ssh/datapunt.key
+      - ./backups:/tmp/backups

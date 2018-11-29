@@ -1,0 +1,14 @@
+psycopg2-binary
+sqlalchemy-utils
+sqlalchemy
+requests
+flake8
+faker
+tox
+pytest
+pytest-cov
+pytest-flake8
+pytest-faker
+pytest-isort
+pytest-env
+pytest-mock
