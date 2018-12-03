@@ -5,8 +5,8 @@ services:
     image: amsterdam/postgres
     environment:
       POSTGRES_PASSWORD: insecure
-      POSTGRES_DB: zuidas
-      POSTGRES_USER: zuidas
+      POSTGRES_DB: external-data-scraper
+      POSTGRES_USER: external-data-scraper
 
   importer:
     build: ../../

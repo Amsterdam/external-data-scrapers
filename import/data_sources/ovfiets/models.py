@@ -2,7 +2,7 @@ import argparse
 import asyncio
 import logging
 
-from sqlalchemy import TIMESTAMP, Column, Integer
+from sqlalchemy import Column, Integer, String, TIMESTAMP, Boolean, Float, ForeignKey
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
@@ -30,12 +30,30 @@ async def main(args):
     Base.metadata.create_all(engine)
 
 
-class OvFiets(Base):
-    """Raw Enevo ServiceEvent data."""
+class OvFietsRaw(Base):
+    """Raw OvFiets data."""
     __tablename__ = f"ovfiets_raw"
     id = Column(Integer, Sequence("grl_seq"), primary_key=True)
     scraped_at = Column(TIMESTAMP, index=True)
     data = Column(JSONB)
+
+
+class OvFiets(Base):
+    """Cleaned up OVFiets data."""
+    __tablename__ = f"importer_ovfiets"
+
+    id = Column(Integer, Sequence("grl_seq"), primary_key=True)
+    name = Column(String)
+    description = Column(String)
+    station_code = Column(String)
+    location_code = Column(String)
+    open = Column(String)
+    lng = Column(Float)
+    lat = Column(Float)
+    fetch_time = Column(TIMESTAMP)
+    rental_bikes = Column(Integer)
+    scraped_at = Column(TIMESTAMP)
+    opening_hours = Column(JSONB)
 
 
 if __name__ == "__main__":

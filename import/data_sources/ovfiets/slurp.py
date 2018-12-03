@@ -7,7 +7,7 @@ import requests
 
 import db_helper
 from endpoints import URL
-from models import OvFiets
+from models import OvFietsRaw
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ def fetch():
 
 def store(data):
     session = db_helper.session
-    ov_fiets = OvFiets(
+    ov_fiets = OvFietsRaw(
         scraped_at=datetime.datetime.now(),
         data=data
     )
