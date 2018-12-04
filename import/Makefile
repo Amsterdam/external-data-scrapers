@@ -19,4 +19,4 @@ requirements.txt: | build_requirements clean2
 	@echo "Fresh requirements"
 
 isort:
-	isort -ac -rc -sg "*test*" -s .tox .
+	isort -ac -rc -s .tox .

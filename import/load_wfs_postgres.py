@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """ Reused from Afvalcontianers"""
 
-import subprocess
 import argparse
 import logging
-import settings
-# import models
-import db_helper
-
+import subprocess
 from urllib.parse import urlencode
 
+# import models
+import db_helper
+import settings
 
 # Setup basic logging
 log = logging.getLogger(__name__)
@@ -170,4 +169,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

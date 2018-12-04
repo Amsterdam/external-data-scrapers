@@ -1,13 +1,11 @@
 import json
+import logging
 import unittest
 from unittest.mock import patch
 
-from . import models, slurp, cleanup
-
 import db_helper
-import logging
-from settings import BASE_DIR
-from settings import TESTING
+from data_sources.ovfiets import cleanup, models, slurp
+from settings import BASE_DIR, TESTING
 
 log = logging.getLogger(__name__)
 
@@ -54,13 +52,12 @@ class TestDBWriting(unittest.TestCase):
             json_data = json.loads(json_file.read())
 
         fetch_json_mock.side_effect = [json_data]
-        slurp.main(make_engine=False)
+        slurp.start_import(make_engine=False)
 
         raw_count = session.query(models.OvFietsRaw).count()
         self.assertEqual(raw_count, 1)
 
-        raw_data = cleanup.get_latest_data()
-        cleanup.store_data(raw_data)
+        cleanup.start_import()
 
         count = session.query(models.OvFiets).count()
         self.assertEqual(count, 2)

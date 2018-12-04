@@ -1,13 +1,13 @@
 """Copy raw data into django api models."""
 
-import time
 import argparse
 import logging
+import time
+from datetime import datetime
+
 import db_helper
 
-from datetime import datetime
-from .models import OvFietsRaw, OvFiets
-
+from .models import OvFiets, OvFietsRaw
 
 log = logging.getLogger(__name__)
 

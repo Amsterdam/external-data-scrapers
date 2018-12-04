@@ -2,11 +2,11 @@ import argparse
 import asyncio
 import logging
 
-from sqlalchemy import Column, Integer, String, TIMESTAMP, Boolean, Float, ForeignKey
+from geoalchemy2 import Geometry
+from sqlalchemy import TIMESTAMP, Column, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
-from geoalchemy2 import Geometry
 
 # from aiopg.sa import create_engine as aiopg_engine
 import db_helper

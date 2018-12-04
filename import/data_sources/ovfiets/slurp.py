@@ -6,6 +6,7 @@ import time
 import requests
 
 import db_helper
+
 from .endpoints import URL
 from .models import OvFietsRaw
 
