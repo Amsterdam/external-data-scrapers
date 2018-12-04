@@ -1,0 +1,142 @@
+{
+    "locaties": {
+        "asb001": {
+            "infoImages": [],
+            "name": "ASB - OV-fiets Amsterdam Bijlmer Arena",
+            "extra": {
+                "fetchTime": 1543918710,
+                "rentalBikes": "0",
+                "locationCode": "aa001"
+            },
+            "extraInfo": [],
+            "apps": [],
+            "sites": [],
+            "lat": 52.31222,
+            "link": {
+                "params": {},
+                "uri": "https://example.com"
+            },
+            "stationCode": "AA",
+            "openingHours": [
+                {
+                "dayOfWeek": 1,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 2,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 3,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 4,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 5,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 6,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 7,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                }
+            ],
+            "lng": 4.94726,
+            "open": "Yes",
+            "thumbnail": {
+            "params": {},
+            "uri": "api/v1/location/thumbnail/52.31222,4.94726"
+            },
+            "description": "Amsterdam Bijlmer Arena"
+        },
+        "bmn001": {
+            "infoImages": [],
+            "name": "BMN - OV-fiets - Brummen",
+            "extra": {
+                "fetchTime": 1543918710,
+                "rentalBikes": "2",
+                "locationCode": "bmn001"
+            },
+            "extraInfo": [],
+            "apps": [],
+            "sites": [],
+            "lat": 52.09104,
+            "link": {
+            "params": {},
+                "uri": "https://example.com"
+            },
+            "stationCode": "BMN",
+            "openingHours": [
+                {
+                "dayOfWeek": 1,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 2,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 3,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 4,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 5,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 6,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                },
+                {
+                "dayOfWeek": 7,
+                "endTime": "00:00",
+                "closesNextDay": true,
+                "startTime": "00:00"
+                }
+            ],
+            "lng": 6.14726,
+            "open": "Yes",
+            "thumbnail": {
+                "params": {},
+                "uri": "api/v1/location/thumbnail/52.09104,6.14726"
+            },
+            "description": "Brummen"
+        }
+    }
+}

@@ -6,6 +6,7 @@ from sqlalchemy import Column, Integer, String, TIMESTAMP, Boolean, Float, Forei
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
+from geoalchemy2 import Geometry
 
 # from aiopg.sa import create_engine as aiopg_engine
 import db_helper
@@ -43,17 +44,17 @@ class OvFiets(Base):
     __tablename__ = f"importer_ovfiets"
 
     id = Column(Integer, Sequence("grl_seq"), primary_key=True)
-    name = Column(String)
+    name = Column(String, index=True)
     description = Column(String)
     station_code = Column(String)
-    location_code = Column(String)
+    location_code = Column(String, index=True)
     open = Column(String)
-    lng = Column(Float)
-    lat = Column(Float)
-    fetch_time = Column(TIMESTAMP)
-    rental_bikes = Column(Integer)
-    scraped_at = Column(TIMESTAMP)
+    geometrie = Column(Geometry('POINT', srid=4326), index=True)
+    fetch_time = Column(TIMESTAMP, index=True)
+    rental_bikes = Column(Integer, index=True)
+    scraped_at = Column(TIMESTAMP, index=True)
     opening_hours = Column(JSONB)
+    stadsdeel = Column(String, index=True)
 
 
 if __name__ == "__main__":

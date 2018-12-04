@@ -6,24 +6,28 @@ import logging
 import db_helper
 
 from datetime import datetime
-from models import OvFietsRaw, OvFiets
+from .models import OvFietsRaw, OvFiets
 
 
 log = logging.getLogger(__name__)
 
 
 def store_data(raw_data):
+    session = db_helper.session
+
     stations = []
     for raw_stations in raw_data:
-        for raw_station in raw_stations.data.values():
+        for raw_station in raw_stations.data['locaties'].values():
+            lng = raw_station['lng']
+            lat = raw_station['lat']
+
             ovfiets = OvFiets(**dict(
                 scraped_at=raw_stations.scraped_at,
                 name=raw_station['name'],
                 description=raw_station.get('description'),
                 station_code=raw_station.get('stationCode'),
                 open=raw_station['open'],
-                lng=raw_station['lng'],
-                lat=raw_station['lat'],
+                geometrie=f'SRID=4326;POINT({lng} {lat})',
                 location_code=raw_station['extra']['locationCode'],
                 rental_bikes=raw_station['extra']['rentalBikes'],
                 opening_hours=raw_station.get('openingHours'),
@@ -44,6 +48,8 @@ def get_latest_data():
     Get latest raw data to according to last imported data.
     Can be moved to utils.py when more projects use it
     """
+    session = db_helper.session
+
     latest = (
         session.query(OvFiets)
         .order_by(OvFiets.scraped_at.desc())
@@ -60,14 +66,42 @@ def get_latest_data():
     return session.query(OvFietsRaw).all()
 
 
-def main():
+UPDATE_STADSDEEL = """
+UPDATE importer_ovfiets tt
+SET stadsdeel = s.code
+FROM (SELECT * from stadsdeel) as s
+WHERE ST_DWithin(s.wkb_geometry, tt.geometrie, 0)
+AND stadsdeel is null
+AND tt.geometrie IS NOT NULL
+"""
+
+
+def link_areas():
+    session = db_helper.session
+    sql = UPDATE_STADSDEEL
+    session.execute(sql)
+    session.commit()
+
+
+def start_import():
     raw_data = get_latest_data()
     store_data(raw_data)
+
+
+def main():
+    if args.link_areas:
+        return link_areas()
+    start_import()
 
 
 if __name__ == "__main__":
     desc = "Clean data and import into db."
     inputparser = argparse.ArgumentParser(desc)
+
+    inputparser.add_argument(
+        "--link_areas", action="store_true",
+        default=False, help="Link stations with neighbourhood areas"
+    )
 
     args = inputparser.parse_args()
 

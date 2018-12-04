@@ -6,8 +6,8 @@ import time
 import requests
 
 import db_helper
-from endpoints import URL
-from models import OvFietsRaw
+from .endpoints import URL
+from .models import OvFietsRaw
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
@@ -15,9 +15,9 @@ log.setLevel(logging.INFO)
 logging.getLogger("urllib3").setLevel(logging.DEBUG)
 
 
-def fetch():
+def fetch_json():
     response = requests.get(URL)
-    return response.json()['locaties']
+    return response.json()
 
 
 def store(data):
@@ -35,7 +35,7 @@ def main(make_engine):
         engine = db_helper.make_engine(section='docker')
         db_helper.set_session(engine)
 
-    data = fetch()
+    data = fetch_json()
     store(data)
 
 
