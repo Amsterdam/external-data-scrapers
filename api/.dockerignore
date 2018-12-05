@@ -1,0 +1,3 @@
+src/.tox
+src/.pytest_cache
+__pycache__
