@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import patch
 
 import db_helper
-from data_sources.ovfiets import cleanup, models, slurp
+from data_sources.ovfiets import copy_to_model, models, slurp
 from settings import BASE_DIR, TESTING
 
 log = logging.getLogger(__name__)
@@ -57,7 +57,21 @@ class TestDBWriting(unittest.TestCase):
         raw_count = session.query(models.OvFietsRaw).count()
         self.assertEqual(raw_count, 1)
 
-        cleanup.start_import()
+        copy_to_model.start_import()
 
         count = session.query(models.OvFiets).count()
         self.assertEqual(count, 2)
+
+        sql = """
+        UPDATE importer_ovfiets
+        SET stadsdeel = 'A'
+        WHERE station_code = 'AA'
+        """
+
+        copy_to_model.link_areas(sql)
+
+        count = session.query(models.OvFiets).filter_by(stadsdeel='A').count()
+        self.assertEqual(count, 1)
+
+        count = session.query(models.OvFiets).filter_by(stadsdeel=None).count()
+        self.assertEqual(count, 1)

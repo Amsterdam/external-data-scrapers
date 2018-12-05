@@ -76,9 +76,8 @@ AND tt.geometrie IS NOT NULL
 """
 
 
-def link_areas():
+def link_areas(sql):
     session = db_helper.session
-    sql = UPDATE_STADSDEEL
     session.execute(sql)
     session.commit()
 
@@ -90,7 +89,7 @@ def start_import():
 
 def main():
     if args.link_areas:
-        return link_areas()
+        return link_areas(UPDATE_STADSDEEL)
     start_import()
 
 
