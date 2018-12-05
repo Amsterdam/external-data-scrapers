@@ -6,9 +6,8 @@ import time
 import requests
 
 import db_helper
-
-from .endpoints import URL
-from .models import OvFietsRaw
+from data_sources.ovfiets.endpoints import URL
+from data_sources.ovfiets.models import OvFietsRaw
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)

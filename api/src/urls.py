@@ -1,4 +1,4 @@
-"""external-data-scraper URL Configuration
+"""external-data-scrapers URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
@@ -25,13 +25,13 @@ from apps.ovfiets import views as ovfiets_views
 
 class PublicView(routers.APIRootView):
     """
-    List of public APIs that are scraped by the external-api-scraper
+    List of public APIs that are scraped by the external-data-scrapers
 
     Daily scraped APIs
     ==================
-    - OvFiets (every 30 minutes)
+    - OvFiets (every 5 minutes)
 
-    [github/amsterdam/external-api-scraper](https://github.com/Amsterdam/external-api-scraper)
+    [github/amsterdam/external-data-scrapers](https://github.com/Amsterdam/external-data-scrapers)
 
     [Author: y.elsherbini](https://github.com/yelsherbini/)
     """
@@ -48,9 +48,9 @@ urls = router.urls
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="External API scraper",
+        title="External data scrapers",
         default_version='v1',
-        description="One spot for scraping external APIs",
+        description="One spot for scraping external data",
         terms_of_service="https://data.amsterdam.nl/",
         contact=openapi.Contact(email="datapunt@amsterdam.nl"),
         license=openapi.License(name="CC0 1.0 Universal"),

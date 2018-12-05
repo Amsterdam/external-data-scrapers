@@ -5,8 +5,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: external-data-scraper
-      POSTGRES_USER: external-data-scraper
+      POSTGRES_DB: external-data-scrapers
+      POSTGRES_USER: external-data-scrapers
       POSTGRES_PASSWORD: insecure
     volumes:
       - ~/.ssh/datapunt.key:/root/.ssh/datapunt.key

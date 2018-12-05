@@ -6,8 +6,7 @@ import time
 from datetime import datetime
 
 import db_helper
-
-from .models import OvFiets, OvFietsRaw
+from data_sources.ovfiets.models import OvFiets, OvFietsRaw
 
 log = logging.getLogger(__name__)
 

@@ -1,5 +1,5 @@
 """
-WSGI config for external-data-scraper project.
+WSGI config for external-data-scrapers project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

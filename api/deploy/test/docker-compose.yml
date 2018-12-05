@@ -5,16 +5,16 @@ services:
     image: amsterdam/postgres
     environment:
       POSTGRES_PASSWORD: insecure
-      POSTGRES_USER: external-data-scraper
-      POSTGRES_DB: external-data-scraper
+      POSTGRES_USER: external-data-scrapers
+      POSTGRES_DB: external-data-scrapers
 
   tests:
     build: ../../
     links:
       - database
     environment:
-      DATABASE_NAME: external-data-scraper
-      DATABASE_USER: external-data-scraper
+      DATABASE_NAME: external-data-scrapers
+      DATABASE_USER: external-data-scrapers
       DATABASE_PASSWORD: insecure
       ENVIRONMENT: test
     volumes:

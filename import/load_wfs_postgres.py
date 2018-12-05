@@ -154,8 +154,8 @@ def parser():
     parser.add_argument(
         "--db",
         type=str,
-        default="external-data-scraper",
-        choices=["external-data-scraper"],
+        default="external-data-scrapers",
+        choices=["external-data-scrapers"],
         help="choose database (default: %(default)s)"
     )
 
