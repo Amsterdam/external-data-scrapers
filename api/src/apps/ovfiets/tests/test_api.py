@@ -6,7 +6,7 @@ from . import factories
 class BrowseDatasetsTestCase(APITestCase):
 
     datasets = [
-        "public/ovfiets",
+        "externaldata/ovfiets",
     ]
 
     def setUp(self):
@@ -25,7 +25,7 @@ class BrowseDatasetsTestCase(APITestCase):
         )
 
     def test_index_pages(self):
-        url = "public"
+        url = "externaldata"
 
         response = self.client.get("/{}/".format(url))
 
