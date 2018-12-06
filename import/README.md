@@ -30,7 +30,7 @@ python data_sources/ovfiets/models.py
 ### load wfs data (neighbourhoods)
 
 ```
-python load_wfs_postgres.py https://map.data.amsterdam.nl/maps/gebieden stadsdeel 4326 --db external-data-scrapers
+python load_wfs_postgres.py https://map.data.amsterdam.nl/maps/gebieden stadsdeel 4326 --db externaldata
 ```
 
 ### Import api instance

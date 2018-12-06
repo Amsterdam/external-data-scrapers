@@ -5,16 +5,16 @@ services:
     image: amsterdam/postgres
     environment:
       POSTGRES_PASSWORD: insecure
-      POSTGRES_DB: external-data-scrapers
-      POSTGRES_USER: external-data-scrapers
+      POSTGRES_DB: externaldata
+      POSTGRES_USER: externaldata
 
   importer:
     build: ../../
     links:
       - database
     environment:
-      DATABASE_NAME: external-data-scrapers
-      DATABASE_USER: external-data-scrapers
+      DATABASE_NAME: externaldata
+      DATABASE_USER: externaldata
       DATABASE_PASSWORD: insecure
       DATABASE_HOST_OVERRIDE: database
       DATABASE_PORT_OVERRIDE: 5432
