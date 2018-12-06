@@ -5,8 +5,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: external-data-scrapers
-      POSTGRES_USER: external-data-scrapers
+      POSTGRES_DB: externaldata
+      POSTGRES_USER: externaldata
       POSTGRES_PASSWORD: insecure
     volumes:
       - ~/.ssh/datapunt.key:/root/.ssh/datapunt.key
@@ -26,7 +26,7 @@ services:
     links:
       - database
     environment:
-      - DATABASE_NAME=external-data-scrapers
+      - DATABASE_NAME=externaldata
       - DATABASE_PASSWORD=insecure
       - UWSGI_HTTP=0.0.0.0:8001
       - UWSGI_MASTER=1
