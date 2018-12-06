@@ -32,7 +32,7 @@ node {
 
     stage("Build dockers") {
         tryStep "build", {
-            def importer = docker.build("build.datapunt.amsterdam.nl:5000/external-data-scrapers_importer:${env.BUILD_NUMBER}", "scrape_api")
+            def importer = docker.build("build.datapunt.amsterdam.nl:5000/external-data-scrapers_importer:${env.BUILD_NUMBER}", "import")
                 importer.push()
                 importer.push("acceptance")
 

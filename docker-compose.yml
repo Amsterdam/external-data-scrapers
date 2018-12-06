@@ -11,3 +11,31 @@ services:
     volumes:
       - ~/.ssh/datapunt.key:/root/.ssh/datapunt.key
       - ./backups:/tmp/backups
+
+  import:
+    build: ./import
+    links:
+      - database
+    environment:
+      - PYTHONPATH=/app
+
+  api:
+    build: ./api
+    ports:
+      - "8001:8001"
+    links:
+      - database
+    environment:
+      - DATABASE_NAME=external-data-scrapers
+      - DATABASE_PASSWORD=insecure
+      - UWSGI_HTTP=0.0.0.0:8001
+      - UWSGI_MASTER=1
+      - UWSGI_STATIC_INDEX=index.html
+      - UWSGI_STATIC_MAP=/static=/static
+      - UWSGI_CALLABLE=application
+      - UWSGI_VACUUM=1
+      - UWSGI_STATIC_EXPIRES=/* 3600
+      - UWSGI_OFFLOAD_THREADS=1
+      - UWSGI_HARAKIRI=15
+      - UWSGI_DIE_ON_TERM=1
+      - UWSGI_MODULE=wsgi:application
