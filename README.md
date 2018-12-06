@@ -11,7 +11,7 @@ The api directory contains the REST api
 - OvFiets
 
 
-## Running using Docker for local development
+## Running using Docker
 
 ### Prerequisites
 * git
@@ -39,9 +39,16 @@ docker-compose run --rm api tox
 docker-compose run --rm import tox 
 ```
 
-### Migrating the database
+### Migrating the django database (not needed for ovfiets)
 ```
 docker-compose run api ./manage.py migrate
+
+```
+
+### Import local data
+#### Ovfiets
+```
+docker-compose run --rm import ./data_sources/ovfiets/import-local.sh
 ```
 
 ### Running the server
@@ -53,7 +60,7 @@ Server should be available here  `http://localhost:8001/public`
 
 
 
-## Makefile
+## Makefile (For local development)
 
 The `api` and `import` directories contain a Makefile that contains the following commands
 
