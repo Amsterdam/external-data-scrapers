@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 
 import os
-import sys
 
 from config.settings_databases import (OVERRIDE_HOST_ENV_VAR,
                                        OVERRIDE_PORT_ENV_VAR, LocationKey,
@@ -29,7 +28,6 @@ DEBUG = SECRET_KEY == INSECURE_SECRET_KEY
 ALLOWED_HOSTS = ['*']
 
 INTERNAL_IPS = ('127.0.0.1', '0.0.0.0')
-CORS_ORIGIN_ALLOW_ALL = True
 
 DATAPUNT_API_URL = os.getenv(
     'DATAPUNT_API_URL', 'https://api.data.amsterdam.nl/'
