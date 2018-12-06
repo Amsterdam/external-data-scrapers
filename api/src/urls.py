@@ -23,9 +23,9 @@ from rest_framework import permissions, routers
 from apps.ovfiets import views as ovfiets_views
 
 
-class PublicView(routers.APIRootView):
+class ExternalDataView(routers.APIRootView):
     """
-    List of public APIs that are scraped by the external-data-scrapers
+    List of external APIs that are scraped by the external-data-scrapers
 
     Daily scraped APIs
     ==================
@@ -37,11 +37,11 @@ class PublicView(routers.APIRootView):
     """
 
 
-class PublicRouter(routers.DefaultRouter):
-    APIRootView = PublicView
+class ExternalDataRouter(routers.DefaultRouter):
+    APIRootView = ExternalDataView
 
 
-router = PublicRouter()
+router = ExternalDataRouter()
 router.register(r'ovfiets', ovfiets_views.OvFietsView)
 
 urls = router.urls
@@ -62,14 +62,14 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('status/', include('apps.health.urls')),
-    path('public/', include(urls)),
+    path('externaldata/', include(urls)),
 
-    url(r'^public/swagger(?P<format>\.json|\.yaml)$',
+    url(r'^externaldata/swagger(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(cache_timeout=None), name='schema-json'),
-    url(r'^public/swagger/$',
+    url(r'^externaldata/swagger/$',
         schema_view.with_ui('swagger', cache_timeout=None),
         name='schema-swagger-ui'),
-    url(r'^public/redoc/$',
+    url(r'^externaldata/redoc/$',
         schema_view.with_ui('redoc', cache_timeout=None), name='schema-redoc'),
 ]
 
