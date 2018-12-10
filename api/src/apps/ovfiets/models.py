@@ -17,6 +17,7 @@ class OvFiets(models.Model):
     scraped_at = models.DateTimeField()
     stadsdeel = models.CharField(max_length=1)
     opening_hours = JSONField(null=True)
+    unmapped = JSONField(null=True)
 
     class Meta:
         managed = settings.TESTING

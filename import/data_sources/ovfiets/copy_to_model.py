@@ -17,23 +17,25 @@ def store_data(raw_data):
     stations = []
     for raw_stations in raw_data:
         for raw_station in raw_stations.data['locaties'].values():
-            lng = raw_station['lng']
-            lat = raw_station['lat']
+            lng = raw_station.pop('lng', None)
+            lat = raw_station.pop('lat', None)
 
             ovfiets = OvFiets(**dict(
                 scraped_at=raw_stations.scraped_at,
-                name=raw_station['name'],
-                description=raw_station.get('description'),
-                station_code=raw_station.get('stationCode'),
-                open=raw_station['open'],
+                name=raw_station.pop('name', None),
+                description=raw_station.pop('description', None),
+                station_code=raw_station.pop('stationCode', None),
+                open=raw_station.pop('open', None),
                 geometrie=f'SRID=4326;POINT({lng} {lat})',
-                location_code=raw_station['extra']['locationCode'],
-                rental_bikes=raw_station['extra']['rentalBikes'],
-                opening_hours=raw_station.get('openingHours'),
+                location_code=raw_station['extra'].pop('locationCode', None),
+                rental_bikes=raw_station['extra'].pop('rentalBikes', None),
+                opening_hours=raw_station.pop('openingHours', None),
 
                 fetch_time=datetime.fromtimestamp(
-                    raw_station['extra']['fetchTime']
+                    raw_station['extra'].pop('fetchTime', None)
                 ),
+                # add what is left
+                unmapped=raw_station
             ))
             stations.append(ovfiets)
 

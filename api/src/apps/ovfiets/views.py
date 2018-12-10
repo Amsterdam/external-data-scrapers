@@ -8,10 +8,22 @@ from .models import OvFiets
 from .serializers import OvFietsDetailSerializer, OvFietsSerializer
 
 
+class OvFietsChoiceFilter(filters.ChoiceFilter):
+    """
+    Overridden to offer the ability to filter
+    with all stations in amsterdam
+    """
+    def filter(self, qs, value):
+        if value == 'in_amsterdam':
+            return self.get_method(qs)(stadsdeel__isnull=False)
+        return super().filter(qs, value)
+
+
 class OVFietsFilter(FilterSet):
-    stadsdeel = filters.MultipleChoiceFilter(
-        choices=STADSDELEN,
-        null_label='not_in_amsterdam',
+    stadsdeel_choices = STADSDELEN + (('in_amsterdam', 'In Amsterdam'),)
+    stadsdeel = OvFietsChoiceFilter(
+        choices=stadsdeel_choices,
+        null_label='Not in Amsterdam',
         null_value='null'
     )
 
