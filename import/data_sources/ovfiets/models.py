@@ -16,14 +16,25 @@ LOG = logging.getLogger(__name__)
 
 Base = declarative_base()
 
+OVFIETS_TABLES = [
+    # should never be dropped
+    # "ovfiets_raw",
+    "importer_ovfiets",
+]
+
 
 async def main(args):
     """Main."""
     engine = db_helper.make_engine(section="docker")
 
+    session = db_helper.set_session(engine)
+
     if args.drop:
         # resets everything
         LOG.warning("DROPPING ALL DEFINED TABLES")
+        for table in OVFIETS_TABLES:
+            session.execute(f"DROP table if exists {table};")
+        session.commit()
         Base.metadata.drop_all(engine)
 
     LOG.warning("CREATING DEFINED TABLES")
