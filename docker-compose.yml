@@ -12,7 +12,7 @@ services:
       - ~/.ssh/datapunt.key:/root/.ssh/datapunt.key
       - ./backups:/tmp/backups
 
-  importer:
+  import:
     build: ./import
     links:
       - database
