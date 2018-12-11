@@ -83,18 +83,16 @@ def link_areas(sql):
     session.commit()
 
 
-def start_import():
+def start_import(make_engine):
+    if make_engine:
+        engine = db_helper.make_engine()
+        db_helper.set_session(engine)
+
     raw_data = get_latest_data()
     store_data(raw_data)
 
 
-def main():
-    if args.link_areas:
-        return link_areas(UPDATE_STADSDEEL)
-    start_import()
-
-
-if __name__ == "__main__":
+def main(make_engine=True):
     desc = "Clean data and import into db."
     inputparser = argparse.ArgumentParser(desc)
 
@@ -105,11 +103,16 @@ if __name__ == "__main__":
 
     args = inputparser.parse_args()
 
-    engine = db_helper.make_engine()
-    session = db_helper.set_session(engine)
-
     start = time.time()
-    main()
-    log.info("Took: %s", time.time() - start)
 
+    if args.link_areas:
+        return link_areas(UPDATE_STADSDEEL)
+    start_import(make_engine)
+
+    log.info("Took: %s", time.time() - start)
+    session = db_helper.session
     session.close()
+
+
+if __name__ == "__main__":
+    main()

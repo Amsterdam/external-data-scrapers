@@ -1,0 +1,33 @@
+version: '3.0'
+services:
+  database:
+    image: amsterdam/postgres
+    environment:
+      POSTGRES_PASSWORD: insecure
+      POSTGRES_USER: externaldata
+      POSTGRES_DB: externaldata
+    volumes:
+      - ./backups:/tmp/backups
+      - externaldata_import_cache:/data
+
+  importer:
+    image: build.datapunt.amsterdam.nl:5000/externaldata_importer:${ENVIRONMENT}
+    # build: ../..
+    links:
+      - database
+    environment:
+      ENVIRONMENT:
+      DATABASE_NAME: externaldata
+      DATABASE_USER: externaldata
+      DATABASE_PASSWORD: insecure
+      DROP:
+      WFS:
+      PYTHONPATH: "/app"
+    volumes:
+      - externaldata_import_cache:/data
+      - ./backups:/backups
+    command: >
+      bash -c "/deploy/import/import-ovfiets.sh"
+
+volumes:
+  externaldata_import_cache:

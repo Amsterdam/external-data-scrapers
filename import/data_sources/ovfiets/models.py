@@ -35,7 +35,6 @@ async def main(args):
         for table in OVFIETS_TABLES:
             session.execute(f"DROP table if exists {table};")
         session.commit()
-        Base.metadata.drop_all(engine)
 
     LOG.warning("CREATING DEFINED TABLES")
     # recreate tables

@@ -30,7 +30,7 @@ def store(data):
     session.commit()
 
 
-def main(make_engine):
+def start_import(make_engine):
     if make_engine:
         engine = db_helper.make_engine(section='docker')
         db_helper.set_session(engine)
@@ -39,13 +39,7 @@ def main(make_engine):
     store(data)
 
 
-def start_import(make_engine=True):
-    start = time.time()
-    main(make_engine=make_engine)
-    log.info("Took: %s", time.time() - start)
-
-
-if __name__ == "__main__":
+def main(make_engine=True):
     desc = "Scrape OV fiets API."
     inputparser = argparse.ArgumentParser(desc)
 
@@ -54,7 +48,14 @@ if __name__ == "__main__":
     )
 
     args = inputparser.parse_args()
+
     if args.debug:
         log.setLevel(logging.DEBUG)
 
-    start_import()
+    start = time.time()
+    start_import(make_engine=make_engine)
+    log.info("Took: %s", time.time() - start)
+
+
+if __name__ == "__main__":
+    main()

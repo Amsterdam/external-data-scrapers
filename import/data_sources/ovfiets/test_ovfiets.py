@@ -41,23 +41,38 @@ def teardown_module():
     TESTING["running"] = False
 
 
+class ArgumentParser:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def parse_args(self):
+        return self
+
+    def add_argument(self, *args, **kwargs):
+        pass
+
+
 class TestDBWriting(unittest.TestCase):
     """Test writing to database."""
     fixture_path = FIX_DIR + "/data_sources/ovfiets/fixtures"
 
+    @patch("data_sources.ovfiets.slurp.argparse")
+    @patch("data_sources.ovfiets.copy_to_model.argparse")
     @patch("data_sources.ovfiets.slurp.fetch_json")
-    def test_slurp_and_import_ovfiets(self, fetch_json_mock):
-
+    def test_slurp_and_import_ovfiets(self, fetch_json_mock, c_parse, s_parse):
         with open(self.fixture_path + '/ovfiets.json') as json_file:
             json_data = json.loads(json_file.read())
 
         fetch_json_mock.side_effect = [json_data]
-        slurp.start_import(make_engine=False)
+        slurp.main(make_engine=False)
 
         raw_count = session.query(models.OvFietsRaw).count()
         self.assertEqual(raw_count, 1)
 
-        copy_to_model.start_import()
+        input_parser = ArgumentParser()
+        input_parser.link_areas = False
+        c_parse.ArgumentParser.side_effect = [input_parser]
+        copy_to_model.main(make_engine=False)
 
         count = session.query(models.OvFiets).count()
         self.assertEqual(count, 2)
@@ -75,3 +90,21 @@ class TestDBWriting(unittest.TestCase):
 
         count = session.query(models.OvFiets).filter_by(stadsdeel=None).count()
         self.assertEqual(count, 1)
+
+    @patch("data_sources.ovfiets.slurp.argparse")
+    @patch("data_sources.ovfiets.slurp.start_import")
+    def test_slurp_main(self, start_import, argparse):
+        input_parser = ArgumentParser()
+        input_parser.debug = True
+        argparse.ArgumentParser.side_effect = [input_parser]
+        slurp.main(make_engine=False)
+        self.assertTrue(start_import.called)
+
+    @patch("data_sources.ovfiets.copy_to_model.argparse")
+    @patch("data_sources.ovfiets.copy_to_model.start_import")
+    def test_copy_to_model_main(self, start_import, argparse):
+        input_parser = ArgumentParser()
+        input_parser.link_areas = False
+        argparse.ArgumentParser.side_effect = [input_parser]
+        copy_to_model.main(make_engine=False)
+        self.assertTrue(start_import.called)
