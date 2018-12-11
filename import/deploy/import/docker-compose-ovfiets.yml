@@ -11,7 +11,7 @@ services:
       - externaldata_import_cache:/data
 
   importer:
-    image: build.datapunt.amsterdam.nl:5000/externaldata_importer:${ENVIRONMENT}
+    image: build.datapunt.amsterdam.nl:5000/external-data-scrapers_importer:${ENVIRONMENT}
     # build: ../..
     links:
       - database
