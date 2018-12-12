@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils.functions import (create_database, database_exists,
                                         drop_database)
 
-from settings import config_auth
+from settings import config_auth, ENVIRONMENT_OVERRIDES
 
 logging.basicConfig(level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ LOG = logging.getLogger(__name__)
 Session = sessionmaker()
 
 
-def make_conf(section, environment_overrides=[]):
+def make_conf(section):
     """Create database connection."""
     db = {
         'host': config_auth.get(section, "host"),
@@ -26,9 +26,10 @@ def make_conf(section, environment_overrides=[]):
     }
 
     # override defaults with environment settings
-    for var, env in environment_overrides:
-        if os.getenv(env):
-            db[var] = os.getenv(env)
+    if os.getenv('OVERRIDE_DATABASE'):
+        for var, env in ENVIRONMENT_OVERRIDES:
+            if os.getenv(env):
+                db[var] = os.getenv(env)
 
     CONF = URL(
         drivername="postgresql",
@@ -44,7 +45,7 @@ def make_conf(section, environment_overrides=[]):
     return CONF
 
 
-def create_db(section="test", environment=[]):
+def create_db(section="test"):
     """Create the database."""
     CONF = make_conf(section)
     LOG.info(f"Created database")
@@ -52,7 +53,7 @@ def create_db(section="test", environment=[]):
         create_database(CONF)
 
 
-def drop_db(section="test", environment=[]):
+def drop_db(section="test"):
     """Cleanup test database."""
     LOG.info(f"Drop database")
     CONF = make_conf(section)
@@ -60,8 +61,8 @@ def drop_db(section="test", environment=[]):
         drop_database(CONF)
 
 
-def make_engine(section="docker", environment=[]):
-    CONF = make_conf(section, environment_overrides=environment)
+def make_engine(section="docker"):
+    CONF = make_conf(section)
     engine = create_engine(CONF)
     return engine
 

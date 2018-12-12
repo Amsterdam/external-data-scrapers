@@ -8,7 +8,6 @@ from urllib.parse import urlencode
 
 # import models
 import db_helper
-import settings
 
 # Setup basic logging
 log = logging.getLogger(__name__)
@@ -76,14 +75,9 @@ def load_wfs_layer_into_postgres(url_wfs, layer_name, srs, db, retry_count=3):
     url = url_wfs + '?' + urlencode(parameters)
     srs = "EPSG:{}".format(srs)
 
-    override = []
-
-    if db == 'kilogram':
-        override = settings.KILO_ENVIRONMENT_OVERRIDES
-
     pg_url = str(
         db_helper.make_conf(
-            "docker", environment_overrides=override))
+            "docker"))
 
     cmd = [
         'ogr2ogr',
