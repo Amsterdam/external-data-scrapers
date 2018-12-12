@@ -17,9 +17,12 @@ services:
       - database
     environment:
       ENVIRONMENT:
-      DATABASE_NAME: externaldata
-      DATABASE_USER: externaldata
-      DATABASE_PASSWORD: insecure
+      OVERRIDE_DATABASE:
+      DATABASE_OVERRIDE_HOST: 
+      DATABASE_OVERRIDE_NAME: externaldata
+      DATABASE_OVERRIDE_USER: externaldata
+      DATABASE_OVERRIDE_PORT: 5432
+      DATABASE_OVERRIDE_PASSWORD: insecure
       DROP:
       WFS:
       PYTHONPATH: "/app"
