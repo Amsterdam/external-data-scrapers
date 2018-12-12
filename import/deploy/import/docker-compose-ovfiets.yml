@@ -1,20 +1,8 @@
 version: '3.0'
 services:
-  database:
-    image: amsterdam/postgres
-    environment:
-      POSTGRES_PASSWORD: insecure
-      POSTGRES_USER: externaldata
-      POSTGRES_DB: externaldata
-    volumes:
-      - ./backups:/tmp/backups
-      - externaldata_import_cache:/data
-
   importer:
     image: build.datapunt.amsterdam.nl:5000/external-data-scrapers_importer:${ENVIRONMENT}
     # build: ../..
-    links:
-      - database
     environment:
       ENVIRONMENT:
       OVERRIDE_DATABASE:
@@ -26,9 +14,3 @@ services:
       DROP:
       WFS:
       PYTHONPATH: "/app"
-    volumes:
-      - externaldata_import_cache:/data
-      - ./backups:/backups
-
-volumes:
-  externaldata_import_cache:
