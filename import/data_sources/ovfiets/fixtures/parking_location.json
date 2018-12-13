@@ -1,0 +1,113 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "Id": "1",
+      "geometry": {
+      "type": "Point",
+      "coordinates": [
+        4.944938,
+        52.315838
+      ]
+    },
+      "properties": {
+        "Name": "FJ462B13 - ZO-B13 Burg.Stramanweg 02510/080",
+        "PubDate": "2018-12-18T09:56:41.930Z",
+        "Removed": "false",
+        "Type": "guidancesign",
+        "State": "ok",
+        "ParkingguidanceDisplay": [
+          {
+            "Id": "2",
+            "OutputDescription": "X",
+            "Description": "ZO-B13_VVX_02510/080  P+R Arena",
+            "Type": "VVX",
+            "Output": "X"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "Id": "3",
+      "geometry": {
+      "type": "Point",
+      "coordinates": [
+        4.88154,
+        52.36187
+      ]
+    },
+      "properties": {
+        "Name": "FJ212CE74 - CE74_Stadhouderskade 03277/005",
+        "PubDate": "2018-12-18T09:56:41.930Z",
+        "Removed": "false",
+        "Type": "guidancesign",
+        "State": "error",
+        "ParkingguidanceDisplay": [
+          {
+            "Id": "4",
+            "OutputDescription": "GEDOOFD",
+            "Description": "CE74_VVX_ Stadhouderskade 03277/005_P Byzantium",
+            "Type": "VVX",
+            "Output": "GEDOOFD"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "Id": "5",
+      "geometry": {
+      "type": "Point",
+      "coordinates": [
+        4.88204,
+        52.33825
+      ]
+    },
+      "properties": {
+        "Name": "FJ212A1010 - A1010_A010-18,400-Li-1_P+R S109",
+        "PubDate": "2018-12-18T09:56:41.930Z",
+        "Removed": "false",
+        "Type": "guidancesign",
+        "State": "error",
+        "ParkingguidanceDisplay": [
+          {
+            "Id": "6",
+            "OutputDescription": "GEDOOFD",
+            "Description": "A1010_VVX_P+R S109 / RAI",
+            "Type": "VVX",
+            "Output": "GEDOOFD"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "Id": "7",
+      "geometry": {
+      "type": "Point",
+      "coordinates": [
+        4.9341,
+        52.3119
+      ]
+    },
+      "properties": {
+        "Name": "FJ462B05 - ZO-B05 Burg.Stramanweg 02510/045",
+        "PubDate": "2018-12-18T09:56:41.930Z",
+        "Removed": "false",
+        "Type": "guidancesign",
+        "State": "ok",
+        "ParkingguidanceDisplay": [
+          {
+            "Id": "8",
+            "OutputDescription": "VRIJ",
+            "Description": "FJ462B05 - 02510/945 VVX P2 (Evenemententerrein)",
+            "Type": "VVX",
+            "Output": "VRIJ"
+          }
+        ]
+      }
+    }
+  ]
+}

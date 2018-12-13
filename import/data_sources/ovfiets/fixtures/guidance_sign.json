@@ -1,0 +1,68 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "Id": "1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.915205,
+          52.377864
+        ]
+      },
+      "properties": {
+        "Name": "CE-P28 PTA Touringcars",
+        "PubDate": "2018-12-18T10:12:41.925Z",
+        "Type": "parkinglocation",
+        "State": "ok",
+        "FreeSpaceShort": "345",
+        "FreeSpaceLong": "446",
+        "ShortCapacity": "500",
+        "LongCapacity": "500"
+      }
+    },
+    {
+      "type": "Feature",
+      "Id": "900000118_parkinglocation",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.92911,
+          52.35694
+        ]
+      },
+      "properties": {
+        "Name": "CE-P20 Oostpoort",
+        "PubDate": "2018-12-18T10:12:41.925Z",
+        "Type": "parkinglocation",
+        "State": "ok",
+        "FreeSpaceShort": "159",
+        "FreeSpaceLong": "0",
+        "ShortCapacity": "373",
+        "LongCapacity": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "Id": "900000001_parkinglocation",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8536,
+          52.343
+        ]
+      },
+      "properties": {
+        "Name": "CE-P02 P Olympisch stadion",
+        "PubDate": "2018-12-18T10:12:41.925Z",
+        "Type": "parkinglocation",
+        "State": "ok",
+        "FreeSpaceShort": "223",
+        "FreeSpaceLong": "69",
+        "ShortCapacity": "327",
+        "LongCapacity": "190"
+      }
+    }
+  ]
+}
