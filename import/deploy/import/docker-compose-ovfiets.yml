@@ -10,7 +10,7 @@ services:
       DATABASE_OVERRIDE_NAME: externaldata
       DATABASE_OVERRIDE_USER: externaldata
       DATABASE_OVERRIDE_PORT: 5432
-      DATABASE_OVERRIDE_PASSWORD: insecure
+      DATABASE_OVERRIDE_PASSWORD: 
       DROP:
       WFS:
       PYTHONPATH: "/app"
