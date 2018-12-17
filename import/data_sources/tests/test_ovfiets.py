@@ -56,6 +56,15 @@ class TestDBWriting(unittest.TestCase):
     """Test writing to database."""
     fixture_path = FIX_DIR + "/data_sources/ovfiets/fixtures"
 
+    def setUp(self):
+        global engine
+        models.Base.metadata.create_all(bind=engine)
+
+    def tearDown(self):
+        global engine
+        session.close()
+        models.Base.metadata.drop_all(bind=engine)
+
     @patch("data_sources.ovfiets.slurp.argparse")
     @patch("data_sources.ovfiets.copy_to_model.argparse")
     @patch("data_sources.ovfiets.slurp.fetch_json")
@@ -108,3 +117,29 @@ class TestDBWriting(unittest.TestCase):
         argparse.ArgumentParser.side_effect = [input_parser]
         copy_to_model.main(make_engine=False)
         self.assertTrue(start_import.called)
+
+    @patch("data_sources.ovfiets.copy_to_model.settings")
+    @patch("data_sources.ovfiets.slurp.argparse")
+    @patch("data_sources.ovfiets.copy_to_model.argparse")
+    @patch("data_sources.ovfiets.slurp.fetch_json")
+    def test_copy_limit(self, fetch_json_mock, c_parse, s_parse, settings):
+        with open(self.fixture_path + '/ovfiets.json') as json_file:
+            json_data = json.loads(json_file.read())
+
+        # fill up db with 5 entries
+        for _ in range(5):
+            fetch_json_mock.side_effect = [json_data]
+            slurp.main(make_engine=False)
+
+        raw_count = session.query(models.OvFietsRaw).count()
+        self.assertEqual(raw_count, 5)
+
+        settings.DATABASE_IMPORT_LIMIT = 3
+
+        input_parser = ArgumentParser()
+        input_parser.link_areas = False
+        c_parse.ArgumentParser.side_effect = [input_parser]
+        copy_to_model.main(make_engine=False)
+
+        count = session.query(models.OvFiets).count()
+        self.assertEqual(count, 10)

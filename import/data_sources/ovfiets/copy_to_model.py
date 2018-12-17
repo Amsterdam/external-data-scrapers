@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 
 import db_helper
+import settings
 from data_sources.ovfiets.models import OvFiets, OvFietsRaw
 
 log = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ def store_data(raw_data):
             lng = raw_station.pop('lng', None)
             lat = raw_station.pop('lat', None)
 
-            ovfiets = OvFiets(**dict(
+            ovfiets = dict(
                 scraped_at=raw_stations.scraped_at,
                 name=raw_station.pop('name', None),
                 description=raw_station.pop('description', None),
@@ -36,17 +37,17 @@ def store_data(raw_data):
                 ),
                 # add what is left
                 unmapped=raw_station
-            ))
+            )
             stations.append(ovfiets)
 
     log.info("Storing {} OvFiets entries".format(len(stations)))
-    session.bulk_save_objects(stations)
+    session.bulk_insert_mappings(OvFiets, stations)
     session.commit()
 
 
-def get_latest_data():
+def get_query():
     """
-    Get latest raw data to according to last imported data.
+    Get latest raw data according to last imported data.
     Can be moved to utils.py when more projects use it
     """
     session = db_helper.session
@@ -64,7 +65,7 @@ def get_latest_data():
             .filter(OvFietsRaw.scraped_at > latest.scraped_at)
         )
     # empty api.
-    return session.query(OvFietsRaw).all()
+    return session.query(OvFietsRaw)
 
 
 UPDATE_STADSDEEL = """
@@ -84,12 +85,29 @@ def link_areas(sql):
 
 
 def start_import(make_engine):
+    """
+    Importing the data is done in batches to avoid
+    straining the resources.
+    """
     if make_engine:
         engine = db_helper.make_engine()
         db_helper.set_session(engine)
 
-    raw_data = get_latest_data()
-    store_data(raw_data)
+    query = get_query()
+    run = True
+
+    offset = 0
+    limit = settings.DATABASE_IMPORT_LIMIT
+
+    while run:
+        raw_data = query.offset(offset).limit(limit).all()
+
+        if raw_data:
+            log.info("Fetched {} raw OvFiets entries".format(len(raw_data)))
+            store_data(raw_data)
+            offset += limit
+        else:
+            run = False
 
 
 def main(make_engine=True):
@@ -106,8 +124,9 @@ def main(make_engine=True):
     start = time.time()
 
     if args.link_areas:
-        return link_areas(UPDATE_STADSDEEL)
-    start_import(make_engine)
+        link_areas(UPDATE_STADSDEEL)
+    else:
+        start_import(make_engine)
 
     log.info("Took: %s", time.time() - start)
     session = db_helper.session
