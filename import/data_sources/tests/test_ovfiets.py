@@ -80,7 +80,6 @@ class TestDBWriting(unittest.TestCase):
 
         input_parser = ArgumentParser()
         input_parser.link_areas = False
-        input_parser.link_areas_latest = False
         c_parse.ArgumentParser.side_effect = [input_parser]
         copy_to_model.main(make_engine=False)
 
@@ -115,7 +114,6 @@ class TestDBWriting(unittest.TestCase):
     def test_copy_to_model_main(self, start_import, argparse):
         input_parser = ArgumentParser()
         input_parser.link_areas = False
-        input_parser.link_areas_latest = False
         argparse.ArgumentParser.side_effect = [input_parser]
         copy_to_model.main(make_engine=False)
         self.assertTrue(start_import.called)
@@ -140,7 +138,6 @@ class TestDBWriting(unittest.TestCase):
 
         input_parser = ArgumentParser()
         input_parser.link_areas = False
-        input_parser.link_areas_latest = False
         c_parse.ArgumentParser.side_effect = [input_parser]
         copy_to_model.main(make_engine=False)
 

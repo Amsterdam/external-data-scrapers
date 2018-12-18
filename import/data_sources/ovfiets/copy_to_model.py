@@ -77,21 +77,6 @@ AND stadsdeel is null
 AND tt.geometrie IS NOT NULL
 """
 
-UPDATE_STADSDEEL_LATEST = """
-UPDATE importer_ovfiets tt
-SET stadsdeel = s.code
-FROM (SELECT * from stadsdeel) as s
-WHERE ST_DWithin(s.wkb_geometry, tt.geometrie, 0)
-AND stadsdeel is null
-AND tt.geometrie IS NOT NULL
-AND scraped_at > (
-    SELECT scraped_at FROM importer_ovfiets
-    WHERE stadsdeel is not null
-    ORDER BY scraped_at
-    DESC LIMIT 1
-    );
-"""
-
 
 def link_areas(sql):
     session = db_helper.session
@@ -130,11 +115,6 @@ def main(make_engine=True):
         default=False, help="Link stations with neighbourhood areas"
     )
 
-    inputparser.add_argument(
-        "--link_areas_latest", action="store_true",
-        default=False, help="Link stations with neighbourhood areas"
-    )
-
     args = inputparser.parse_args()
 
     start = time.time()
@@ -145,10 +125,6 @@ def main(make_engine=True):
 
     if args.link_areas:
         link_areas(UPDATE_STADSDEEL)
-
-    elif args.link_areas_latest:
-        link_areas(UPDATE_STADSDEEL_LATEST)
-
     else:
         start_import()
 
