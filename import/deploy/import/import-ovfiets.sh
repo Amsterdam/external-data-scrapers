@@ -25,7 +25,7 @@ then
    dc run --rm importer python data_sources/ovfiets/models.py --drop
 
 else
-   dc run --rm importer python data_Sources/ovfiets/models.py
+   dc run --rm importer python data_sources/ovfiets/models.py
 fi
 
 if [ "$WFS" = "yes" ]
@@ -39,5 +39,8 @@ dc run --rm importer python data_sources/ovfiets/slurp.py
 
 # copy data into final table for serving to django
 dc run --rm importer python data_sources/ovfiets/copy_to_model.py
+
+# link areas to stations
+dc run --rm importer python data_sources/ovfiets/copy_to_model.py --link_areas
 
 dc down -v
