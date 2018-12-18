@@ -84,15 +84,11 @@ def link_areas(sql):
     session.commit()
 
 
-def start_import(make_engine):
+def start_import():
     """
     Importing the data is done in batches to avoid
     straining the resources.
     """
-    if make_engine:
-        engine = db_helper.make_engine()
-        db_helper.set_session(engine)
-
     query = get_query()
     run = True
 
@@ -123,10 +119,14 @@ def main(make_engine=True):
 
     start = time.time()
 
+    if make_engine:
+        engine = db_helper.make_engine()
+        db_helper.set_session(engine)
+
     if args.link_areas:
         link_areas(UPDATE_STADSDEEL)
     else:
-        start_import(make_engine)
+        start_import()
 
     log.info("Took: %s", time.time() - start)
     session = db_helper.session
