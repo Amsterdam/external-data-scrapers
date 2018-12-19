@@ -2,7 +2,8 @@ import argparse
 import asyncio
 import logging
 
-from sqlalchemy import TIMESTAMP, Column, Integer
+from geoalchemy2 import Geometry
+from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
@@ -14,9 +15,10 @@ LOG = logging.getLogger(__name__)
 Base = declarative_base()
 
 PARKEERGARAGES_TABLES = [
-    # TODO remove when cleaned up model is written
-    "parkinglocation_raw",
-    "guidancesign_raw",
+    # NEVER drop raw models
+    "importer_parkinglocation",
+    "importer_parkingguidancedisplay",
+    "importer_guidancesign",
 ]
 
 
@@ -44,6 +46,52 @@ class ParkingLocationRaw(Base):
     id = Column(Integer, Sequence("grl_seq"), primary_key=True)
     scraped_at = Column(TIMESTAMP, index=True)
     data = Column(JSONB)
+
+
+class ParkingLocation(Base):
+    __tablename__ = f"importer_parkinglocation"
+    id = Column(Integer, Sequence("grl_seq"), primary_key=True, index=True)
+    api_id = Column(String, index=True)
+    name = Column(String, index=True)
+    type = Column(String, index=True)
+    geometrie = Column(Geometry('POINT', srid=4326), index=True)
+    state = Column(String, index=True)
+    free_space_short = Column(Integer, index=True)
+    free_space_long = Column(Integer, index=True)
+    short_capacity = Column(Integer, index=True)
+    long_capacity = Column(Integer, index=True)
+    pub_date = Column(TIMESTAMP, index=True)
+    stadsdeel = Column(String, index=True)
+    buurt_code = Column(String, index=True)
+    scraped_at = Column(TIMESTAMP, index=True)
+
+
+class GuidanceSign(Base):
+    __tablename__ = f"importer_guidancesign"
+    id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
+    api_id = Column(String, index=True, unique=True)
+    geometrie = Column(Geometry('POINT', srid=4326), index=True)
+    name = Column(String, index=True)
+    type = Column(String, index=True)
+    state = Column(String, index=True)
+    pub_date = Column(TIMESTAMP, index=True)
+    removed = Column(Boolean, index=True)
+    stadsdeel = Column(String, index=True)
+    buurt_code = Column(String, index=True)
+    scraped_at = Column(TIMESTAMP, index=True)
+
+
+class ParkingGuidanceDisplay(Base):
+    __tablename__ = f"importer_parkingguidancedisplay"
+    id = Column(Integer, Sequence("grl_seq"), primary_key=True, index=True)
+    api_id = Column(String, index=True)
+    pub_date = Column(TIMESTAMP, index=True)
+    description = Column(String)
+    type = Column(String, index=True)
+    output = Column(String, index=True)
+    output_description = Column(String, index=True)
+    guidance_sign_id = Column(String, ForeignKey(GuidanceSign.api_id))
+    scraped_at = Column(TIMESTAMP, index=True)
 
 
 class GuidanceSignRaw(Base):

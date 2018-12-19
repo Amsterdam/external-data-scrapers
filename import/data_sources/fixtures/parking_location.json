@@ -24,7 +24,7 @@
     },
     {
       "type": "Feature",
-      "Id": "900000118_parkinglocation",
+      "Id": "2",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -45,7 +45,7 @@
     },
     {
       "type": "Feature",
-      "Id": "900000001_parkinglocation",
+      "Id": "3",
       "geometry": {
         "type": "Point",
         "coordinates": [

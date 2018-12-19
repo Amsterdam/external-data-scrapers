@@ -42,6 +42,8 @@ def teardown_module():
 
 
 class ArgumentParser:
+    link_areas = False
+
     def __init__(self, *args, **kwargs):
         pass
 
@@ -54,7 +56,7 @@ class ArgumentParser:
 
 class TestDBWriting(unittest.TestCase):
     """Test writing to database."""
-    fixture_path = FIX_DIR + "/data_sources/ovfiets/fixtures"
+    fixture_path = FIX_DIR + "/data_sources/fixtures"
 
     def setUp(self):
         global engine
@@ -79,26 +81,11 @@ class TestDBWriting(unittest.TestCase):
         self.assertEqual(raw_count, 1)
 
         input_parser = ArgumentParser()
-        input_parser.link_areas = False
         c_parse.ArgumentParser.side_effect = [input_parser]
         copy_to_model.main(make_engine=False)
 
         count = session.query(models.OvFiets).count()
         self.assertEqual(count, 2)
-
-        sql = """
-        UPDATE importer_ovfiets
-        SET stadsdeel = 'A'
-        WHERE station_code = 'AA'
-        """
-
-        copy_to_model.link_areas(sql)
-
-        count = session.query(models.OvFiets).filter_by(stadsdeel='A').count()
-        self.assertEqual(count, 1)
-
-        count = session.query(models.OvFiets).filter_by(stadsdeel=None).count()
-        self.assertEqual(count, 1)
 
     @patch("data_sources.ovfiets.slurp.argparse")
     @patch("data_sources.ovfiets.slurp.start_import")
@@ -113,7 +100,6 @@ class TestDBWriting(unittest.TestCase):
     @patch("data_sources.ovfiets.copy_to_model.start_import")
     def test_copy_to_model_main(self, start_import, argparse):
         input_parser = ArgumentParser()
-        input_parser.link_areas = False
         argparse.ArgumentParser.side_effect = [input_parser]
         copy_to_model.main(make_engine=False)
         self.assertTrue(start_import.called)
@@ -137,7 +123,6 @@ class TestDBWriting(unittest.TestCase):
         settings.DATABASE_IMPORT_LIMIT = 3
 
         input_parser = ArgumentParser()
-        input_parser.link_areas = False
         c_parse.ArgumentParser.side_effect = [input_parser]
         copy_to_model.main(make_engine=False)
 

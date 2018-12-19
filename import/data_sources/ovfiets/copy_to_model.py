@@ -8,6 +8,7 @@ from datetime import datetime
 import db_helper
 import settings
 from data_sources.ovfiets.models import OvFiets, OvFietsRaw
+from data_sources.utils import get_latest_query
 
 log = logging.getLogger(__name__)
 
@@ -45,29 +46,6 @@ def store_data(raw_data):
     session.commit()
 
 
-def get_query():
-    """
-    Get latest raw data according to last imported data.
-    Can be moved to utils.py when more projects use it
-    """
-    session = db_helper.session
-
-    latest = (
-        session.query(OvFiets)
-        .order_by(OvFiets.scraped_at.desc())
-        .first()
-    )
-    if latest:
-        # update since api
-        return (
-            session.query(OvFietsRaw)
-            .order_by(OvFietsRaw.scraped_at.desc())
-            .filter(OvFietsRaw.scraped_at > latest.scraped_at)
-        )
-    # empty api.
-    return session.query(OvFietsRaw)
-
-
 UPDATE_STADSDEEL = """
 UPDATE importer_ovfiets tt
 SET stadsdeel = s.code
@@ -89,7 +67,8 @@ def start_import():
     Importing the data is done in batches to avoid
     straining the resources.
     """
-    query = get_query()
+    session = db_helper.session
+    query = get_latest_query(session, OvFietsRaw, OvFiets)
     run = True
 
     offset = 0
