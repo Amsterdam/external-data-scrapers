@@ -1,7 +1,7 @@
+from datapunt_api.pagination import HALCursorPagination
 from datapunt_api.rest import DatapuntViewSet
 from django_filters.rest_framework import (DjangoFilterBackend, FilterSet,
                                            filters)
-from rest_framework.filters import OrderingFilter
 
 from ..constants import STADSDELEN
 from .models import OvFiets
@@ -37,18 +37,26 @@ class OVFietsFilter(FilterSet):
         )
 
 
+class OvFietsCursorPagination(HALCursorPagination):
+    """
+    Ovfiets entries are too many. So we use cursor based pagination.
+    """
+    page_size = 1000
+    max_page_size = 1000
+    ordering = "-scraped_at"
+    count_table = False
+
+
 class OvFietsView(DatapuntViewSet):
     queryset = (
         OvFiets.objects.all()
     )
     serializer_detail_class = OvFietsDetailSerializer
     serializer_class = OvFietsSerializer
+    pagination_class = OvFietsCursorPagination
 
     filter_backends = (
         DjangoFilterBackend,
-        OrderingFilter
     )
 
     filterset_class = OVFietsFilter
-
-    ordering_fields = '__all__'

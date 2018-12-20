@@ -51,28 +51,16 @@ class BrowseDatasetsTestCase(APITestCase):
                 "Wrong Content-Type for {}".format(url),
             )
 
-            self.assertIn(
-                "count", response.data, "No count attribute in {}".format(url)
-            )
-
     def test_lists_html(self):
         for url in self.datasets:
             response = self.client.get("/{}/?format=api".format(url))
 
             self.valid_response(url, response, 'text/html; charset=utf-8')
 
-            self.assertIn(
-                "count", response.data, "No count attribute in {}".format(url)
-            )
-
     def test_lists_csv(self):
         for url in self.datasets:
             response = self.client.get("/{}/?format=csv".format(url))
             self.valid_response(url, response, 'text/csv; charset=utf-8')
-
-            self.assertIn(
-                "count", response.data, "No count attribute in {}".format(url)
-            )
 
     def test_lists_xml(self):
         for url in self.datasets:
@@ -80,7 +68,3 @@ class BrowseDatasetsTestCase(APITestCase):
 
             self.valid_response(
                 url, response, 'application/xml; charset=utf-8')
-
-            self.assertIn(
-                "count", response.data, "No count attribute in {}".format(url)
-            )
