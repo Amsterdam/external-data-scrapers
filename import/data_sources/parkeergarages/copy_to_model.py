@@ -4,12 +4,13 @@ import time
 
 import db_helper
 import settings
+from data_sources.latest_query import get_latest_query
+from data_sources.link_areas import link_areas
 from data_sources.parkeergarages.endpoints import (ENDPOINT_MODEL,
                                                    ENDPOINT_RAW_MODEL,
                                                    ENDPOINTS)
 from data_sources.parkeergarages.models import (ParkingGuidanceDisplay,
                                                 ParkingLocation)
-from data_sources.utils import get_latest_query, link_areas
 
 log = logging.getLogger(__name__)
 

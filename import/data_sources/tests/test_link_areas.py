@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, call
 
-from data_sources import utils
+from data_sources.link_areas import link_areas
 
 stadsdeel_query = """
 UPDATE test_table tt
@@ -22,11 +22,11 @@ AND tt.geometrie IS NOT NULL
 """
 
 
-class TestUtils(unittest.TestCase):
+class TestLinkAreas(unittest.TestCase):
 
     def test_link_areas(self):
         mock = MagicMock()
-        utils.link_areas(mock, 'test_table')
+        link_areas(mock, 'test_table')
 
         self.assertEqual(
             call(stadsdeel_query), mock.execute.call_args_list[0]

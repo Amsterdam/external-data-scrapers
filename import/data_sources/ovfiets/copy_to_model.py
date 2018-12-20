@@ -7,8 +7,8 @@ from datetime import datetime
 
 import db_helper
 import settings
+from data_sources.latest_query import get_latest_query
 from data_sources.ovfiets.models import OvFiets, OvFietsRaw
-from data_sources.utils import get_latest_query
 
 log = logging.getLogger(__name__)
 
