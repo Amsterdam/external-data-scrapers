@@ -1,0 +1,16 @@
+version: '3.0'
+services:
+  importer:
+    image: build.datapunt.amsterdam.nl:5000/datapunt/external-data-scrapers_importer:${ENVIRONMENT}
+    # build: ../..
+    environment:
+      ENVIRONMENT:
+      OVERRIDE_DATABASE:
+      DATABASE_OVERRIDE_HOST: 
+      DATABASE_OVERRIDE_NAME: externaldata
+      DATABASE_OVERRIDE_USER: externaldata
+      DATABASE_OVERRIDE_PORT: 5432
+      DATABASE_OVERRIDE_PASSWORD: 
+      DROP:
+      WFS:
+      PYTHONPATH: "/app"
