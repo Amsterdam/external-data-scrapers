@@ -65,6 +65,7 @@ class OvFiets(Base):
     scraped_at = Column(TIMESTAMP, index=True)
     opening_hours = Column(JSONB)
     stadsdeel = Column(String, index=True)
+    buurt_code = Column(String, index=True)
     unmapped = Column(JSONB)
 
 

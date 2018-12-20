@@ -8,6 +8,7 @@ from datetime import datetime
 import db_helper
 import settings
 from data_sources.latest_query import get_latest_query
+from data_sources.link_areas import link_areas
 from data_sources.ovfiets.models import OvFiets, OvFietsRaw
 
 log = logging.getLogger(__name__)
@@ -43,22 +44,6 @@ def store_data(raw_data):
 
     log.info("Storing {} OvFiets entries".format(len(stations)))
     session.bulk_insert_mappings(OvFiets, stations)
-    session.commit()
-
-
-UPDATE_STADSDEEL = """
-UPDATE importer_ovfiets tt
-SET stadsdeel = s.code
-FROM (SELECT * from stadsdeel) as s
-WHERE ST_DWithin(s.wkb_geometry, tt.geometrie, 0)
-AND stadsdeel is null
-AND tt.geometrie IS NOT NULL
-"""
-
-
-def link_areas(sql):
-    session = db_helper.session
-    session.execute(sql)
     session.commit()
 
 
@@ -102,13 +87,15 @@ def main(make_engine=True):
         engine = db_helper.make_engine()
         db_helper.set_session(engine)
 
+    session = db_helper.session
+
     if args.link_areas:
-        link_areas(UPDATE_STADSDEEL)
+        link_areas(session, OvFiets.__tablename__)
     else:
         start_import()
 
     log.info("Took: %s", time.time() - start)
-    session = db_helper.session
+
     session.close()
 
 

@@ -31,7 +31,7 @@ fi
 if [ "$WFS" = "yes" ]
 then
    # load current neighborhood data
-   dc run --rm importer python load_wfs_postgres.py https://map.data.amsterdam.nl/maps/gebieden stadsdeel, buurt_simple 4326 --db externaldata
+   dc run --rm importer python load_wfs_postgres.py https://map.data.amsterdam.nl/maps/gebieden stadsdeel,buurt_simple 4326 --db externaldata
 fi
 
 # copy data into final table for serving to django
