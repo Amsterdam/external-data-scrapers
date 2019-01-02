@@ -12,3 +12,5 @@ done
 
 python data_sources/parkeergarages/copy_to_model.py parking_location
 python data_sources/parkeergarages/copy_to_model.py guidance_sign
+python data_sources/parkeergarages/copy_to_model.py parking_location --link_areas
+python data_sources/parkeergarages/copy_to_model.py guidance_sign --link_areas
