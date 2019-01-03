@@ -21,6 +21,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions, routers
 
 from apps.ovfiets import views as ovfiets_views
+from apps.parkeergarages import views as parkeergarages_views
 
 
 class ExternalDataView(routers.APIRootView):
@@ -43,6 +44,12 @@ class ExternalDataRouter(routers.DefaultRouter):
 
 router = ExternalDataRouter()
 router.register(r'ovfiets', ovfiets_views.OvFietsView)
+router.register(r'parkinglocations', parkeergarages_views.ParkingLocationView)
+router.register(r'guidancesigns', parkeergarages_views.GuidanceSignView)
+router.register(
+    r'parkingguidancedisplays',
+    parkeergarages_views.ParkingGuidanceDisplayView
+)
 
 urls = router.urls
 
