@@ -35,11 +35,11 @@ then
 fi
 
 # copy data into final table for serving to django
-dc run --rm importer python data_sources/ovfiets/copy_to_model.py parking_location
-dc run --rm importer python data_sources/ovfiets/copy_to_model.py guidance_sign
+dc run --rm importer python data_sources/parkeergarages/copy_to_model.py parking_location
+dc run --rm importer python data_sources/parkeergarages/copy_to_model.py guidance_sign
 
 # link areas
-dc run --rm importer python data_sources/ovfiets/copy_to_model.py parking_location --link_areas
-dc run --rm importer python data_sources/ovfiets/copy_to_model.py guidance_sign --link_areas
+dc run --rm importer python data_sources/parkeergarages/copy_to_model.py parking_location --link_areas
+dc run --rm importer python data_sources/parkeergarages/copy_to_model.py guidance_sign --link_areas
 
 dc down -v

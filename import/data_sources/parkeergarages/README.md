@@ -36,15 +36,18 @@ python load_wfs_postgres.py https://map.data.amsterdam.nl/maps/gebieden stadsdee
 
 ### Import api instance
 ```
-python data_sources/parkeergarages/slurp.py
+python data_sources/parkeergarages/slurp.py parking_location
+python data_sources/parkeergarages/slurp.py guidance_sign
 ```
 
 ### Cleanup and copy to model
 ```
-python data_sources/parkeergarages/copy_to_model.py
+python data_sources/parkeergarages/copy_to_model.py parking_location
+python data_sources/parkeergarages/copy_to_model.py guidance_sign
 ```
 
 ### Link neighbourhoods
 ```
-python data_sources/parkeergarages/copy_to_model.py --link_areas
+python data_sources/parkeergarages/copy_to_model.py parking_location --link_areas
+python data_sources/parkeergarages/copy_to_model.py guidance_sign --link_areas
 ```
