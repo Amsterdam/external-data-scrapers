@@ -1,5 +1,6 @@
 from datapunt_api.rest import DatapuntViewSet
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 
 from ..filters import StadsdeelFilter
 from .models import GuidanceSign, ParkingGuidanceDisplay, ParkingLocation
@@ -27,9 +28,11 @@ class ParkingLocationView(DatapuntViewSet):
 
     filter_backends = (
         DjangoFilterBackend,
+        OrderingFilter
     )
 
     filterset_class = ParkingLocationFilter
+    ordering_fields = ('pub_date', 'scraped_at')
 
 
 class GuidanceSignFilter(StadsdeelFilter):
@@ -52,9 +55,11 @@ class GuidanceSignView(DatapuntViewSet):
 
     filter_backends = (
         DjangoFilterBackend,
+        OrderingFilter
     )
 
     filterset_class = GuidanceSignFilter
+    ordering_fields = ('pub_date', 'scraped_at')
 
 
 class ParkingGuidanceDisplayView(DatapuntViewSet):
@@ -65,7 +70,8 @@ class ParkingGuidanceDisplayView(DatapuntViewSet):
 
     filter_backends = (
         DjangoFilterBackend,
+        OrderingFilter
     )
 
     filter_fields = ['guidance_sign', 'type', ]
-    ordering_fields = '__all__'
+    ordering_fields = ('pub_date', 'scraped_at')

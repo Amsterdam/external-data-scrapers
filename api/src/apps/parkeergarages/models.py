@@ -20,7 +20,7 @@ class ParkingLocation(models.Model):
     class Meta:
         managed = settings.TESTING
         db_table = 'importer_parkinglocation'
-        ordering = ('pub_date',)
+        ordering = ('-pub_date',)
 
 
 class GuidanceSign(models.Model):
@@ -41,7 +41,7 @@ class GuidanceSign(models.Model):
     class Meta:
         managed = settings.TESTING
         db_table = 'importer_guidancesign'
-        ordering = ('pub_date',)
+        ordering = ('-pub_date',)
 
 
 class ParkingGuidanceDisplay(models.Model):
@@ -62,4 +62,4 @@ class ParkingGuidanceDisplay(models.Model):
     class Meta:
         managed = settings.TESTING
         db_table = 'importer_parkingguidancedisplay'
-        ordering = ('pub_date',)
+        ordering = ('-pub_date',)
