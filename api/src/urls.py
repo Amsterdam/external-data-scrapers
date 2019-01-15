@@ -31,6 +31,7 @@ class ExternalDataView(routers.APIRootView):
     Daily scraped APIs
     ==================
     - OvFiets (every 5 minutes)
+    - Parkeergarages (every 5 minutes)
 
     [github/amsterdam/external-data-scrapers](https://github.com/Amsterdam/external-data-scrapers)
 
