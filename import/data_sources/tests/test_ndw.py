@@ -42,18 +42,16 @@ def teardown_module():
 
 
 class ArgumentParser:
-    link_areas = False
+    debug = True
+    ndw = False
+    thirdparty = False
 
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def parse_args(self):
-        return self
-
-    def add_argument(self, *args, **kwargs):
-        pass
+    def __init__(self, **kwargs):
+        for name in kwargs:
+            setattr(self, name, kwargs[name])
 
 
+@patch("data_sources.ndw.slurp.argparse.ArgumentParser.parse_args")
 class TestDBWriting(unittest.TestCase):
     """Test writing to database."""
     fixture_path = FIX_DIR + "/data_sources/fixtures"
@@ -67,14 +65,32 @@ class TestDBWriting(unittest.TestCase):
         session.close()
         models.Base.metadata.drop_all(bind=engine)
 
-    @patch("data_sources.ndw.slurp.argparse")
-    @patch("data_sources.ndw.slurp.fetch_json")
-    def test_slurp_traveltime(self, fetch_json_mock, s_parse):
-        with open(self.fixture_path + '/traveltime.json') as json_file:
-            json_data = json.loads(json_file.read())
+    @patch("data_sources.ndw.slurp.NDWSlurper.fetch")
+    def test_slurp_traveltime(self, fetch, s_parse):
+        with open(
+                self.fixture_path + '/traveltime.xml.gz', 'rb'
+        ) as gz_xml_file:
+            xml_data = gz_xml_file.read()
 
-        fetch_json_mock.side_effect = [json_data]
+        inputparser = ArgumentParser(ndw=True)
+        s_parse.side_effect = [inputparser]
+
+        fetch.side_effect = [xml_data]
         slurp.main(make_engine=False)
 
         raw_count = session.query(models.TravelTimeRaw).count()
+        self.assertEqual(raw_count, 1)
+
+    @patch("data_sources.ndw.slurp.ThirdPartyNDWSlurper.fetch")
+    def test_slurp_thirdparty_traveltime(self, fetch, s_parse):
+        with open(self.fixture_path + '/traveltime.json') as json_file:
+            json_data = json.loads(json_file.read())
+
+        inputparser = ArgumentParser(thirdparty=True)
+        s_parse.side_effect = [inputparser]
+
+        fetch.side_effect = [json_data]
+        slurp.main(make_engine=False)
+
+        raw_count = session.query(models.ThirdpartyTravelTimeRaw).count()
         self.assertEqual(raw_count, 1)

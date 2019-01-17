@@ -3,7 +3,7 @@ import asyncio
 import logging
 
 from sqlalchemy import TIMESTAMP, Column, Integer
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import BYTEA, JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
 
@@ -15,10 +15,12 @@ LOG = logging.getLogger(__name__)
 
 Base = declarative_base()
 
-OVFIETS_TABLES = [
+NDW_TABLES = [
     # should never be dropped
     # "traveltime_raw",
+    # "thirdparty_traveltime_raw",
     "importer_traveltime",
+    "importer_thirdparty_traveltime",
 ]
 
 
@@ -31,7 +33,7 @@ async def main(args):
     if args.drop:
         # resets everything
         LOG.warning("DROPPING ALL DEFINED TABLES")
-        for table in OVFIETS_TABLES:
+        for table in NDW_TABLES:
             session.execute(f"DROP table if exists {table};")
         session.commit()
 
@@ -40,12 +42,20 @@ async def main(args):
     Base.metadata.create_all(engine)
 
 
+class ThirdpartyTravelTimeRaw(Base):
+    """Raw TravelTime data."""
+    __tablename__ = f"thirdparty_traveltime_raw"
+    id = Column(Integer, Sequence("grl_seq"), primary_key=True)
+    scraped_at = Column(TIMESTAMP, index=True)
+    data = Column(JSONB)
+
+
 class TravelTimeRaw(Base):
     """Raw TravelTime data."""
     __tablename__ = f"traveltime_raw"
     id = Column(Integer, Sequence("grl_seq"), primary_key=True)
     scraped_at = Column(TIMESTAMP, index=True)
-    data = Column(JSONB)
+    data = Column(BYTEA)
 
 
 if __name__ == "__main__":
