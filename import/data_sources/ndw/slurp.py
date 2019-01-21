@@ -63,8 +63,11 @@ def main(make_engine=True):
     if args.ndw:
         NDWSlurper().start_import(make_engine)
 
-    if args.thirdparty:
+    elif args.thirdparty:
         ThirdPartyNDWSlurper().start_import(make_engine)
+
+    else:
+        raise Exception("No arguments given")
 
     log.info("Took: %s", time.time() - start)
 

@@ -2,7 +2,8 @@ import argparse
 import asyncio
 import logging
 
-from sqlalchemy import TIMESTAMP, Column, Integer
+from geoalchemy2 import Geometry
+from sqlalchemy import TIMESTAMP, Boolean, Column, Float, Integer, String
 from sqlalchemy.dialects.postgresql import BYTEA, JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
@@ -56,6 +57,36 @@ class TravelTimeRaw(Base):
     id = Column(Integer, Sequence("grl_seq"), primary_key=True)
     scraped_at = Column(TIMESTAMP, index=True)
     data = Column(BYTEA)
+
+
+class ThirdpartyTravelTime(Base):
+    """Cleaned up TravelTime data."""
+    __tablename__ = f"importer_thirdparty_traveltime"
+    id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
+    measurement_site_reference = Column(String)
+    name = Column(String(255))
+    type = Column(String(length=2))
+    length = Column(Integer)
+    geometrie = Column(Geometry('LineString', srid=4326))
+    timestamp = Column(TIMESTAMP, index=True)
+    scraped_at = Column(TIMESTAMP, index=True)
+
+
+class TravelTime(Base):
+    """Imported xml data from ndw datasource"""
+    __tablename__ = f"importer_traveltime"
+    id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
+    measurement_site_reference = Column(String(length=255), index=True)
+
+    computational_method = Column(String(length=255), nullable=True)
+    number_of_incomplete_input = Column(Integer)
+    number_of_input_values_used = Column(Integer)
+    standard_deviation = Column(Float)
+    supplier_calculated_data_quality = Column(Float)
+    duration = Column(Float)
+    data_error = Column(Boolean)
+    measurement_time = Column(TIMESTAMP, index=True)
+    scraped_at = Column(TIMESTAMP, index=True)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import patch
 
 import db_helper
-from data_sources.ndw import models, slurp
+from data_sources.ndw import copy_to_model, models, slurp
 from settings import BASE_DIR, TESTING
 
 log = logging.getLogger(__name__)
@@ -94,3 +94,42 @@ class TestDBWriting(unittest.TestCase):
 
         raw_count = session.query(models.ThirdpartyTravelTimeRaw).count()
         self.assertEqual(raw_count, 1)
+
+    @patch("data_sources.ndw.slurp.NDWSlurper.fetch")
+    def test_copy_traveltime(self, fetch, s_parse):
+        with open(
+                self.fixture_path + '/traveltime.xml.gz', 'rb'
+        ) as gz_xml_file:
+            xml_data = gz_xml_file.read()
+
+        inputparser = ArgumentParser(ndw=True)
+        s_parse.side_effect = [inputparser]
+        fetch.side_effect = [xml_data]
+        slurp.main(make_engine=False)
+
+        copy_to_model.start_import(
+            copy_to_model.store_ndw,
+            models.TravelTimeRaw,
+            "importer_traveltime"
+        )
+        raw_count = session.query(models.TravelTime).count()
+        self.assertEqual(raw_count, 1)
+
+    @patch("data_sources.ndw.slurp.ThirdPartyNDWSlurper.fetch")
+    def test_copy_thirdparty_traveltime(self, fetch, s_parse):
+        with open(self.fixture_path + '/traveltime.json') as json_file:
+            json_data = json.loads(json_file.read())
+
+        inputparser = ArgumentParser(thirdparty=True)
+
+        s_parse.side_effect = [inputparser]
+        fetch.side_effect = [json_data]
+        slurp.main(make_engine=False)
+
+        copy_to_model.start_import(
+            copy_to_model.store_thirdparty,
+            models.ThirdpartyTravelTimeRaw,
+            "importer_thirdparty_traveltime"
+        )
+        raw_count = session.query(models.ThirdpartyTravelTime).count()
+        self.assertEqual(raw_count, 3)

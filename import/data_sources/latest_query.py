@@ -5,11 +5,12 @@ def get_latest_query(session, raw_model, model):
     fetching the data to allow further statements to be added
     like 'offset' and 'limit'
     """
-    latest = (
-        session.query(model)
-        .order_by(model.scraped_at.desc())
-        .first()
-    )
+    model = model if isinstance(model, str) else model.__table__.name
+
+    latest = session.execute(
+        f'SELECT scraped_at FROM {model} ORDER bY scraped_at DESC LIMIT 1;'
+    ).first()
+
     if latest:
         # update since api
         return (

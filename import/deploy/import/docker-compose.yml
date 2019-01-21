@@ -11,6 +11,7 @@ services:
       DATABASE_OVERRIDE_USER: externaldata
       DATABASE_OVERRIDE_PORT: 5432
       DATABASE_OVERRIDE_PASSWORD: 
+      IMPORT_LIMIT:
       DROP:
       WFS:
       PYTHONPATH: "/app"
