@@ -1,15 +1,24 @@
 # External data scrapers
 
-This repo contains Scrapers that are intended to be used by several projects.
+External data scrapers is a REST api that contains data scraped from different data sources.
+The api is intended to be used by different projects without the need for each one to create their
+own scraper. For this reason, the name is generic.
 
-The import directory contains the Scrapers.
+## Structure
 
-The api directory contains the REST api.
+# api directory 
+Django project with Django rest framework. Exposes the data scraped.
 
-## Currently Scraped APIs
+# import 
+Python project with slurp (retrieve from data source) and copy_to_model (cleanup and copy to new table) scripts. Uses sql alchemy for the database models.
+
+## Currently Scraped Data sources
 
 - OvFiets
 - Parkeergarages
+- NDW (Traveltime)
+
+(NDW: Nationale Databank Wegverkeersgegevens)
 
 ## Running using Docker
 

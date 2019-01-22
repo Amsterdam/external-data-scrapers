@@ -24,7 +24,6 @@ export PYTHONPATH=.
 python data_sources/ovfiets/models.py
 ```
 
-
 ### Load wfs data (neighbourhoods)
 
 ```

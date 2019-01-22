@@ -70,6 +70,7 @@ LOCAL_APPS = [
     'apps.ovfiets',
     'apps.parkeergarages',
     'apps.ov',
+    'apps.ndw',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
