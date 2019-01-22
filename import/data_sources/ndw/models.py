@@ -68,6 +68,8 @@ class ThirdpartyTravelTime(Base):
     type = Column(String(length=2))
     length = Column(Integer)
     geometrie = Column(Geometry('LineString', srid=4326))
+    traveltime = Column(Integer, nullable=True)
+    velocity = Column(Integer, nullable=True)
     timestamp = Column(TIMESTAMP, index=True)
     scraped_at = Column(TIMESTAMP, index=True)
 

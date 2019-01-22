@@ -52,9 +52,7 @@ def store_ndw(raw_data):
             data_error = trvt.find('def:dataError', ns)
             data_error = data_error.text == 'true' if data_error else False
 
-            computational_method = trvt.attrib.get(
-                'computationalMethod', 'null'
-            )
+            computational_method = trvt.attrib.get('computationalMethod')
             supplier_calculated_data_quality = float(
                 trvt.attrib.get('supplierCalculatedDataQuality', -1)
             )
@@ -80,7 +78,7 @@ def store_ndw(raw_data):
                 timestamp,
                 str(datetime.datetime.now())
             )
-            traveltime_list.append(str(traveltime))
+            traveltime_list.append(str(traveltime).replace('None', 'null'))
 
     session = db_helper.session
     log.info("Storing {} TravelTime entries".format(len(traveltime_list)))
@@ -105,9 +103,11 @@ def store_thirdparty(raw_data):
                 props['Timestamp'],
                 props['Length'],
                 geometrie,
-                str(row.scraped_at)
+                str(row.scraped_at),
+                props.get('Velocity'),
+                props.get('Traveltime')
             )
-            traveltime_list.append(str(traveltime))
+            traveltime_list.append(str(traveltime).replace('None', 'null'))
 
     log.info("Storing {} TravelTime entries".format(len(traveltime_list)))
     session.execute(
@@ -149,7 +149,9 @@ INSERT INTO importer_thirdparty_traveltime (
     timestamp,
     length,
     geometrie,
-    scraped_at
+    scraped_at,
+    velocity,
+    traveltime
 )
 VALUES {}
 """
