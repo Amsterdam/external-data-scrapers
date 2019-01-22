@@ -1,10 +1,11 @@
 # pylint:disable=E1101
 # pylint: disable=unbalanced-tuple-unpacking
-import zmq
-import gzip
-import time
 import logging
+import time
+
+import zmq
 from django.core.management.base import BaseCommand
+
 from apps.ov.models import OvRaw
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
