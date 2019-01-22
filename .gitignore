@@ -44,3 +44,6 @@ htmlcov
 # Downloaded intersphinx inventory files:
 /docs/*.inv
 /docs/*.inv.txt
+
+#visual studio code
+.vscode
