@@ -1,13 +1,7 @@
 # pylint:disable=E1101
 # pylint: disable=unbalanced-tuple-unpacking
-<<<<<<< HEAD
-=======
-import zmq
 import time
->>>>>>> Added kv6client unitest and graceful exits
 import logging
-import time
-
 import zmq
 from django.core.management.base import BaseCommand
 
