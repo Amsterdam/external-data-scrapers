@@ -1,6 +1,5 @@
-# from django.conf import settings
-# from django.contrib.postgres.fields import JSONField
 from django.contrib.gis.db import models
+from django.contrib.gis.db.models import PointField
 
 
 # Create your models here.
@@ -45,20 +44,21 @@ class OvKv6(models.Model):
     message = models.DateTimeField()
     vehicle = models.DateTimeField()
     messagetype = models.CharField(max_length=255)
-    operatingday = models.DateField()
+    operatingday = models.DateField(db_index=True)
     dataownercode = models.CharField(max_length=255)
     lineplanningnumber = models.CharField(max_length=255)
     journeynumber = models.IntegerField(),
-    reinforcementnumber = models.SmallIntegerField()
-    userstopcode = models.CharField(max_length=255)
-    passagesequencenumber = models.SmallIntegerField()
-    distancesincelastuserstop = models.IntegerField()
-    punctuality = models.IntegerField()
-    rd_x = models.IntegerField()
-    rd_y = models.IntegerField()
-    blockcode = models.IntegerField()
-    vehiclenumber = models.IntegerField()
-    wheelchairaccessible = models.CharField(max_length=255)
+    reinforcementnumber = models.SmallIntegerField(null=True)
+    userstopcode = models.CharField(null=True, max_length=255)
+    passagesequencenumber = models.SmallIntegerField(null=True)
+    distancesincelastuserstop = models.IntegerField(null=True)
+    punctuality = models.IntegerField(null=True)
+    rd_x = models.IntegerField(null=True)
+    rd_y = models.IntegerField(null=True)
+    blockcode = models.IntegerField(null=True)
+    vehiclenumber = models.IntegerField(null=True)
+    wheelchairaccessible = models.CharField(null=True, max_length=255)
     source = models.CharField(max_length=255)
-    numberofcoaches = models.SmallIntegerField(),
-    trip_hash = models.BigIntegerField()
+    numberofcoaches = models.SmallIntegerField(null=True),
+    trip_hash = models.BigIntegerField(null=True)
+    geo_location = PointField(srid=28992, null=True)

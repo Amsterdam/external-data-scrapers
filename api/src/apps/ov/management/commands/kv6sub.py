@@ -1,19 +1,24 @@
 # pylint:disable=E1101
 # pylint: disable=unbalanced-tuple-unpacking
-import time
+import gzip
 import logging
-import zmq
-from django.core.management.base import BaseCommand
+import time
+from datetime import datetime
 
-from apps.ov.models import OvRaw
+import zmq
+from dateutil.tz import tzlocal
+from django.core.management.base import BaseCommand
 from django.db import connection
+
+from apps.ov.bulk_inserter import bulk_inserter
+from apps.ov.kv6xml import Kv6XMLProcessor
+from apps.ov.models import OvRaw
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+log.setLevel(logging.ERROR)
 KV6KEY = "KV6posinfo"
 PUBLISHER = "tcp://pubsub.besteffort.ndovloket.nl:7658"
-# PUBLISHER = "tcp://localhost:7659"
 TIMEOUTMS = 60
 
 
@@ -23,6 +28,8 @@ class KV6Client(object):
         self.context = zmq.Context()
         self.sock = None
         self.publisher = publisher
+        self.inserter = bulk_inserter(table=OvRaw, batch_size=10)
+        self.postproc = Kv6XMLProcessor()
 
     def __del__(self):
         if self.sock is not None:
@@ -57,7 +64,10 @@ class KV6Client(object):
                 log.info(f'{envelop} received')
                 if KV6KEY in envelop:
                     record = OvRaw(feed=envelop, xml=contents)
-                    record.save()
+                    self.inserter.add(record)
+                    decompressed = gzip.decompress(record.xml).decode('utf-8')
+                    now = datetime.now(tzlocal())
+                    self.postproc.process(now, decompressed)
                 else:
                     log.info(f'Skipping envelop {envelop}')
             # Timed out, close connection and try to reconnect.
@@ -86,9 +96,9 @@ class KV6Client(object):
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument('url', type=str)
+        parser.add_argument('url', type=str, nargs='?')
 
     def handle(self, *args, **options):
         addr = None if 'url' not in options else options['url']
-        client = KV6Client(addr)
+        client = KV6Client() if addr is None else KV6Client(addr)
         client.subscribe_and_process()
