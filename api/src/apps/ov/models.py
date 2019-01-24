@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.gis.db.models import PointField
 
+
 # Create your models here.
 class OvRaw(models.Model):
     id = models.BigAutoField(primary_key=True)

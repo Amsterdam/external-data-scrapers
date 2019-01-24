@@ -1,12 +1,15 @@
-from django.test import TestCase
-import zmq
-import time
 import gzip
-import threading
 import logging
+import threading
+import time
+
+import zmq
+from django.test import TestCase
+
+from apps.ov.management.commands.kv6sub import KV6Client
 # import gc
 from apps.ov.models import OvRaw
-from apps.ov.management.commands.kv6sub import KV6Client
+
 # Create your tests here.
 PORT = 9999
 ADDR = f'tcp://127.0.0.1:{PORT}'

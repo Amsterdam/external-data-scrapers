@@ -1,16 +1,18 @@
 # pylint:disable=E1101
 # pylint: disable=unbalanced-tuple-unpacking
-import time
 import gzip
 import logging
-import zmq
+import time
 from datetime import datetime
+
+import zmq
 from dateutil.tz import tzlocal
 from django.core.management.base import BaseCommand
+from django.db import connection
+
 from apps.ov.bulk_inserter import bulk_inserter
 from apps.ov.kv6xml import Kv6XMLProcessor
 from apps.ov.models import OvRaw
-from django.db import connection
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)

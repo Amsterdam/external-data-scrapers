@@ -1,9 +1,11 @@
-from django.db import models
-from apps.ov.models import OvKv6
-from apps.ov.bulk_inserter import bulk_inserter
-from django.contrib.gis.geos import Point
-import xml.etree.ElementTree as ET
 import logging
+import xml.etree.ElementTree as ET
+
+from django.contrib.gis.geos import Point
+from django.db import models
+
+from apps.ov.bulk_inserter import bulk_inserter
+from apps.ov.models import OvKv6
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
