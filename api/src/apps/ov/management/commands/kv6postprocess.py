@@ -1,6 +1,6 @@
 from apps.ov.models import OvRaw
 from django.core.management.base import BaseCommand
-from apps.ov.management.commands.kv6xml import Kv6XMLProcessor
+from apps.ov.kv6xml import Kv6XMLProcessor
 import gzip
 import logging
 

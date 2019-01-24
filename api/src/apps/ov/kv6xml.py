@@ -1,6 +1,6 @@
 from django.db import models
 from apps.ov.models import OvKv6
-from apps.ov.management.commands.bulk_inserter import bulk_inserter
+from apps.ov.bulk_inserter import bulk_inserter
 from django.contrib.gis.geos import Point
 import xml.etree.ElementTree as ET
 import logging

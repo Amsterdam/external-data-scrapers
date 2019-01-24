@@ -7,8 +7,8 @@ import zmq
 from datetime import datetime
 from dateutil.tz import tzlocal
 from django.core.management.base import BaseCommand
-from apps.ov.management.commands.bulk_inserter import bulk_inserter
-from apps.ov.management.commands.kv6xml import Kv6XMLProcessor
+from apps.ov.bulk_inserter import bulk_inserter
+from apps.ov.kv6xml import Kv6XMLProcessor
 from apps.ov.models import OvRaw
 from django.db import connection
 
