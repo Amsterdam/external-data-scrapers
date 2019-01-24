@@ -14,7 +14,7 @@ from django.db import connection
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+log.setLevel(logging.ERROR)
 KV6KEY = "KV6posinfo"
 PUBLISHER = "tcp://pubsub.besteffort.ndovloket.nl:7658"
 TIMEOUTMS = 60

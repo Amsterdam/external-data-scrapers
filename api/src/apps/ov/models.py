@@ -1,7 +1,5 @@
-# from django.conf import settings
-# from django.contrib.postgres.fields import JSONField
 from django.contrib.gis.db import models
-
+from django.contrib.gis.db.models import PointField
 
 # Create your models here.
 class OvRaw(models.Model):
@@ -50,7 +48,7 @@ class OvKv6(models.Model):
     lineplanningnumber = models.CharField(max_length=255)
     journeynumber = models.IntegerField(),
     reinforcementnumber = models.SmallIntegerField(null=True)
-    userstopcode = models.CharField(max_length=255)
+    userstopcode = models.CharField(null=True, max_length=255)
     passagesequencenumber = models.SmallIntegerField(null=True)
     distancesincelastuserstop = models.IntegerField(null=True)
     punctuality = models.IntegerField(null=True)
@@ -62,3 +60,4 @@ class OvKv6(models.Model):
     source = models.CharField(max_length=255)
     numberofcoaches = models.SmallIntegerField(null=True),
     trip_hash = models.BigIntegerField(null=True)
+    geo_location = PointField(srid=28992, null=True)

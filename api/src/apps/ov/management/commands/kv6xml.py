@@ -1,6 +1,7 @@
 from django.db import models
 from apps.ov.models import OvKv6
 from apps.ov.management.commands.bulk_inserter import bulk_inserter
+from django.contrib.gis.geos import Point
 import xml.etree.ElementTree as ET
 import logging
 
@@ -16,7 +17,9 @@ class Kv6XMLProcessor(object):
         # define override for tags
         # timestamp should map to vehicle
         self.overrides = {
-            'timestamp': 'vehicle'
+            'timestamp': 'vehicle',
+            'rd-x': 'rd_x',
+            'rd-y': 'rd_y',
         }
         self.inserter = bulk_inserter(table=OvKv6, batch_size=100)
 
@@ -37,6 +40,11 @@ class Kv6XMLProcessor(object):
         except models.FieldDoesNotExist:
             pass
 
+    def augment_location(self, rec):
+        if rec.rd_x is not None and rec.rd_y is not None:
+            rec.geo_location = Point(x=float(rec.rd_x),
+                                     y=float(rec.rd_y), srid=28992)
+
     def process(self, received_time, xml):
         try:
             tree = ET.ElementTree(ET.fromstring(xml))
@@ -55,6 +63,8 @@ class Kv6XMLProcessor(object):
                     # map record fields with event data on name/tag
                     for eventdata in event:
                         self.set_if_exists(record, eventdata)
+                    # convert rd_x and rd_y to geo location if present
+                    self.augment_location(record)
                     self.inserter.add(record)
         except Exception as e:
             log.error(e)
