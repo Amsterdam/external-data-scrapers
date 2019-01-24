@@ -15,7 +15,7 @@ PORT = 9999
 ADDR = f'tcp://127.0.0.1:{PORT}'
 TOPIC = b'/GVB/KV6posinfo'
 XML = b'''<?xml version="1.0" encoding="utf-8"?>
-<VV_TM_PUSH xmlns:tmi8c="http://bison.connekt.nl/tmi8/kv6/core" 
+<VV_TM_PUSH xmlns:tmi8c="http://bison.connekt.nl/tmi8/kv6/core"
     xmlns="http://bison.connekt.nl/tmi8/kv6/msg">
     <SubscriberID>GOVI-SubscriberId</SubscriberID>
     <Version>BISON 8.1.0.0</Version>
