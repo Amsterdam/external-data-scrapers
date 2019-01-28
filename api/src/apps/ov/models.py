@@ -47,7 +47,7 @@ class OvKv6(models.Model):
     operatingday = models.DateField(db_index=True)
     dataownercode = models.CharField(max_length=255)
     lineplanningnumber = models.CharField(max_length=255)
-    journeynumber = models.IntegerField(),
+    journeynumber = models.IntegerField(null=True)
     reinforcementnumber = models.SmallIntegerField(null=True)
     userstopcode = models.CharField(null=True, max_length=255)
     passagesequencenumber = models.SmallIntegerField(null=True)
@@ -59,6 +59,6 @@ class OvKv6(models.Model):
     vehiclenumber = models.IntegerField(null=True)
     wheelchairaccessible = models.CharField(null=True, max_length=255)
     source = models.CharField(max_length=255)
-    numberofcoaches = models.SmallIntegerField(null=True),
+    numberofcoaches = models.SmallIntegerField(null=True)
     trip_hash = models.BigIntegerField(null=True)
     geo_location = PointField(srid=28992, null=True)
