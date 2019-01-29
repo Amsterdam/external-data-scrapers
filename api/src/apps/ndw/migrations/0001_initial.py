@@ -2,6 +2,7 @@
 
 import django.contrib.gis.db.models.fields
 from django.db import migrations, models
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -47,6 +48,7 @@ class Migration(migrations.Migration):
             options={
                 'db_table': 'importer_traveltime',
                 'ordering': ('-scraped_at',),
+                'managed': settings.TESTING,
             },
         ),
     ]
