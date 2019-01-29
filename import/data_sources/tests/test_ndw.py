@@ -1,4 +1,3 @@
-import json
 import logging
 import unittest
 from unittest.mock import patch
@@ -43,8 +42,6 @@ def teardown_module():
 
 class ArgumentParser:
     debug = True
-    ndw = False
-    thirdparty = False
 
     def __init__(self, **kwargs):
         for name in kwargs:
@@ -52,6 +49,7 @@ class ArgumentParser:
 
 
 @patch("data_sources.ndw.slurp.argparse.ArgumentParser.parse_args")
+@patch("data_sources.ndw.slurp.NDWSlurper.fetch")
 class TestDBWriting(unittest.TestCase):
     """Test writing to database."""
     fixture_path = FIX_DIR + "/data_sources/fixtures"
@@ -65,7 +63,6 @@ class TestDBWriting(unittest.TestCase):
         session.close()
         models.Base.metadata.drop_all(bind=engine)
 
-    @patch("data_sources.ndw.slurp.NDWSlurper.fetch")
     def test_slurp_traveltime(self, fetch, s_parse):
         with open(
                 self.fixture_path + '/traveltime.xml.gz', 'rb'
@@ -81,21 +78,6 @@ class TestDBWriting(unittest.TestCase):
         raw_count = session.query(models.TravelTimeRaw).count()
         self.assertEqual(raw_count, 1)
 
-    @patch("data_sources.ndw.slurp.ThirdPartyNDWSlurper.fetch")
-    def test_slurp_thirdparty_traveltime(self, fetch, s_parse):
-        with open(self.fixture_path + '/traveltime.json') as json_file:
-            json_data = json.loads(json_file.read())
-
-        inputparser = ArgumentParser(thirdparty=True)
-        s_parse.side_effect = [inputparser]
-
-        fetch.side_effect = [json_data]
-        slurp.main(make_engine=False)
-
-        raw_count = session.query(models.ThirdpartyTravelTimeRaw).count()
-        self.assertEqual(raw_count, 1)
-
-    @patch("data_sources.ndw.slurp.NDWSlurper.fetch")
     def test_copy_traveltime(self, fetch, s_parse):
         with open(
                 self.fixture_path + '/traveltime.xml.gz', 'rb'
@@ -114,22 +96,3 @@ class TestDBWriting(unittest.TestCase):
         )
         raw_count = session.query(models.TravelTime).count()
         self.assertEqual(raw_count, 1)
-
-    @patch("data_sources.ndw.slurp.ThirdPartyNDWSlurper.fetch")
-    def test_copy_thirdparty_traveltime(self, fetch, s_parse):
-        with open(self.fixture_path + '/traveltime.json') as json_file:
-            json_data = json.loads(json_file.read())
-
-        inputparser = ArgumentParser(thirdparty=True)
-
-        s_parse.side_effect = [inputparser]
-        fetch.side_effect = [json_data]
-        slurp.main(make_engine=False)
-
-        copy_to_model.start_import(
-            copy_to_model.store_thirdparty,
-            models.ThirdpartyTravelTimeRaw,
-            "importer_thirdparty_traveltime"
-        )
-        raw_count = session.query(models.ThirdpartyTravelTime).count()
-        self.assertEqual(raw_count, 3)

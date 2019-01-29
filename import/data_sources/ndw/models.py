@@ -2,9 +2,8 @@ import argparse
 import asyncio
 import logging
 
-from geoalchemy2 import Geometry
 from sqlalchemy import TIMESTAMP, Boolean, Column, Float, Integer, String
-from sqlalchemy.dialects.postgresql import BYTEA, JSONB
+from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
 
@@ -43,35 +42,12 @@ async def main(args):
     Base.metadata.create_all(engine)
 
 
-class ThirdpartyTravelTimeRaw(Base):
-    """Raw TravelTime data."""
-    __tablename__ = f"thirdparty_traveltime_raw"
-    id = Column(Integer, Sequence("grl_seq"), primary_key=True)
-    scraped_at = Column(TIMESTAMP, index=True)
-    data = Column(JSONB)
-
-
 class TravelTimeRaw(Base):
     """Raw TravelTime data."""
     __tablename__ = f"traveltime_raw"
     id = Column(Integer, Sequence("grl_seq"), primary_key=True)
     scraped_at = Column(TIMESTAMP, index=True)
     data = Column(BYTEA)
-
-
-class ThirdpartyTravelTime(Base):
-    """Cleaned up TravelTime data."""
-    __tablename__ = f"importer_thirdparty_traveltime"
-    id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
-    measurement_site_reference = Column(String)
-    name = Column(String(255))
-    type = Column(String(length=2))
-    length = Column(Integer)
-    geometrie = Column(Geometry('LineString', srid=4326))
-    traveltime = Column(Integer, nullable=True)
-    velocity = Column(Integer, nullable=True)
-    timestamp = Column(TIMESTAMP, index=True)
-    scraped_at = Column(TIMESTAMP, index=True)
 
 
 class TravelTime(Base):
