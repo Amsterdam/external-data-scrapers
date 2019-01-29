@@ -10,3 +10,5 @@ done
 
 export IMPORT_LIMIT=10
 python data_sources/ndw/copy_to_model.py 
+python data_sources/ndw/copy_to_model.py --link_shapefile
+python data_sources/ndw/copy_to_model.py --link_areas

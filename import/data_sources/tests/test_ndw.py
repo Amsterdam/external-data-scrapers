@@ -89,10 +89,6 @@ class TestDBWriting(unittest.TestCase):
         fetch.side_effect = [xml_data]
         slurp.main(make_engine=False)
 
-        copy_to_model.start_import(
-            copy_to_model.store_ndw,
-            models.TravelTimeRaw,
-            "importer_traveltime"
-        )
+        copy_to_model.start_import()
         raw_count = session.query(models.TravelTime).count()
         self.assertEqual(raw_count, 1)

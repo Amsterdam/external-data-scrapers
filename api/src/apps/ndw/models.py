@@ -15,6 +15,9 @@ class TravelTime(models.Model):
     data_error = models.NullBooleanField()
     measurement_time = models.DateTimeField()
     scraped_at = models.DateTimeField()
+    geometrie = models.LineStringField(name='geometrie', srid=4326, null=True)
+    stadsdeel = models.CharField(max_length=1)
+    buurt_code = models.CharField(max_length=10)
 
     class Meta:
         db_table = 'importer_traveltime'
