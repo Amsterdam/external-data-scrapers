@@ -3,7 +3,7 @@
 import gzip
 import logging
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import zmq
 from dateutil.tz import tzlocal
@@ -30,6 +30,7 @@ class KV6Client(object):
         self.publisher = publisher
         self.inserter = bulk_inserter(table=OvRaw, batch_size=10)
         self.postproc = Kv6XMLProcessor()
+        self.next_refresh = None
 
     def __del__(self):
         if self.sock is not None:
@@ -49,9 +50,15 @@ class KV6Client(object):
             log.error(err)
             return False
 
+    def check_refresh(self):
+        if self.next_refresh is None or self.next_refresh <= datetime.now():
+            self.postproc.refresh_stops()
+            self.next_refresh = datetime.now() + timedelta(days=1)
+
     def message_loop(self):
         while True:
             try:
+                self.check_refresh()
                 if self.stop:
                     # we need to close the connection within the
                     # thread, else it will be kept alive

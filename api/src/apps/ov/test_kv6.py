@@ -7,8 +7,10 @@ import zmq
 from django.test import TestCase
 
 from apps.ov.management.commands.kv6sub import KV6Client
+from apps.ov.management.commands.loadstops import Importer
 # import gc
 from apps.ov.models import OvRaw
+from config.settings import BASE_DIR
 
 # Create your tests here.
 PORT = 9999
@@ -30,7 +32,7 @@ XML = b'''<?xml version="1.0" encoding="utf-8"?>
             <reinforcementnumber>0</reinforcementnumber>
             <timestamp>2019-01-24T15:36:39+01:00</timestamp>
             <source>VEHICLE</source>
-            <userstopcode>54160110</userstopcode>
+            <userstopcode>05065</userstopcode>
             <passagesequencenumber>0</passagesequencenumber>
             <vehiclenumber>4962</vehiclenumber>
             <rd-x>81434</rd-x>
@@ -42,7 +44,7 @@ XML = b'''<?xml version="1.0" encoding="utf-8"?>
             <operatingday>2019-01-24</operatingday>
             <journeynumber>87</journeynumber>
             <reinforcementnumber>0</reinforcementnumber>
-            <userstopcode>54260310</userstopcode>
+            <userstopcode>03099</userstopcode>
             <passagesequencenumber>0</passagesequencenumber>
             <timestamp>2019-01-24T15:36:36+01:00</timestamp>
             <source>VEHICLE</source>
@@ -138,6 +140,9 @@ class MockKv6Client(object):
 
 class Kv6Tests(TestCase):
     def setUp(self):
+        # load stations
+        importer = Importer(BASE_DIR + '/apps/ov/fixture/stops.csv')
+        importer.import_csv()
         self.server = MockZmqServer()
         self.client = MockKv6Client()
 

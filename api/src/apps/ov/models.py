@@ -62,3 +62,9 @@ class OvKv6(models.Model):
     numberofcoaches = models.SmallIntegerField(null=True)
     trip_hash = models.BigIntegerField(null=True)
     geo_location = PointField(srid=28992, null=True)
+
+
+class OvStop(models.Model):
+    id = models.CharField(max_length=255, primary_key=True)
+    name = models.CharField(max_length=255)
+    geo_location = PointField()
