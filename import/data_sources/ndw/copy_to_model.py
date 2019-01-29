@@ -126,14 +126,15 @@ def main(make_engine=True):
     desc = "Clean data and import into db."
     inputparser = argparse.ArgumentParser(desc)
 
-    args = inputparser.parse_args()
-
     inputparser.add_argument(
         "--debug",
         action="store_true",
         default=False,
         help="Enable debugging"
     )
+
+    args = inputparser.parse_args()
+
     if args.debug:
         log.setLevel(logging.DEBUG)
 
