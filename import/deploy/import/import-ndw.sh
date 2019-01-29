@@ -35,6 +35,6 @@ then
 fi
 
 # copy data into final table for serving to django
-dc run --rm importer python data_sources/ndw/copy_to_model.py --ndw
+dc run --rm importer python data_sources/ndw/copy_to_model.py
 
 dc down -v

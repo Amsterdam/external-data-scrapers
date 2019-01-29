@@ -20,6 +20,6 @@ dc pull
 dc build
 
 # Slurp ovfiets
-dc run --rm importer python data_sources/ndw/slurp.py --ndw
+dc run --rm importer python data_sources/ndw/slurp.py
 
 dc down -v
