@@ -34,7 +34,6 @@ class ExternalDataView(routers.APIRootView):
     - OvFiets (every 5 minutes)
     - Parkeergarages (every 5 minutes)
     - NDW Traveltime (every 30 minutes)
-    - Thirdparty NDW Traveltime (every 30 minutes)
 
     [github/amsterdam/external-data-scrapers](https://github.com/Amsterdam/external-data-scrapers)
 
@@ -54,7 +53,6 @@ router.register(
     r'parkingguidancedisplays',
     parkeergarages_views.ParkingGuidanceDisplayView
 )
-router.register(r'thirdpartytraveltime', ndw_views.ThirdpartyTravelTimeView)
 router.register(r'traveltime', ndw_views.TravelTimeView)
 
 urls = router.urls

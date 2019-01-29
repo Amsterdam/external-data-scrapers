@@ -20,18 +20,3 @@ class TravelTime(models.Model):
         db_table = 'importer_traveltime'
         managed = settings.TESTING
         ordering = ('-scraped_at',)
-
-
-class ThirdpartyTravelTime(models.Model):
-    measurement_site_reference = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
-    type = models.CharField(max_length=2)
-    length = models.IntegerField()
-    geometrie = models.LineStringField(name="geometrie", srid=4326, null=True)
-    timestamp = models.DateTimeField()
-    scraped_at = models.DateTimeField()
-
-    class Meta:
-        db_table = "importer_thirdparty_traveltime"
-        managed = settings.TESTING
-        ordering = ('-scraped_at', )

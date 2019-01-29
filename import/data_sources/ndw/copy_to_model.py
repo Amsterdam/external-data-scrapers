@@ -10,7 +10,7 @@ import db_helper
 import settings
 from data_sources.latest_query import get_latest_query
 # from data_sources.link_areas import link_areas
-from data_sources.ndw.models import ThirdpartyTravelTimeRaw, TravelTimeRaw
+from data_sources.ndw.models import TravelTimeRaw
 
 log = logging.getLogger(__name__)
 
@@ -87,36 +87,6 @@ def store_ndw(raw_data):
     session.close()
 
 
-def store_thirdparty(raw_data):
-    session = db_helper.session
-
-    traveltime_list = []
-    for row in raw_data:
-        for route in row.data['features']:
-            geometrie = make_geometrie(route['geometry']['coordinates'])
-            props = route['properties']
-
-            traveltime = (
-                props['Id'],
-                props['Name'],
-                props['Type'],
-                props['Timestamp'],
-                props['Length'],
-                geometrie,
-                str(row.scraped_at),
-                props.get('Velocity'),
-                props.get('Traveltime')
-            )
-            traveltime_list.append(str(traveltime).replace('None', 'null'))
-
-    log.info("Storing {} TravelTime entries".format(len(traveltime_list)))
-    session.execute(
-        INSERT_THIRDPARTY_TRAVELTIME.format(', '.join(traveltime_list))
-    )
-    session.commit()
-    session.close()
-
-
 def start_import(store_func, raw_model, clean_model):
     """
     Importing the data is done in batches to avoid
@@ -141,21 +111,6 @@ def start_import(store_func, raw_model, clean_model):
             run = False
 
 
-INSERT_THIRDPARTY_TRAVELTIME = """
-INSERT INTO importer_thirdparty_traveltime (
-    measurement_site_reference,
-    name,
-    type,
-    timestamp,
-    length,
-    geometrie,
-    scraped_at,
-    velocity,
-    traveltime
-)
-VALUES {}
-"""
-
 INSERT_TRAVELTIME = """
 INSERT INTO importer_traveltime (
 measurement_site_reference, computational_method, number_of_incomplete_input,
@@ -171,21 +126,16 @@ def main(make_engine=True):
     desc = "Clean data and import into db."
     inputparser = argparse.ArgumentParser(desc)
 
-    inputparser.add_argument(
-        "--ndw",
-        action="store_true",
-        default=False,
-        help="Slurp ndw"
-    )
-
-    inputparser.add_argument(
-        "--thirdparty",
-        action="store_true",
-        default=False,
-        help="Slurp thirdparty"
-    )
-
     args = inputparser.parse_args()
+
+    inputparser.add_argument(
+        "--debug",
+        action="store_true",
+        default=False,
+        help="Enable debugging"
+    )
+    if args.debug:
+        log.setLevel(logging.DEBUG)
 
     start = time.time()
 
@@ -193,19 +143,11 @@ def main(make_engine=True):
         engine = db_helper.make_engine()
         db_helper.set_session(engine)
 
-    if args.ndw:
-        start_import(
-            store_ndw,
-            TravelTimeRaw,
-            "importer_traveltime"
-        )
-
-    elif args.thirdparty:
-        start_import(
-            store_thirdparty,
-            ThirdpartyTravelTimeRaw,
-            "importer_thirdparty_traveltime"
-        )
+    start_import(
+        store_ndw,
+        TravelTimeRaw,
+        "importer_traveltime"
+    )
 
     log.info("Took: %s", time.time() - start)
 

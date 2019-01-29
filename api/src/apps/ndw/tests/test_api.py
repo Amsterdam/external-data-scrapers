@@ -7,12 +7,10 @@ class BrowseDatasetsTestCase(APITestCase):
 
     datasets = [
         "externaldata/traveltime",
-        "externaldata/thirdpartytraveltime",
     ]
 
     def setUp(self):
         self.o = factories.TravelTimeFactory()
-        self.i = factories.ThirdpartyTravelTimeFactory()
 
     def valid_response(self, url, response, content_type):
         """Check common status/json."""

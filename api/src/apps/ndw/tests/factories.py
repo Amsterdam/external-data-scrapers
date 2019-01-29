@@ -3,7 +3,7 @@ from django.contrib.gis.geos import LineString
 from django.utils import timezone
 from factory import fuzzy
 
-from ..models import ThirdpartyTravelTime, TravelTime
+from ..models import TravelTime
 
 # Amsterdam.
 BBOX = [52.03560, 4.58565, 52.48769, 5.31360]
@@ -29,17 +29,4 @@ class TravelTimeFactory(factory.DjangoModelFactory):
     supplier_calculated_data_quality = fuzzy.FuzzyFloat(0.0, 100.0)
     duration = fuzzy.FuzzyFloat(0.0, 100.0)
     measurement_time = fuzzy.FuzzyDateTime(start_dt=timezone.now())
-    scraped_at = fuzzy.FuzzyDateTime(start_dt=timezone.now())
-
-
-class ThirdpartyTravelTimeFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = ThirdpartyTravelTime
-
-    measurement_site_reference = fuzzy.FuzzyText(length=30)
-    name = fuzzy.FuzzyText(length=30)
-    type = fuzzy.FuzzyText(length=2)
-    length = fuzzy.FuzzyInteger(0, 100)
-    geometrie = get_puntje()
-    timestamp = fuzzy.FuzzyDateTime(start_dt=timezone.now())
     scraped_at = fuzzy.FuzzyDateTime(start_dt=timezone.now())
