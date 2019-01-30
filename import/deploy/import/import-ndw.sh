@@ -36,5 +36,7 @@ fi
 
 # copy data into final table for serving to django
 dc run --rm importer python data_sources/ndw/copy_to_model.py
+dc run --rm importer python data_sources/ndw/copy_to_model.py --link_shapefile
+dc run --rm importer python data_sources/ndw/copy_to_model.py --link_areas
 
 dc down -v

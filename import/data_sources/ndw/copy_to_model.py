@@ -5,11 +5,16 @@ import io
 import logging
 import time
 import xml.etree.ElementTree as ET
+from zipfile import ZipFile
+
+import requests
+import shapefile
 
 import db_helper
 import settings
 from data_sources.latest_query import get_latest_query
-# from data_sources.link_areas import link_areas
+from data_sources.link_areas import link_areas
+from data_sources.ndw.endpoints import SHAPEFILE_URL
 from data_sources.ndw.models import TravelTimeRaw
 
 log = logging.getLogger(__name__)
@@ -87,14 +92,14 @@ def store_ndw(raw_data):
     session.close()
 
 
-def start_import(store_func, raw_model, clean_model):
+def start_import():
     """
     Importing the data is done in batches to avoid
     straining the resources.
     """
     session = db_helper.session
     query = get_latest_query(
-        session, raw_model, clean_model
+        session, TravelTimeRaw, 'importer_traveltime'
     )
     run = True
 
@@ -105,7 +110,7 @@ def start_import(store_func, raw_model, clean_model):
         raw_data = query.offset(offset).limit(limit).all()
         if raw_data:
             log.info("Fetched {} raw TravelTime entries".format(len(raw_data)))
-            store_func(raw_data)
+            store_ndw(raw_data)
             offset += limit
         else:
             run = False
@@ -122,6 +127,38 @@ VALUES {}
 """
 
 
+def get_shapefile():
+    response = requests.get(SHAPEFILE_URL)
+    zipfile = ZipFile(io.BytesIO(response.content), 'r')
+    date = zipfile.namelist()[0].split('_')[0]
+    return shapefile.Reader(
+        shp=zipfile.open(f"{date}_Meetvakken.shp"),
+        dbf=zipfile.open(f"{date}_Meetvakken.dbf")
+    )
+
+
+def add_coordinates():
+    session = db_helper.session
+
+    log.info("Retrieving shapefile..")
+    sf = get_shapefile()
+
+    log.info("Starting update..")
+    for sr in sf.iterShapeRecords():
+        id = sr.record.as_dict().get('dgl_loc')
+        linestring = make_geometrie(sr.shape.points)
+        session.execute(
+            f"""
+            UPDATE importer_traveltime
+            set geometrie='{linestring}'
+            where measurement_site_reference='{id}';
+            """
+        )
+    log.info("Commiting to db..")
+    session.commit()
+    log.info("done")
+
+
 def main(make_engine=True):
     desc = "Clean data and import into db."
     inputparser = argparse.ArgumentParser(desc)
@@ -131,6 +168,20 @@ def main(make_engine=True):
         action="store_true",
         default=False,
         help="Enable debugging"
+    )
+
+    inputparser.add_argument(
+        "--link_shapefile",
+        action="store_true",
+        default=False,
+        help="Link shapefile coordinates to model"
+    )
+
+    inputparser.add_argument(
+        "--link_areas",
+        action="store_true",
+        default=False,
+        help="Link areas to model"
     )
 
     args = inputparser.parse_args()
@@ -144,11 +195,15 @@ def main(make_engine=True):
         engine = db_helper.make_engine()
         db_helper.set_session(engine)
 
-    start_import(
-        store_ndw,
-        TravelTimeRaw,
-        "importer_traveltime"
-    )
+    start_import()
+    session = db_helper.session
+
+    if args.link_shapefile:
+        add_coordinates()
+    elif args.link_areas:
+        link_areas(session, "importer_traveltime")
+    else:
+        start_import()
 
     log.info("Took: %s", time.time() - start)
 

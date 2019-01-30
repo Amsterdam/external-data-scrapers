@@ -2,6 +2,7 @@ import argparse
 import asyncio
 import logging
 
+from geoalchemy2 import Geometry
 from sqlalchemy import TIMESTAMP, Boolean, Column, Float, Integer, String
 from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.ext.declarative import declarative_base
@@ -65,6 +66,9 @@ class TravelTime(Base):
     data_error = Column(Boolean)
     measurement_time = Column(TIMESTAMP, index=True)
     scraped_at = Column(TIMESTAMP, index=True)
+    geometrie = Column(Geometry('LineString', srid=4326))
+    stadsdeel = Column(String, index=True)
+    buurt_code = Column(String, index=True)
 
 
 if __name__ == "__main__":
