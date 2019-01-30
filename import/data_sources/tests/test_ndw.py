@@ -92,3 +92,28 @@ class TestDBWriting(unittest.TestCase):
         copy_to_model.start_import()
         raw_count = session.query(models.TravelTime).count()
         self.assertEqual(raw_count, 1)
+
+    @patch("data_sources.ndw.copy_to_model.requests.get")
+    def test_link_shapefile(self, get, fetch, s_parse):
+        with open(
+                self.fixture_path + '/traveltime.xml.gz', 'rb'
+        ) as gz_xml_file:
+            xml_data = gz_xml_file.read()
+
+        inputparser = ArgumentParser(ndw=True)
+        s_parse.side_effect = [inputparser]
+        fetch.side_effect = [xml_data]
+        slurp.main(make_engine=False)
+
+        copy_to_model.start_import()
+
+        with open(
+                self.fixture_path + '/ndw_shapefile.zip', 'rb'
+        ) as shapefile:
+            shapefile_data = shapefile.read()
+
+        class Response:
+            content = shapefile_data
+
+        get.side_effect = [Response()]
+        copy_to_model.add_coordinates()
