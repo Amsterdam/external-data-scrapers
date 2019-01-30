@@ -26,15 +26,12 @@ class Importer(object):
     def import_csv(self):
         with open(self.file) as f:
             reader = csv.reader(f, delimiter=',', quotechar='"')
-            # prevent duplicate stop codes within one transaction
-            processed_stops = set()
             next(reader, None)  # skip the headers
             # stop_id, stop_code, stop_name, stop_lat, stop_lon
             for row in reader:
                 stopcode = row[1]
-                if not stopcode or stopcode in processed_stops:
+                if not stopcode:
                     continue
-                processed_stops.add(stopcode)
                 lat = float(row[3])
                 lon = float(row[4])
                 if not self.in_bbox(lat, lon):
@@ -44,8 +41,7 @@ class Importer(object):
                 log.info(f'{stopcode} {stopname} lon: {lon} lat: {lat}')
                 OvStop.objects.update_or_create(
                     id=stopcode,
-                    name=stopname,
-                    geo_location=geo
+                    defaults={'name': stopname, 'geo_location': geo}
                 )
 
 
