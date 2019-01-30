@@ -1,20 +1,20 @@
 import argparse
 import datetime
-import requests
 import gzip
 import io
 import logging
 import time
 import xml.etree.ElementTree as ET
-
 from zipfile import ZipFile
+
+import requests
 import shapefile
 
-from data_sources.ndw.endpoints import SHAPEFILE_URL
 import db_helper
 import settings
 from data_sources.latest_query import get_latest_query
 from data_sources.link_areas import link_areas
+from data_sources.ndw.endpoints import SHAPEFILE_URL
 from data_sources.ndw.models import TravelTimeRaw
 
 log = logging.getLogger(__name__)
