@@ -23,7 +23,7 @@ class Kv6XMLProcessor(object):
             'rd-x': 'rd_x',
             'rd-y': 'rd_y',
         }
-        self.inserter = bulk_inserter(table=OvKv6, batch_size=100)
+        self.inserter = bulk_inserter(table=OvKv6, batch_size=10)
         self.stops = {}
 
     def refresh_stops(self):
@@ -52,10 +52,16 @@ class Kv6XMLProcessor(object):
 
     def augment(self, rec):
         # convert rd_x and rd_y to geo location if present
+        # coordinates should be > 0 for NL.
+        # see https://nl.wikipedia.org/wiki/Rijksdriehoeksco%C3%B6rdinaten
+        valid_geo = False
         if rec.rd_x is not None and rec.rd_y is not None:
-            rec.geo_location = Point(x=float(rec.rd_x),
-                                     y=float(rec.rd_y), srid=28992)
-        elif rec.userstopcode in self.stops:
+            x = float(rec.rd_x)
+            y = float(rec.rd_y)
+            if x >= 0 and y >= 0:
+                valid_geo = True
+                rec.geo_location = Point(x=x, y=y, srid=28992)
+        if not valid_geo and rec.userstopcode in self.stops:
             # add station location otherwise
             rec.geo_location = self.stops[rec.userstopcode]
 
