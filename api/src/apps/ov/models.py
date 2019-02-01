@@ -47,7 +47,7 @@ class OvKv6(models.Model):
     operatingday = models.DateField(db_index=True)
     dataownercode = models.CharField(max_length=255)
     lineplanningnumber = models.CharField(max_length=255)
-    journeynumber = models.IntegerField(null=True)
+    journeynumber = models.IntegerField()
     reinforcementnumber = models.SmallIntegerField(null=True)
     userstopcode = models.CharField(null=True, max_length=255)
     passagesequencenumber = models.SmallIntegerField(null=True)
@@ -67,4 +67,15 @@ class OvKv6(models.Model):
 class OvStop(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
-    geo_location = PointField()
+    geo_location = PointField(srid=4326)
+
+
+# key format: 'dataownercode:lineplanningnumber:journeynumber'
+class OvRoutes(models.Model):
+    key = models.CharField(max_length=255, primary_key=True)
+    route_id = models.IntegerField()
+    service_id = models.IntegerField()
+    trip_id = models.IntegerField()
+    headsign = models.CharField(max_length=255, null=True)
+    short_name = models.CharField(max_length=255, null=True)
+    long_name = models.CharField(max_length=255, null=True)

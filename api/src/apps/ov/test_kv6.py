@@ -4,13 +4,12 @@ import threading
 import time
 
 import zmq
+from django.contrib.gis.geos import Point
 from django.test import TestCase
 
 from apps.ov.management.commands.kv6sub import KV6Client
-from apps.ov.management.commands.loadstops import Importer
 # import gc
-from apps.ov.models import OvRaw
-from config.settings import BASE_DIR
+from apps.ov.models import OvRaw, OvRoutes, OvStop
 
 # Create your tests here.
 PORT = 9999
@@ -140,9 +139,16 @@ class MockKv6Client(object):
 
 class Kv6Tests(TestCase):
     def setUp(self):
-        # load stations
-        importer = Importer(BASE_DIR + '/apps/ov/fixture/stops.csv')
-        importer.import_csv()
+        # set dummy stations and locations
+        stop = OvStop(id="05065", geo_location=Point(x=1.0, y=1.0))
+        stop.save()
+        route = OvRoutes(
+            key="CXX:W053:35",
+            route_id=1,
+            service_id=1,
+            trip_id=1
+        )
+        route.save()
         self.server = MockZmqServer()
         self.client = MockKv6Client()
 
