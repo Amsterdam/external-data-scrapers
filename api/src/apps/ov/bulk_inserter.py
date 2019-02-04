@@ -13,6 +13,6 @@ class bulk_inserter(object):
             self.flush()
 
     def flush(self):
-        if len(self.batch) > 0:
+        if self.batch:
             self.table.objects.bulk_create(self.batch, len(self.batch))
             self.batch.clear()

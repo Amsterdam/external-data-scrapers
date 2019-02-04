@@ -5,7 +5,7 @@ from django.contrib.gis.geos import Point
 from django.db import models
 
 from apps.ov.bulk_inserter import bulk_inserter
-from apps.ov.models import OvKv6, OvStop
+from apps.ov.models import OvKv6, OvRoutes, OvStop
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
@@ -25,13 +25,21 @@ class Kv6XMLProcessor(object):
         }
         self.inserter = bulk_inserter(table=OvKv6, batch_size=10)
         self.stops = {}
+        self.routes = set()
 
-    def refresh_stops(self):
-        tmp = {}
-        for stop in OvStop.objects.all():
-            tmp[stop.id] = stop.geo_location
-        if len(tmp) > 0:
-            self.stops = tmp
+    def refresh_data(self):
+        log.info('refreshing stops and trips data')
+        tmp_stops = dict(OvStop.objects.values_list('id', 'geo_location'))
+        if tmp_stops:
+            self.stops = tmp_stops
+
+        tmp_routes = set(OvRoutes.objects.values_list('key', flat=True))
+        if tmp_routes:
+            self.routes = tmp_routes
+
+    def is_ams_route(self, dataowner, line, journey):
+        key = f'{dataowner}:{line}:{journey}'
+        return key in self.routes
 
     def strip_ns(self, xmltag):
         try:
@@ -83,9 +91,10 @@ class Kv6XMLProcessor(object):
                     # map record fields with event data on name/tag
                     for eventdata in event:
                         self.set_if_exists(record, eventdata)
-                    # delay msg don't have user stop
-                    if record.userstopcode and\
-                       record.userstopcode not in self.stops:
+                    # check if we need to include the route
+                    if not self.is_ams_route(record.dataownercode,
+                                             record.lineplanningnumber,
+                                             record.journeynumber):
                         continue
                     self.augment(record)
                     self.inserter.add(record)

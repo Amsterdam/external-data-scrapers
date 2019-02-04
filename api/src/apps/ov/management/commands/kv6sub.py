@@ -52,7 +52,7 @@ class KV6Client(object):
 
     def check_refresh(self):
         if self.next_refresh is None or self.next_refresh <= datetime.now():
-            self.postproc.refresh_stops()
+            self.postproc.refresh_data()
             self.next_refresh = datetime.now() + timedelta(days=1)
 
     def message_loop(self):
