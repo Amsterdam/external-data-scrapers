@@ -29,15 +29,12 @@ class Kv6XMLProcessor(object):
 
     def refresh_data(self):
         log.info('refreshing stops and trips data')
-        tmp_stops = {}
-        for stop in OvStop.objects.values_list('id', 'geo_location'):
-            tmp_stops[stop[0]] = stop[1]
-        if len(tmp_stops) > 0:
+        tmp_stops = dict(OvStop.objects.values_list('id', 'geo_location'))
+        if tmp_stops:
             self.stops = tmp_stops
 
-        tmp_routes = set()
-        tmp_routes.update(OvRoutes.objects.values_list('key', flat=True))
-        if len(tmp_routes) > 0:
+        tmp_routes = set(OvRoutes.objects.values_list('key', flat=True))
+        if tmp_routes:
             self.routes = tmp_routes
 
     def is_ams_route(self, dataowner, line, journey):
