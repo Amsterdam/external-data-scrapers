@@ -22,7 +22,8 @@ class Migration(migrations.Migration):
             alter table ov_ovkv6 rename to __old_kv6;
             create table ov_ovkv6(like __old_kv6 including all) 
                 partition by range(vehicle);
-            drop table __old_kv6 cascade;
+            alter sequence if exists ov_ovkv6_id_seq owned by ov_ovkv6.id;
+            drop table __old_kv6;
         """),
         migrations.RunSQL(
             pu.make_partition_query(tbl, pu.week_partition(pdate))
