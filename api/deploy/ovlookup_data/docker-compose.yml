@@ -1,0 +1,14 @@
+version: '2.0'
+services:
+  api: repo.data.amsterdam.nl/datapunt/external-data-scrapers-api-jobs:${ENVIRONMENT}
+    image: 
+    build: ./api
+    ports:
+      - "8001:8001"
+    links:
+      - database
+    environment:
+      - DATABASE_NAME=externaldata
+      - DATABASE_USER=externaldata
+      - DATABASE_PASSWORD=
+      - DATABASE_HOST=
