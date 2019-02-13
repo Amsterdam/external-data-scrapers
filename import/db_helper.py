@@ -14,6 +14,8 @@ LOG = logging.getLogger(__name__)
 
 Session = sessionmaker()
 
+session = None
+
 
 def make_conf(section):
     """Create database connection."""
