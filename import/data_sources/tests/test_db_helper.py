@@ -12,11 +12,11 @@ class TestDBHelper(unittest.TestCase):
 
     def test_environment_override(self):
         environ = {
-            'DATABASE_OVERRIDE_HOST': 'test',
+            'DATABASE_OVERRIDE_HOST': 'host',
             'DATABASE_OVERRIDE_PORT': '20',
-            'DATABASE_OVERRIDE_NAME': 'test',
-            'DATABASE_OVERRIDE_USER': 'test',
-            'DATABASE_OVERRIDE_PASSWORD': 'test',
+            'DATABASE_OVERRIDE_NAME': 'db_name',
+            'DATABASE_OVERRIDE_USER': 'username',
+            'DATABASE_OVERRIDE_PASSWORD': 'password',
         }
 
         with patch.dict('db_helper.os.environ', environ):
@@ -34,5 +34,5 @@ class TestDBHelper(unittest.TestCase):
 
         self.assertEqual(
             str(conf),
-            'postgresql://test:test@test:20/test'
+            'postgresql://username:password@host:20/db_name'
         )

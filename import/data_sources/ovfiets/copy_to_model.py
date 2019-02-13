@@ -6,6 +6,9 @@ import time
 from datetime import datetime
 
 import db_helper
+import settings
+from data_sources.latest_query import get_latest_query
+from data_sources.link_areas import link_areas
 from data_sources.ovfiets.models import OvFiets, OvFietsRaw
 
 log = logging.getLogger(__name__)
@@ -20,7 +23,7 @@ def store_data(raw_data):
             lng = raw_station.pop('lng', None)
             lat = raw_station.pop('lat', None)
 
-            ovfiets = OvFiets(**dict(
+            ovfiets = dict(
                 scraped_at=raw_stations.scraped_at,
                 name=raw_station.pop('name', None),
                 description=raw_station.pop('description', None),
@@ -36,60 +39,35 @@ def store_data(raw_data):
                 ),
                 # add what is left
                 unmapped=raw_station
-            ))
+            )
             stations.append(ovfiets)
 
     log.info("Storing {} OvFiets entries".format(len(stations)))
-    session.bulk_save_objects(stations)
+    session.bulk_insert_mappings(OvFiets, stations)
     session.commit()
 
 
-def get_latest_data():
+def start_import():
     """
-    Get latest raw data to according to last imported data.
-    Can be moved to utils.py when more projects use it
+    Importing the data is done in batches to avoid
+    straining the resources.
     """
     session = db_helper.session
+    query = get_latest_query(session, OvFietsRaw, OvFiets)
+    run = True
 
-    latest = (
-        session.query(OvFiets)
-        .order_by(OvFiets.scraped_at.desc())
-        .first()
-    )
-    if latest:
-        # update since api
-        return (
-            session.query(OvFietsRaw)
-            .order_by(OvFietsRaw.scraped_at.desc())
-            .filter(OvFietsRaw.scraped_at > latest.scraped_at)
-        )
-    # empty api.
-    return session.query(OvFietsRaw).all()
+    offset = 0
+    limit = settings.DATABASE_IMPORT_LIMIT
 
+    while run:
+        raw_data = query.offset(offset).limit(limit).all()
 
-UPDATE_STADSDEEL = """
-UPDATE importer_ovfiets tt
-SET stadsdeel = s.code
-FROM (SELECT * from stadsdeel) as s
-WHERE ST_DWithin(s.wkb_geometry, tt.geometrie, 0)
-AND stadsdeel is null
-AND tt.geometrie IS NOT NULL
-"""
-
-
-def link_areas(sql):
-    session = db_helper.session
-    session.execute(sql)
-    session.commit()
-
-
-def start_import(make_engine):
-    if make_engine:
-        engine = db_helper.make_engine()
-        db_helper.set_session(engine)
-
-    raw_data = get_latest_data()
-    store_data(raw_data)
+        if raw_data:
+            log.info("Fetched {} raw OvFiets entries".format(len(raw_data)))
+            store_data(raw_data)
+            offset += limit
+        else:
+            run = False
 
 
 def main(make_engine=True):
@@ -105,12 +83,19 @@ def main(make_engine=True):
 
     start = time.time()
 
+    if make_engine:
+        engine = db_helper.make_engine()
+        db_helper.set_session(engine)
+
+    session = db_helper.session
+
     if args.link_areas:
-        return link_areas(UPDATE_STADSDEEL)
-    start_import(make_engine)
+        link_areas(session, OvFiets.__tablename__)
+    else:
+        start_import()
 
     log.info("Took: %s", time.time() - start)
-    session = db_helper.session
+
     session.close()
 
 

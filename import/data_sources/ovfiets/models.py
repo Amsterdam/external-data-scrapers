@@ -53,7 +53,7 @@ class OvFiets(Base):
     """Cleaned up OVFiets data."""
     __tablename__ = f"importer_ovfiets"
 
-    id = Column(Integer, Sequence("grl_seq"), primary_key=True)
+    id = Column(Integer, Sequence("grl_seq"), primary_key=True, index=True)
     name = Column(String, index=True)
     description = Column(String)
     station_code = Column(String)
@@ -65,6 +65,7 @@ class OvFiets(Base):
     scraped_at = Column(TIMESTAMP, index=True)
     opening_hours = Column(JSONB)
     stadsdeel = Column(String, index=True)
+    buurt_code = Column(String, index=True)
     unmapped = Column(JSONB)
 
 

@@ -20,7 +20,9 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions, routers
 
+from apps.ndw import views as ndw_views
 from apps.ovfiets import views as ovfiets_views
+from apps.parkeergarages import views as parkeergarages_views
 
 
 class ExternalDataView(routers.APIRootView):
@@ -30,6 +32,8 @@ class ExternalDataView(routers.APIRootView):
     Daily scraped APIs
     ==================
     - OvFiets (every 5 minutes)
+    - Parkeergarages (every 5 minutes)
+    - NDW Traveltime (every 30 minutes)
 
     [github/amsterdam/external-data-scrapers](https://github.com/Amsterdam/external-data-scrapers)
 
@@ -43,6 +47,13 @@ class ExternalDataRouter(routers.DefaultRouter):
 
 router = ExternalDataRouter()
 router.register(r'ovfiets', ovfiets_views.OvFietsView)
+router.register(r'parkinglocations', parkeergarages_views.ParkingLocationView)
+router.register(r'guidancesigns', parkeergarages_views.GuidanceSignView)
+router.register(
+    r'parkingguidancedisplays',
+    parkeergarages_views.ParkingGuidanceDisplayView
+)
+router.register(r'traveltime', ndw_views.TravelTimeView)
 
 urls = router.urls
 

@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils.functions import (create_database, database_exists,
                                         drop_database)
 
-from settings import config_auth, ENVIRONMENT_OVERRIDES
+from settings import ENVIRONMENT_OVERRIDES, config_auth
 
 logging.basicConfig(level=logging.DEBUG)
 LOG = logging.getLogger(__name__)

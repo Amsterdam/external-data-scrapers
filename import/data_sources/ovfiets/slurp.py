@@ -55,6 +55,8 @@ def main(make_engine=True):
     start = time.time()
     start_import(make_engine=make_engine)
     log.info("Took: %s", time.time() - start)
+    session = db_helper.session
+    session.close()
 
 
 if __name__ == "__main__":

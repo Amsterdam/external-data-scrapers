@@ -68,6 +68,9 @@ DEBUG_APPS = [
 LOCAL_APPS = [
     'apps.health',
     'apps.ovfiets',
+    'apps.parkeergarages',
+    'apps.ov',
+    'apps.ndw',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -188,11 +191,11 @@ REST_FRAMEWORK = dict(
 )
 
 # Static files (CSS, JavaScript, Images) and media files
-STATIC_URL = '/static/'
+STATIC_URL = '/externaldata/static/'
 STATIC_ROOT = os.path.join(
     os.path.dirname(os.path.dirname(BASE_DIR)), 'static'
 )
-MEDIA_URL = '/media/'
+MEDIA_URL = '/externaldata/media/'
 MEDIA_ROOT = os.path.join(
     os.path.dirname(os.path.dirname(BASE_DIR)), 'media'
 )
