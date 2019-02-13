@@ -1,8 +1,7 @@
 version: '2.0'
 services:
-  api: repo.data.amsterdam.nl/datapunt/external-data-scrapers-api-jobs:${ENVIRONMENT}
-    image: 
-    build: ./api
+  api: 
+    image: repo.data.amsterdam.nl/datapunt/external-data-scrapers-api-jobs:${ENVIRONMENT}
     ports:
       - "8001:8001"
     links:
