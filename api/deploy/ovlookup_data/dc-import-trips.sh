@@ -10,7 +10,7 @@ export PYTHONPATH=/app/
 DIR=`dirname "$0"`
 
 dc() {
-	docker-compose -p ndw-${ENVIRONMENT} -f $DIR/docker-compose.yml $*
+	docker-compose -p ov-api-jobs-${ENVIRONMENT} -f $DIR/docker-compose.yml $*
 }
 
 trap 'dc kill ; dc down ; dc rm -f' EXIT
