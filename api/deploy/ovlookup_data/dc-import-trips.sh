@@ -19,6 +19,7 @@ dc rm -f
 dc pull
 dc build
 
-dc run --rm external-data-scrapers-api-jobs ./refresh_stop_data.sh
+dc run --rm python manage.py kv6partition
+dc run --rm external-data-scrapers ./refresh_stop_data.sh
 
 dc down -v
