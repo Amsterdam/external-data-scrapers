@@ -1,4 +1,5 @@
--- -vstopfile="`pwd`/stops.txt"  -vtripfile="`pwd`/trips.txt" -vshapefile="`pwd`/shapes.txt"
+\set ON_ERROR_STOP on
+
 -- bounding box around amsterdam
 -- [52.455636, 4.714153, 52.256733, 5.070706]
 \set TOPLEFT_LAT 52.455636::REAL
@@ -23,7 +24,7 @@ CREATE TABLE csv_stops (
     CONSTRAINT csv_stops_pkey PRIMARY KEY(stop_id)
 );
 
-COPY csv_stops FROM :'stopfile' delimiter ',' csv header;
+\COPY csv_stops FROM '/app/stops.txt' delimiter ',' csv header;
 ANALYZE VERBOSE csv_stops;
 
 -- reload route shapes
@@ -37,7 +38,7 @@ CREATE TABLE csv_shapes (
     CONSTRAINT csv_shapes_pkey PRIMARY KEY(shape_id, shape_pt_sequence)
 );
 
-COPY csv_shapes FROM :'shapefile' delimiter ',' csv header;
+\COPY csv_shapes FROM '/app/shapes.txt' delimiter ',' csv header;
 
 -- CREATE index csv_shapes_ams_bbox_partial_idx ON csv_shapes(shape_pt_lat, shape_pt_lon)
 --    WHERE :TOPLEFT_LAT >= shape_pt_lat AND :BOTTOMRIGHT_LAT <= shape_pt_lat
@@ -62,7 +63,7 @@ CREATE TABLE csv_trips (
     CONSTRAINT csv_trips_pkey PRIMARY KEY(route_id, trip_id, service_id)
 );
 
-COPY csv_trips FROM :'tripfile' DELIMITER ',' CSV HEADER;
+\COPY csv_trips FROM '/app/trips.txt' DELIMITER ',' CSV HEADER;
 CREATE INDEX csv_trips_rtid_idx on csv_trips(realtime_trip_id);
 CREATE INDEX csv_trips_shape_id_idx on csv_trips(shape_id);
 

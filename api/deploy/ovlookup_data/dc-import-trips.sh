@@ -19,7 +19,7 @@ dc rm -f
 dc pull
 dc build
 
-dc run --rm python manage.py kv6partition
-dc run --rm external-data-scrapers ./refresh_stop_data.sh
+dc run --rm api python manage.py kv6partition
+dc run --rm api /deploy/ovlookup_data/refresh_stop_data.sh
 
 dc down -v
