@@ -4,8 +4,9 @@ import time
 
 import requests
 
-from data_sources.ndw.endpoints import NDW_URL
-from data_sources.ndw.models import TravelTimeRaw
+from data_sources.ndw.endpoints import (ENDPOINTS, TRAFFICSPEED_URL,
+                                        TRAVELTIME_URL)
+from data_sources.ndw.models import TrafficSpeedRaw, TravelTimeRaw
 from data_sources.slurper_class import Slurper
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
@@ -14,13 +15,28 @@ log.setLevel(logging.INFO)
 logging.getLogger("urllib3").setLevel(logging.DEBUG)
 
 
-class NDWSlurper(Slurper):
+class TravelTimeSlurper(Slurper):
     model = TravelTimeRaw
-    url = NDW_URL
+    url = TRAVELTIME_URL
 
     def fetch(self):
-        response = requests.get(NDW_URL)
+        response = requests.get(TRAVELTIME_URL)
         return response.content
+
+
+class TrafficSpeedSlurper(Slurper):
+    model = TrafficSpeedRaw
+    url = TRAFFICSPEED_URL
+
+    def fetch(self):
+        response = requests.get(TRAFFICSPEED_URL)
+        return response.content
+
+
+ENDPOINT_IMPORTER = {
+    'traveltime': TravelTimeSlurper,
+    'trafficspeed': TrafficSpeedSlurper
+}
 
 
 def main(make_engine=True):
@@ -34,6 +50,14 @@ def main(make_engine=True):
         help="Enable debugging"
     )
 
+    inputparser.add_argument(
+        "endpoint",
+        type=str,
+        default="traveltime",
+        choices=ENDPOINTS,
+        help="Provide Endpoint to scrape",
+        nargs=1,
+    )
     args = inputparser.parse_args()
 
     start = time.time()
@@ -41,7 +65,9 @@ def main(make_engine=True):
     if args.debug:
         log.setLevel(logging.DEBUG)
 
-    NDWSlurper().start_import(make_engine)
+    slurper = ENDPOINT_IMPORTER[args.endpoint[0]]()
+
+    slurper.start_import(make_engine)
 
     log.info("Took: %s", time.time() - start)
 

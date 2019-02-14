@@ -1,167 +1,278 @@
 import argparse
-import datetime
 import gzip
 import io
 import logging
 import time
-import xml.etree.ElementTree as ET
+from collections import defaultdict
+from xml.etree import ElementTree
 from zipfile import ZipFile
 
 import requests
 import shapefile
+from shapely.geometry import LineString, Point
 
 import db_helper
-import settings
-from data_sources.latest_query import get_latest_query
-from data_sources.link_areas import link_areas
-from data_sources.ndw.endpoints import SHAPEFILE_URL
-from data_sources.ndw.models import TravelTimeRaw
+from data_sources.importer_class import Importer
+from data_sources.ndw.endpoints import ENDPOINTS, SHAPEFILE_URL
+from data_sources.ndw.models import TrafficSpeedRaw, TravelTimeRaw
+from data_sources.ndw.sql_queries import (INSERT_TRAFFICSPEED,
+                                          INSERT_TRAVELTIME,
+                                          SELECT_BUURT_CODE_4326,
+                                          SELECT_BUURT_CODE_28992,
+                                          SELECT_STADSDEEL_4326,
+                                          SELECT_STADSDEEL_28992)
 
 log = logging.getLogger(__name__)
 
 
-def make_geometrie(coordinates):
-    string = ''
-    for pair in coordinates:
-        string += '{} {},'.format(pair[0], pair[1])
-    string = string.strip(',')
-    return 'SRID=4326;LINESTRING({})'.format(string)
+class TravelTimeImporter(Importer):
+    raw_model = TravelTimeRaw
+    clean_model = 'importer_traveltime'
+    stadsdeel_query = SELECT_STADSDEEL_4326
+    buurt_code_query = SELECT_BUURT_CODE_4326
 
+    link_areas = True
+    sf_records = {}
 
-def store_ndw(raw_data):
-    traveltime_list = []
+    def start_import(self, *args, **kwargs):
+        if self.link_areas:
+            self.sf_records = self.get_shapefile_records()
+        return super().start_import(*args, **kwargs)
 
-    for row in raw_data:
-        xml_file = gzip.GzipFile(fileobj=io.BytesIO(row.data), mode='rb')
-        tree = ET.parse(xml_file)
-        root = tree.getroot()
-        xml_file.close()
+    def store(self, raw_data):
+        traveltime_list = []
 
-        ns = {'def': 'http://datex2.eu/schema/2/2_0'}
+        for row in raw_data:
+            xml_file = gzip.GzipFile(fileobj=io.BytesIO(row.data), mode='rb')
+            tree = ElementTree.parse(xml_file)
+            root = tree.getroot()
+            xml_file.close()
 
-        measurements = root.iter(
-            '{http://datex2.eu/schema/2/2_0}siteMeasurements'
+            ns = {'def': 'http://datex2.eu/schema/2/2_0'}
+
+            measurements = root.iter(
+                '{http://datex2.eu/schema/2/2_0}siteMeasurements'
+            )
+
+            for m in measurements:
+                api_id = m.find('def:measurementSiteReference', ns).attrib['id']
+                timestamp = m.find('def:measurementTimeDefault', ns).text
+
+                trvt = m.find('def:measuredValue', ns)\
+                        .find('def:measuredValue', ns)\
+                        .find('def:basicData', ns)\
+                        .find('def:travelTime', ns)
+
+                duration = float(trvt.find('def:duration', ns).text)
+
+                data_error = trvt.find('def:dataError', ns)
+                data_error = (
+                    data_error.text == 'true' if data_error is not None else False
+                )
+
+                computational_method = trvt.attrib.get('computationalMethod')
+
+                supplier_calculated_data_quality = float(trvt.attrib.get('supplierCalculatedDataQuality', -1))
+                standard_deviation = float(trvt.attrib.get('standardDeviation', -1))
+                number_of_incomplete_input = int(trvt.attrib.get('numberOfIncompleteInputs', -1))
+                number_of_input_values_used = int(trvt.attrib.get('numberOfInputValuesUsed', -1))
+
+                geometrie, length, stadsdeel, buurt_code = self.sf_records.get(api_id, (None, None, None, None))
+                # geometrie, length = None, None
+
+                traveltime = (
+                    api_id,
+                    computational_method,
+                    number_of_incomplete_input,
+                    number_of_input_values_used,
+                    standard_deviation,
+                    supplier_calculated_data_quality,
+                    duration,
+                    data_error,
+                    timestamp,
+                    geometrie,
+                    length,
+                    stadsdeel,
+                    buurt_code,
+                    str(row.scraped_at)
+                )
+                traveltime_list.append(str(traveltime).replace('None', 'null'))
+
+        session = db_helper.session
+        log.info("Storing {} TravelTime entries".format(len(traveltime_list)))
+        session.execute(INSERT_TRAVELTIME.format(', '.join(traveltime_list)))
+        session.commit()
+        session.close()
+
+    def get_shapefile_reader(self):
+        response = requests.get(SHAPEFILE_URL)
+        zipfile = ZipFile(io.BytesIO(response.content), 'r')
+        date = zipfile.namelist()[0].split('_')[0]
+        return shapefile.Reader(
+            shp=zipfile.open(f"{date}_Meetvakken.shp"),
+            dbf=zipfile.open(f"{date}_Meetvakken.dbf")
         )
 
-        for m in measurements:
-            api_id = m.find('def:measurementSiteReference', ns).attrib['id']
-            timestamp = m.find('def:measurementTimeDefault', ns).text
+    def get_shapefile_records(self):
+        log.info("Retrieving shapefile..")
+        sf = self.get_shapefile_reader()
 
-            trvt = m.find('def:measuredValue', ns)\
-                    .find('def:measuredValue', ns)\
-                    .find('def:basicData', ns)\
-                    .find('def:travelTime', ns)
+        log.info("Populating records..")
 
-            duration = float(trvt.find('def:duration', ns).text)
+        records = {}
+        start = time.time()
+        for sr in sf.iterShapeRecords():
+            id = sr.record.as_dict().get('dgl_loc')
+            linestring = self.linestring_to_str('4326', sr.shape.points)
+            length = sr.record.as_dict().get('lengte')
+            sh = LineString(sr.shape.__geo_interface__['coordinates'])
 
-            data_error = trvt.find('def:dataError', ns)
-            data_error = data_error.text == 'true' if data_error else False
+            records[id] = (linestring, length, self.get_stadsdeel(sh), self.get_buurt_code(sh))
 
-            computational_method = trvt.attrib.get('computationalMethod')
-            supplier_calculated_data_quality = float(
-                trvt.attrib.get('supplierCalculatedDataQuality', -1)
-            )
-            standard_deviation = float(
-                trvt.attrib.get('standardDeviation', -1)
-            )
-            number_of_incomplete_input = int(
-                trvt.attrib.get('numberOfIncompleteInputs', -1)
-            )
-            number_of_input_values_used = int(trvt.attrib.get(
-                'numberOfInputValuesUsed', -1)
-            )
-
-            traveltime = (
-                api_id,
-                computational_method,
-                number_of_incomplete_input,
-                number_of_input_values_used,
-                standard_deviation,
-                supplier_calculated_data_quality,
-                duration,
-                data_error,
-                timestamp,
-                str(datetime.datetime.now())
-            )
-            traveltime_list.append(str(traveltime).replace('None', 'null'))
-
-    session = db_helper.session
-    log.info("Storing {} TravelTime entries".format(len(traveltime_list)))
-    session.execute(INSERT_TRAVELTIME.format(', '.join(traveltime_list)))
-    session.commit()
-    session.close()
+        log.info(f"populated {len(records)} records")
+        log.info("Took: %s", time.time() - start)
+        return records
 
 
-def start_import():
-    """
-    Importing the data is done in batches to avoid
-    straining the resources.
-    """
-    session = db_helper.session
-    query = get_latest_query(
-        session, TravelTimeRaw, 'importer_traveltime'
-    )
-    run = True
+class TrafficSpeedImporter(Importer):
+    clean_model = 'importer_trafficspeed'
+    raw_model = TrafficSpeedRaw
+    stadsdeel_query = SELECT_STADSDEEL_28992
+    buurt_code_query = SELECT_BUURT_CODE_28992
 
-    offset = 0
-    limit = settings.DATABASE_IMPORT_LIMIT
+    link_areas = True
+    sf_records = {}
 
-    while run:
-        raw_data = query.offset(offset).limit(limit).all()
-        if raw_data:
-            log.info("Fetched {} raw TravelTime entries".format(len(raw_data)))
-            store_ndw(raw_data)
-            offset += limit
-        else:
-            run = False
+    def start_import(self, *args, **kwargs):
+        if self.link_areas:
+            self.sf_records = self.get_shapefile_records()
+        return super().start_import(*args, **kwargs)
 
-
-INSERT_TRAVELTIME = """
-INSERT INTO importer_traveltime (
-measurement_site_reference, computational_method, number_of_incomplete_input,
-number_of_input_values_used, standard_deviation,
-supplier_calculated_data_quality, duration, data_error,
-measurement_time, scraped_at
-)
-VALUES {}
-"""
-
-
-def get_shapefile():
-    response = requests.get(SHAPEFILE_URL)
-    zipfile = ZipFile(io.BytesIO(response.content), 'r')
-    date = zipfile.namelist()[0].split('_')[0]
-    return shapefile.Reader(
-        shp=zipfile.open(f"{date}_Meetvakken.shp"),
-        dbf=zipfile.open(f"{date}_Meetvakken.dbf")
-    )
-
-
-def add_coordinates():
-    session = db_helper.session
-
-    log.info("Retrieving shapefile..")
-    sf = get_shapefile()
-
-    log.info("Starting update..")
-    for sr in sf.iterShapeRecords():
-        id = sr.record.as_dict().get('dgl_loc')
-        linestring = make_geometrie(sr.shape.points)
-        session.execute(
-            f"""
-            UPDATE importer_traveltime
-            set geometrie='{linestring}'
-            where measurement_site_reference='{id}';
-            """
+    def get_shapefile_reader(self):
+        response = requests.get(SHAPEFILE_URL)
+        zipfile = ZipFile(io.BytesIO(response.content), 'r')
+        date = zipfile.namelist()[0].split('_')[0]
+        return shapefile.Reader(
+            shp=zipfile.open(f"{date}_Telpunten.shp"),
+            dbf=zipfile.open(f"{date}_Telpunten.dbf"),
+            shx=zipfile.open(f"{date}_Telpunten.shx")
         )
-    log.info("Commiting to db..")
-    session.commit()
-    log.info("done")
+
+    def get_shapefile_records(self):
+        log.info("Retrieving shapefile..")
+        sf = self.get_shapefile_reader()
+
+        records = {}
+
+        log.info("Populating records..")
+        start = time.time()
+
+        for sr in sf.iterShapeRecords():
+            id = sr.record['dgl_loc']
+            point = self.point_to_str('28992', sr.shape.points[0])
+            sh = Point(sr.shape.__geo_interface__['coordinates'])
+            records[id] = (point, self.get_stadsdeel(sh), self.get_buurt_code(sh))
+
+        log.info(f"populated {len(records)} records")
+        log.info("Took: %s", time.time() - start)
+        return records
+
+    def store(self, raw_data):
+        trafficspeed_list = []
+
+        for row in raw_data:
+            xml_file = gzip.GzipFile(fileobj=io.BytesIO(row.data), mode='rb')
+            tree = ElementTree.parse(xml_file)
+            root = tree.getroot()
+            xml_file.close()
+
+            ns = {'def': 'http://datex2.eu/schema/2/2_0'}
+
+            measurements = root.iter(
+                '{http://datex2.eu/schema/2/2_0}siteMeasurements'
+            )
+
+            for m in measurements:
+                measurement_site_reference = m.find(
+                    'def:measurementSiteReference', ns
+                ).attrib['id']
+                measurement_time = m.find('def:measurementTimeDefault', ns).text
+
+                for measured_value in m.findall(
+                    '{http://datex2.eu/schema/2/2_0}measuredValue'
+                ):
+                    index = measured_value.get('index')
+                    measurement_type = measured_value.find(
+                        './/def:basicData', ns
+                    ).items()[0][1]
+
+                    data_error = measured_value.find('.//def:dataError', ns)
+
+                    data_error = (
+                        data_error.text == 'true' if data_error is not None else False
+                    )
+
+                    basic_data = defaultdict(lambda: None)
+
+                    if measurement_type == 'TrafficSpeed':
+                        vehiclespeed = measured_value.find('.//def:averageVehicleSpeed', ns)
+                        basic_data['number_of_input_values_used'] = int(vehiclespeed.get('numberOfInputValuesUsed', 0))
+                        basic_data['standard_deviation'] = float(vehiclespeed.get('standardDeviation', 0))
+                        basic_data['speed'] = float(measured_value.find('.//def:speed', ns).text)
+
+                    elif measurement_type == 'TrafficFlow':
+                        basic_data['flow'] = int(measured_value.find('.//def:vehicleFlowRate', ns).text)
+
+                    else:
+                        raise Exception("Unknown type: {}".format(type))
+
+                geometrie, stadsdeel, buurt_code = self.sf_records.get(measurement_site_reference, (None, None, None))
+
+                trafficspeed = (
+                    measurement_site_reference,
+                    measurement_time,
+                    measurement_type,
+                    index,
+                    data_error,
+                    str(row.scraped_at),
+
+                    basic_data['flow'],
+                    basic_data['speed'],
+                    basic_data['number_of_input_values_used'],
+                    basic_data['standard_deviation'],
+
+                    geometrie,
+                    stadsdeel,
+                    buurt_code,
+                )
+
+                trafficspeed_list.append(str(trafficspeed).replace('None', 'null'))
+
+        session = db_helper.session
+        log.info("Storing {} TrafficSpeed entries".format(len(trafficspeed_list)))
+        session.execute(INSERT_TRAFFICSPEED.format(', '.join(trafficspeed_list)))
+        session.commit()
+        session.close()
+
+
+ENDPOINT_IMPORTER = {
+    'traveltime': TravelTimeImporter,
+    'trafficspeed': TrafficSpeedImporter
+}
 
 
 def main(make_engine=True):
     desc = "Clean data and import into db."
     inputparser = argparse.ArgumentParser(desc)
+
+    inputparser.add_argument(
+        "endpoint",
+        type=str,
+        default="traveltime",
+        choices=ENDPOINTS,
+        help="Provide Endpoint to scrape",
+        nargs=1,
+    )
 
     inputparser.add_argument(
         "--debug",
@@ -171,14 +282,7 @@ def main(make_engine=True):
     )
 
     inputparser.add_argument(
-        "--link_shapefile",
-        action="store_true",
-        default=False,
-        help="Link shapefile coordinates to model"
-    )
-
-    inputparser.add_argument(
-        "--link_areas",
+        "--exclude_areas",
         action="store_true",
         default=False,
         help="Link areas to model"
@@ -195,17 +299,14 @@ def main(make_engine=True):
         engine = db_helper.make_engine()
         db_helper.set_session(engine)
 
-    start_import()
-    session = db_helper.session
+    importer = ENDPOINT_IMPORTER[args.endpoint[0]]()
 
-    if args.link_shapefile:
-        add_coordinates()
-    elif args.link_areas:
-        link_areas(session, "importer_traveltime")
-    else:
-        start_import()
+    if args.exclude_areas:
+        importer.link_areas = False
 
-    log.info("Took: %s", time.time() - start)
+    importer.start_import()
+
+    log.info("Total time: %s", time.time() - start)
 
 
 if __name__ == "__main__":

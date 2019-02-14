@@ -8,10 +8,8 @@ from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
 
-# from aiopg.sa import create_engine as aiopg_engine
 import db_helper
 
-# logging.basicConfig(level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
 
 Base = declarative_base()
@@ -19,9 +17,9 @@ Base = declarative_base()
 NDW_TABLES = [
     # should never be dropped
     # "traveltime_raw",
-    # "thirdparty_traveltime_raw",
+    # "trafficspeed_raw",
     "importer_traveltime",
-    "importer_thirdparty_traveltime",
+    "importer_trafficspeed",
 ]
 
 
@@ -69,6 +67,39 @@ class TravelTime(Base):
     geometrie = Column(Geometry('LineString', srid=4326))
     stadsdeel = Column(String, index=True)
     buurt_code = Column(String, index=True)
+    length = Column(Integer)
+
+
+class TrafficSpeedRaw(Base):
+    """Raw trafficspeed data"""
+    __tablename__ = f"trafficspeed_raw"
+    id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
+    data = Column(BYTEA)
+    scraped_at = Column(TIMESTAMP, index=True)
+
+
+class TrafficSpeed(Base):
+    """Imported xml data from ndw datasource"""
+    __tablename__ = f"importer_trafficspeed"
+    id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
+    measurement_site_reference = Column(String(length=255), index=True)
+    measurement_time = Column(TIMESTAMP, index=True)
+    type = Column(String)
+    index = Column(String, nullable=True)
+    data_error = Column(Boolean, default=False)
+    scraped_at = Column(TIMESTAMP, index=True)
+
+    flow = Column(Integer, nullable=True)
+
+    speed = Column(Float, nullable=True)
+    number_of_input_values_used = Column(Integer, nullable=True)
+    standard_deviation = Column(Float, nullable=True)
+
+    geometrie = Column(Geometry('Point', srid=28992))
+    stadsdeel = Column(String, index=True)
+    buurt_code = Column(String, index=True)
+
+    length = Column(Integer)
 
 
 if __name__ == "__main__":

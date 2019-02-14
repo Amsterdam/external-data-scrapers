@@ -20,6 +20,7 @@ dc pull
 dc build
 
 # Slurp ovfiets
-dc run --rm importer python data_sources/ndw/slurp.py
+dc run --rm importer python data_sources/ndw/slurp.py traveltime
+dc run --rm importer python data_sources/ndw/slurp.py trafficspeed
 
 dc down -v
