@@ -39,3 +39,7 @@ class ZmqSubscriber(object):
     @abc.abstractclassmethod
     def handle_message(self):
         pass
+
+    @abc.abstractclassmethod
+    def handle_refreshdata(self):
+        pass

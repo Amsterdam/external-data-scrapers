@@ -24,10 +24,13 @@ TIMEOUTMS = 60
 
 
 class KV6Subscriber(ZmqSubscriber):
-    def __init__(self, url, post_processor):
+    def __init__(self, url):
         self.inserter = bulk_inserter(table=OvRaw, batch_size=10)
-        self.postproc = post_processor
+        self.xmlprocessor = Kv6XMLProcessor()
         super().__init__(url)
+
+    def handle_refreshdata(self):
+        self.xmlprocessor.refresh_data()
 
     def handle_message(self):
         [envelop, contents] = self.sock.recv_multipart()
@@ -39,24 +42,24 @@ class KV6Subscriber(ZmqSubscriber):
             self.inserter.add(record)
             unpacked = gzip.decompress(record.xml).decode('utf-8')
             now = datetime.now(tzlocal())
-            self.postproc.process(now, unpacked)
+            self.xmlprocessor.process(now, unpacked)
         else:
             log.info(f'Skipping envelop {envelop}')
 
 
-class KV6Client(object):
+class ZmqClient(object):
     def __init__(self, publisher=PUBLISHER):
         self.stop = False
         self.publisher = publisher
         self.poller = ZmqPoller()
-        self.postproc = Kv6XMLProcessor()
-        self.kv6sub = KV6Subscriber(self.publisher, self.postproc)
+        self.subscribers = [KV6Subscriber(self.publisher)]
         self.next_refresh = None
 
     def subscribe(self):
         try:
-            self.kv6sub.connect()
-            self.poller.register(self.kv6sub)
+            for sub in self.subscribers:
+                sub.connect()
+                self.poller.register(sub)
             return True
         except Exception as err:
             log.error(err)
@@ -64,7 +67,8 @@ class KV6Client(object):
 
     def check_refresh(self):
         if self.next_refresh is None or self.next_refresh <= datetime.now():
-            self.postproc.refresh_data()
+            for sub in self.subscribers:
+                sub.handle_refreshdata()
             self.next_refresh = datetime.now() + timedelta(days=1)
 
     def message_loop(self):
@@ -102,5 +106,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         addr = None if 'url' not in options else options['url']
-        client = KV6Client() if addr is None else KV6Client(addr)
+        client = ZmqClient() if addr is None else ZmqClient(addr)
         client.subscribe_and_process()
