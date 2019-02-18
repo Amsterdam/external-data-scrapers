@@ -16,7 +16,7 @@ class ZmqPoller(object):
         self.poller = zmq.Poller()
         self.sockets = {}
 
-    def __delf__(self):
+    def __del__(self):
         pass
 
     def register(self, subscriber: ZmqSubscriber):
