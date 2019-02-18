@@ -36,10 +36,12 @@ class ZmqSubscriber(object):
             self.sock.close()
         self.connect()
 
+    # override this method in order to handle message
     @abc.abstractclassmethod
     def handle_message(self):
         pass
 
+    # override this method to init lookup data
     @abc.abstractclassmethod
     def handle_refreshdata(self):
         pass

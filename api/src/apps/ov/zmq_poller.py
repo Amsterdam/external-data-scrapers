@@ -7,6 +7,7 @@ from apps.ov.zmq_subscriber import ZmqSubscriber
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
 log.setLevel(logging.ERROR)
+# 5 mins is recommended by ov loket
 DEFAULT_ZMQ_TIMEOUT = 5 * 1000 * 60
 
 

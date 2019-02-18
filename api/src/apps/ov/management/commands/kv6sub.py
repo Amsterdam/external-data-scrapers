@@ -52,6 +52,7 @@ class ZmqClient(object):
         self.stop = False
         self.publisher = publisher
         self.poller = ZmqPoller()
+        # Add addition subscribers to the list
         self.subscribers = [KV6Subscriber(self.publisher)]
         self.next_refresh = None
 
