@@ -5,7 +5,6 @@ import logging
 import time
 from datetime import datetime, timedelta
 
-import zmq
 from dateutil.tz import tzlocal
 from django.core.management.base import BaseCommand
 from django.db import connection
@@ -13,6 +12,8 @@ from django.db import connection
 from apps.ov.bulk_inserter import bulk_inserter
 from apps.ov.kv6xml import Kv6XMLProcessor
 from apps.ov.models import OvRaw
+from apps.ov.zmq_poller import ZmqPoller
+from apps.ov.zmq_subscriber import ZmqSubscriber
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
@@ -22,29 +23,44 @@ PUBLISHER = "tcp://pubsub.besteffort.ndovloket.nl:7658"
 TIMEOUTMS = 60
 
 
-class KV6Client(object):
+class KV6Subscriber(ZmqSubscriber):
+    def __init__(self, url):
+        self.inserter = bulk_inserter(table=OvRaw, batch_size=10)
+        self.xmlprocessor = Kv6XMLProcessor()
+        super().__init__(url)
+
+    def handle_refreshdata(self):
+        self.xmlprocessor.refresh_data()
+
+    def handle_message(self):
+        [envelop, contents] = self.sock.recv_multipart()
+        envelop = envelop.decode('utf-8')
+        # contents is transferred as gzipped uni code
+        log.info(f'{envelop} received')
+        if KV6KEY in envelop:
+            record = OvRaw(feed=envelop, xml=contents)
+            self.inserter.add(record)
+            unpacked = gzip.decompress(record.xml).decode('utf-8')
+            now = datetime.now(tzlocal())
+            self.xmlprocessor.process(now, unpacked)
+        else:
+            log.info(f'Skipping envelop {envelop}')
+
+
+class ZmqClient(object):
     def __init__(self, publisher=PUBLISHER):
         self.stop = False
-        self.context = zmq.Context()
-        self.sock = None
         self.publisher = publisher
-        self.inserter = bulk_inserter(table=OvRaw, batch_size=10)
-        self.postproc = Kv6XMLProcessor()
+        self.poller = ZmqPoller()
+        # Add additional subscribers to the list
+        self.subscribers = [KV6Subscriber(self.publisher)]
         self.next_refresh = None
-
-    def __del__(self):
-        if self.sock is not None:
-            self.sock.close()
-        if self.context is not None:
-            self.context.term()
 
     def subscribe(self):
         try:
-            self.sock = self.context.socket(zmq.SUB)
-            log.info(f'Subscribing to {self.publisher}')
-            self.sock.connect(self.publisher)
-            self.sock.setsockopt(zmq.RCVTIMEO, 2 * TIMEOUTMS * 1000)
-            self.sock.setsockopt_string(zmq.SUBSCRIBE, "")
+            for sub in self.subscribers:
+                sub.connect()
+                self.poller.register(sub)
             return True
         except Exception as err:
             log.error(err)
@@ -52,7 +68,8 @@ class KV6Client(object):
 
     def check_refresh(self):
         if self.next_refresh is None or self.next_refresh <= datetime.now():
-            self.postproc.refresh_data()
+            for sub in self.subscribers:
+                sub.handle_refreshdata()
             self.next_refresh = datetime.now() + timedelta(days=1)
 
     def message_loop(self):
@@ -65,25 +82,8 @@ class KV6Client(object):
                     connection.close()
                     log.info('Stop: Terminating message loop')
                     break
-                [envelop, contents] = self.sock.recv_multipart()
-                envelop = envelop.decode('utf-8')
-                # contents is transferred as gzipped uni code
-                log.info(f'{envelop} received')
-                if KV6KEY in envelop:
-                    record = OvRaw(feed=envelop, xml=contents)
-                    self.inserter.add(record)
-                    decompressed = gzip.decompress(record.xml).decode('utf-8')
-                    now = datetime.now(tzlocal())
-                    self.postproc.process(now, decompressed)
-                else:
-                    log.info(f'Skipping envelop {envelop}')
-            # Timed out, close connection and try to reconnect.
-            # (network could have been interrupted)
-            except zmq.error.Again:
-                log.info('EAgain')
-                if self.sock is not None:
-                    self.sock.close()
-                break
+                for subscr in self.poller.poll():
+                    subscr.handle_message()
             except Exception as err:
                 log.error(err)
 
@@ -107,5 +107,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         addr = None if 'url' not in options else options['url']
-        client = KV6Client() if addr is None else KV6Client(addr)
+        client = ZmqClient() if addr is None else ZmqClient(addr)
         client.subscribe_and_process()

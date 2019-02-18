@@ -7,7 +7,7 @@ import zmq
 from django.contrib.gis.geos import Point
 from django.test import TestCase
 
-from apps.ov.management.commands.kv6sub import KV6Client
+from apps.ov.management.commands.kv6sub import ZmqClient
 # import gc
 from apps.ov.models import OvRaw, OvRoutes, OvStop
 
@@ -127,7 +127,7 @@ class MockKv6Client(object):
         self.thread.start()
 
     def run(self):
-        self.worker = KV6Client(publisher=ADDR)
+        self.worker = ZmqClient(publisher=ADDR)
         self.worker.subscribe_and_process()
         log.info('Client exit')
 
