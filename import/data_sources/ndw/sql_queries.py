@@ -38,6 +38,6 @@ VALUES {}
 """
 
 SELECT_STADSDEEL_28992 = "select code, ST_Transform(wkb_geometry, 28992) FROM stadsdeel"
-SELECT_BUURT_CODE_28992 = "select code, ST_Transform(wkb_geometry, 28992) FROM buurt"
+SELECT_BUURT_CODE_28992 = "select code, ST_Transform(wkb_geometry, 28992) FROM buurt_simple"
 SELECT_STADSDEEL_4326 = "select code, ST_Transform(wkb_geometry, 4326) FROM stadsdeel"
-SELECT_BUURT_CODE_4326 = "select code, ST_Transform(wkb_geometry, 4326) FROM buurt"
+SELECT_BUURT_CODE_4326 = "select code, ST_Transform(wkb_geometry, 4326) FROM buurt_simple"
