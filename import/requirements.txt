@@ -1,4 +1,4 @@
-pyshp==2.0.1
+pyshp==2.1.0
 psycopg2-binary==2.7.7
 GeoAlchemy2==0.5.0
 requests==2.21.0
@@ -31,7 +31,7 @@ pyflakes==2.1.0
 python-dateutil==2.8.0
 Shapely==1.6.4.post2
 six==1.12.0
-SQLAlchemy==1.2.17
+SQLAlchemy==1.2.18
 SQLAlchemy-Utils==0.33.11
 text-unidecode==1.2
 toml==0.10.0
