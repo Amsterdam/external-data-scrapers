@@ -1,3 +1,5 @@
+# flake8: noqa
+
 INSERT_TRAVELTIME = """
 INSERT INTO importer_traveltime (
 measurement_site_reference,
@@ -41,3 +43,62 @@ SELECT_STADSDEEL_28992 = "select code, ST_Transform(wkb_geometry, 28992) FROM st
 SELECT_BUURT_CODE_28992 = "select code, ST_Transform(wkb_geometry, 28992) FROM buurt_simple"
 SELECT_STADSDEEL_4326 = "select code, ST_Transform(wkb_geometry, 4326) FROM stadsdeel"
 SELECT_BUURT_CODE_4326 = "select code, ST_Transform(wkb_geometry, 4326) FROM buurt_simple"
+
+INSERT_DAILY_TRAVELTIME_SUMMARY = """
+insert into daily_traveltime_summary (
+    duration,
+    measurement_site_reference,
+    geometrie,
+    stadsdeel,
+    buurt_code,
+    length,
+    scraped_at
+)
+select
+    avg(duration),
+    measurement_site_reference,
+    geometrie,
+    stadsdeel,
+    buurt_code,
+    avg(length),
+    cast(concat(date(scraped_at), ' ', make_time(cast(Floor(date_part('hour', scraped_at)/6)*6 as integer), 0, 0)) as timestamp)
+from importer_traveltime
+where
+    duration >= 0 {}
+group by
+    measurement_site_reference,
+    geometrie,
+    stadsdeel,
+    buurt_code,
+    cast(concat(date(scraped_at), ' ', make_time(cast(Floor(date_part('hour', scraped_at)/6)*6 as integer), 0, 0)) as timestamp);
+"""
+
+INSERT_DAILY_TRAFFICSPEED_SUMMARY = """
+insert into daily_trafficspeed_summary (
+    speed,
+    measurement_site_reference,
+    geometrie,
+    stadsdeel,
+    buurt_code,
+    length,
+    scraped_at
+)
+select
+    avg(speed),
+    measurement_site_reference,
+    geometrie,
+    stadsdeel,
+    buurt_code,
+    avg(length),
+    cast(concat(date(scraped_at), ' ', make_time(cast(Floor(date_part('hour', scraped_at)/6)*6 as integer), 0, 0)) as timestamp)
+from importer_trafficspeed
+where
+    speed >= 0 {}
+group by
+    measurement_site_reference,
+    geometrie,
+    stadsdeel,
+    buurt_code,
+    cast(concat(date(scraped_at), ' ', make_time(cast(Floor(date_part('hour', scraped_at)/6)*6 as integer), 0, 0)) as timestamp);
+"""
+SCRAPED_AT_WHERE_CLAUSE = "and date(scraped_at)='{}'"
