@@ -32,3 +32,4 @@ pytest-mock
 pytest-django
 
 pyzmq
+pyyaml>=4.2b1
