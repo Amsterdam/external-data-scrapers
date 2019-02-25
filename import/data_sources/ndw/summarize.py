@@ -14,7 +14,8 @@ log = logging.getLogger(__name__)
 
 def summarize(all_flag, insert_query):
     session = db_helper.session
-    where_clause = SCRAPED_AT_WHERE_CLAUSE.format(datetime.datetime.today().strftime("%Y-%m-%d"))
+    date = datetime.datetime.today() - datetime.timedelta(1)
+    where_clause = SCRAPED_AT_WHERE_CLAUSE.format(date.strftime("%Y-%m-%d"))
     if all_flag:
         where_clause = ''
 
@@ -59,6 +60,7 @@ def main(make_engine=True):
 
     args = inputparser.parse_args()
 
+    log.info("Starting..")
     summarize(args.all, ENDPOINT_DAILY_INSERT_QUERY[args.endpoint[0]])
 
     log.info("Total time: %s", time.time() - start)
