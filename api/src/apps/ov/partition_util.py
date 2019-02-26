@@ -20,9 +20,9 @@ class PartitionUtil(object):
 
     def week_partition(self, d=None):
         d = d if d is not None else self.today()
-        end = datetime.strptime(
-            f"{d.year}_{self.week_number(d)}_1", "%Y_%W_%w")
-        start = end - timedelta(7)
+        start = datetime.strptime(
+            f"{d.year}-{self.week_number(d)}-1", '%G-%V-%u')
+        end = start + timedelta(7)
         return (start, end)
 
     def month_partition(self, d=None):
