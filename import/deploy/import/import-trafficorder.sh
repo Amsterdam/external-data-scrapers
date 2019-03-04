@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Import ndw 
+# Import trafficorder 
 
 set -u   # crash on missing env variables
 set -e   # stop on any error
@@ -10,7 +10,7 @@ export PYTHONPATH=/app/
 DIR=`dirname "$0"`
 
 dc() {
-	docker-compose -p ndw-copy-${ENVIRONMENT} -f $DIR/docker-compose.yml $*
+	docker-compose -p trafficorder-copy-${ENVIRONMENT} -f $DIR/docker-compose.yml $*
 }
 
 trap 'dc kill ; dc down ; dc rm -f' EXIT
@@ -22,10 +22,10 @@ dc build
 # create database tables if not exists.
 if [ "$DROP" = "yes" ]
 then
-   dc run --rm importer python data_sources/ndw/models.py --drop
+   dc run --rm importer python data_sources/trafficorder/models.py --drop
 
 else
-   dc run --rm importer python data_sources/ndw/models.py 
+   dc run --rm importer python data_sources/trafficorder/models.py 
 fi
 
 if [ "$WFS" = "yes" ]
@@ -35,7 +35,8 @@ then
 fi
 
 # copy data into final table for serving to django
-dc run --rm importer python data_sources/ndw/copy_to_model.py traveltime
-dc run --rm importer python data_sources/ndw/copy_to_model.py trafficspeed
+dc run --rm importer python data_sources/trafficorder/copy_to_model.py 
+dc run --rm importer python data_sources/trafficorder/copy_to_model.py --link_areas
 
 dc down -v
+

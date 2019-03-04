@@ -16,6 +16,7 @@ class Slurper:
     """
     url = None
     model = None
+    fetch_json = True
 
     def get_url(self):
         if not self.url:
@@ -27,18 +28,31 @@ class Slurper:
             raise Exception('model not defined in the class')
         return self.model
 
+    def get_data(self, response_data):
+        try:
+            data = dict(**response_data) if self.fetch_json else dict(data=response_data)
+        except TypeError:
+            raise Exception('Fetched data is not json. Set fetch_json flag to False')
+        return dict(scraped_at=datetime.datetime.now(), **data)
+
     def fetch(self):
+        """
+        If fetch_json is set to True, this function will return
+        response json, otherwise it will return the raw content.
+        Sometimes the datasource return files not Json.
+        """
         url = self.get_url()
         response = requests.get(url)
-        return response.json()
+        if self.fetch_json:
+            return response.json()
+        return response.content
 
     def store(self, data):
         session = db_helper.session
 
         model = self.get_model()
         instance = model(
-            scraped_at=datetime.datetime.now(),
-            data=data
+            **data
         )
         session.add(instance)
         session.commit()
@@ -51,5 +65,6 @@ class Slurper:
 
     def start_import(self, make_engine):
         self.setup_db(make_engine)
-        data = self.fetch()
+        response_data = self.fetch()
+        data = self.get_data(response_data)
         self.store(data)
