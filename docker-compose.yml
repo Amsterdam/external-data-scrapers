@@ -1,4 +1,4 @@
-version: '2.0'
+version: '3'
 services:
   database:
     image: amsterdam/postgres11
@@ -13,14 +13,18 @@ services:
       - ./backups:/tmp/backups
 
   import:
-    build: ./import
+    build: 
+      context: ./import
+      dockerfile: Dockerfile-local
     links:
       - database
     environment:
       - PYTHONPATH=/app
 
   api:
-    build: ./api
+    build: 
+      context: ./api
+      dockerfile: Dockerfile-local
     ports:
       - "8001:8001"
     links:
