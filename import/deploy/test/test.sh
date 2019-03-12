@@ -20,7 +20,7 @@ dc up -d database
 
 dc run --rm importer /app/deploy/docker-wait.sh
 
-dc run --rm importer tox 
+dc run --rm importer tox -e server
 
 
 dc stop
