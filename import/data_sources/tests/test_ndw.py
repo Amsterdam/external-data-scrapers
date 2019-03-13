@@ -51,7 +51,6 @@ class ArgumentParser:
 
 
 @patch("data_sources.ndw.slurp.argparse.ArgumentParser.parse_args")
-@patch("data_sources.ndw.slurp.TravelTimeSlurper.fetch")
 class TestSlurpNDW(unittest.TestCase):
     """Test writing to database."""
 
@@ -64,6 +63,7 @@ class TestSlurpNDW(unittest.TestCase):
         session.close()
         models.Base.metadata.drop_all(bind=engine)
 
+    @patch("data_sources.ndw.slurp.TravelTimeSlurper.fetch")
     def test_slurp_traveltime(self, fetch, s_parse):
         with open(
                 FIXTURE_PATH + '/traveltime.xml.gz', 'rb'
@@ -79,9 +79,10 @@ class TestSlurpNDW(unittest.TestCase):
         raw_count = session.query(models.TravelTimeRaw).count()
         self.assertEqual(raw_count, 1)
 
+    @patch("data_sources.ndw.slurp.TrafficSpeedSlurper.fetch")
     def test_slurp_trafficspeed(self, fetch, s_parse):
         with open(
-                FIXTURE_PATH + '/traveltime.xml.gz', 'rb'
+                FIXTURE_PATH + '/trafficspeed.xml.gz', 'rb'
         ) as gz_xml_file:
             xml_data = gz_xml_file.read()
 
