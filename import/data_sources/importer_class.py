@@ -46,20 +46,20 @@ class Importer:
             self.stadsdeel_list = [(x[0], wkb.loads(x[1], hex=True)) for x in query]
         return self.stadsdeel_list
 
-    def get_stadsdeel(self, coordinates):
-        for instance in self.get_stadsdeel_list():
-            if instance[1].contains(coordinates):
-                return instance[0]
-
     def get_buurt_code_list(self):
         if not self.buurt_code_list:
             query = self.session.execute(self.buurt_code_query).fetchall()
             self.buurt_code_list = [(x[0], wkb.loads(x[1], hex=True)) for x in query]
         return self.buurt_code_list
 
-    def get_buurt_code(self, coordinates):
+    def get_stadsdeel(self, geo_object):
+        for instance in self.get_stadsdeel_list():
+            if instance[1].contains(geo_object):
+                return instance[0]
+
+    def get_buurt_code(self, geo_object):
         for instance in self.get_buurt_code_list():
-            if instance[1].contains(coordinates):
+            if instance[1].contains(geo_object):
                 return instance[0]
 
     def get_latest_query(self):

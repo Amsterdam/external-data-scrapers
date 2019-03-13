@@ -18,6 +18,7 @@ logging.getLogger("urllib3").setLevel(logging.DEBUG)
 class TravelTimeSlurper(Slurper):
     model = TravelTimeRaw
     url = TRAVELTIME_URL
+    fetch_json = False
 
     def fetch(self):
         response = requests.get(TRAVELTIME_URL)
@@ -27,6 +28,7 @@ class TravelTimeSlurper(Slurper):
 class TrafficSpeedSlurper(Slurper):
     model = TrafficSpeedRaw
     url = TRAFFICSPEED_URL
+    fetch_json = False
 
     def fetch(self):
         response = requests.get(TRAFFICSPEED_URL)

@@ -1,0 +1,32 @@
+<metadata_gegevens>
+<metadata name="DC.title" scheme="" content="Verkeersbesluit Elektrisch Oplaadpunt Sumatrastraat te Amsterdam Oost."/>
+<metadata name="OVERHEIDop.doctype" scheme="" content="Officiële Publicaties, versie 1.1"/>
+<metadata name="OVERHEIDop.jaargang" scheme="DCTERMS.W3CDTF" content="2018"/>
+<metadata name="DCTERMS.available" scheme="DCTERMS.W3CDTF" content="2018-12-28"/>
+<metadata name="OVERHEIDop.publicationIssue" scheme="" content="74046"/>
+<metadata name="DC.identifier" scheme="OVERHEIDop.StcrtID" content="stcrt-2018-74046"/>
+<metadata name="DCTERMS.alternative" scheme="" content="Gemeente Amsterdam - Verkeersbesluit Elektrisch Oplaadpunt Sumatrastraat te Amsterdam Oost - Sumatrastraat 15"/>
+<metadata name="OVERHEID.organisationType" scheme="OVERHEID.Organisatietype" content="gemeente"/>
+<metadata name="OVERHEID.authority" scheme="OVERHEID.Gemeente" content="Amsterdam"/>
+<metadata name="DC.creator" scheme="OVERHEID.Gemeente" content="Amsterdam"/>
+<metadata name="OVERHEID.category" scheme="OVERHEID.TaxonomieBeleidsagenda" content="Verkeer | Organisatie en beleid"/>
+<metadata name="DC.spatial" scheme="OVERHEID.Gemeente" content="Amsterdam"/>
+<metadata name="OVERHEIDop.postcodeHuisnummer" scheme="OVERHEID.PostcodeHuisnummer" content="1094NK"/>
+<metadata name="OVERHEIDop.woonplaats" scheme="" content="Amsterdam"/>
+<metadata name="OVERHEIDop.straatnaam" scheme="" content="Sumatrastraat"/>
+<metadata name="OVERHEIDvb.typeVerkeersbesluit" scheme="OVERHEIDvb.TypeVerkeersbesluit" content="plaatsing of verwijdering van verkeerstekens"/>
+<metadata name="OVERHEIDvb.vereisteVanBesluit" scheme="OVERHEIDvb.VereisteVanBesluit" content="Het bepaalde in artikel 12 van het BABW"/>
+<metadata name="OVERHEIDvb.wegcategorie" scheme="OVERHEIDvb.Wegcategorie" content="Erftoegangsweg binnen de bebouwde kom"/>
+<metadata name="OVERHEIDvb.weggebruiker" scheme="OVERHEIDvb.Weggebruiker" content="bestuurders van een motorrijwiel, scooter, personenauto of bestelauto"/>
+<metadata name="OVERHEIDop.verkeersbordcode" scheme="" content="E4"/>
+<metadata name="OVERHEIDop.verkeersbordcode" scheme="" content="E7"/>
+<metadata name="DC.type" scheme="OVERHEID.Informatietype" content="officiële publicatie"/>
+<metadata name="DC.type" scheme="OVERHEIDop.Staatscourant" content="Verkeersbesluiten"/>
+<metadata name="DCTERMS.language" scheme="DCTERMS.RFC4646" content="nl"/>
+<metadata name="DCTERMS.publisher" scheme="OVERHEID.Ministerie" content="Ministerie van Binnenlandse Zaken"/>
+<metadata name="OVERHEIDop.publicationName" scheme="" content="Staatscourant"/>
+<metadata name="OVERHEIDop.externeBijlage" scheme="" content="Bijlage I|exb-2018-75086"/>
+<metadata name="DC.spatial" scheme="OVERHEID.EPSG28992" content="124302 485969"/>
+<metadata name="DC.spatial" scheme="OVERHEID.EPSG28992" content="124302 485969"/>
+</metadata_gegevens>
+

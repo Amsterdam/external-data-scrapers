@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<searchRetrieveResponse xmlns="http://www.loc.gov/zing/srw/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/zing/srw/ srw-types.xsd">
+	<version>1.2</version>
+	<numberOfRecords>1</numberOfRecords>
+	<records>
+		<record>
+			<recordSchema>http://standaarden.overheid.nl/sru/</recordSchema>
+			<recordPacking>xml</recordPacking>
+			<recordData>
+				<gzd xmlns="http://standaarden.overheid.nl/sru" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:overheid="http://standaarden.overheid.nl/owms/terms/" xmlns:overheidop="http://standaarden.overheid.nl/product/terms/" xmlns:overheidvb="http://standaarden.overheid.nl/vb/terms" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standaarden.overheid.nl/sru gzd.xsd">
+					<originalData>
+						<overheidop:meta>
+							<overheidop:owmskern>
+								<dcterms:title>Verkeersbesluit Elektrisch Oplaadpunt Sumatrastraat te Amsterdam Oost.</dcterms:title>
+								<dcterms:identifier>stcrt-2018-74046</dcterms:identifier>
+								<dcterms:type scheme="overheidop:Staatscourant">Verkeersbesluiten</dcterms:type>
+								<dcterms:creator>Amsterdam</dcterms:creator>
+								<dcterms:spatial>124302 485969</dcterms:spatial>
+								<dcterms:spatial>Amsterdam</dcterms:spatial>
+								<dcterms:temporal/>
+								<dcterms:modified>2018-12-28</dcterms:modified>
+							</overheidop:owmskern>
+							<overheidop:owmsmantel>
+								<dcterms:alternative>Gemeente Amsterdam - Verkeersbesluit Elektrisch Oplaadpunt Sumatrastraat te Amsterdam Oost - Sumatrastraat 15</dcterms:alternative>
+								<dcterms:available>2018-12-28</dcterms:available>
+								<dcterms:issued/>
+								<dcterms:source/>
+								<dcterms:subject>Verkeer | Organisatie en beleid</dcterms:subject>
+								<dcterms:date>2018-12-28</dcterms:date>
+							</overheidop:owmsmantel>
+							<overheidop:opmeta>
+								<overheid:organisationtype>gemeente</overheid:organisationtype>
+								<overheidop:publicationname>Staatscourant</overheidop:publicationname>
+								<overheidop:jaargang>2018</overheidop:jaargang>
+								<overheidop:publicationissue>74046</overheidop:publicationissue>
+								<overheidop:idgeometrie/>
+								<overheidvb:referentienummer/>
+								<overheidop:adviesrvs/>
+								<overheidvb:typeverkeersbesluit>plaatsing of verwijdering van verkeerstekens</overheidvb:typeverkeersbesluit>
+								<overheidvb:weggebruiker>bestuurders van een motorrijwiel, scooter, personenauto of bestelauto</overheidvb:weggebruiker>
+								<overheidvb:wegcategorie>Erftoegangsweg binnen de bebouwde kom</overheidvb:wegcategorie>
+								<overheidop:betreft/>
+								<overheidop:persoonsgegevens/>
+								<overheidop:bedrijfsnaam/>
+								<overheidop:subrubriek/>
+								<overheidop:vergaderjaar/>
+								<overheidop:datumtotstandkoming/>
+								<overheidop:plaatstotstandkoming/>
+								<overheidop:indiener/>
+								<overheidop:datumindiening/>
+								<overheidop:ontvanger/>
+								<overheidop:dossiernummer/>
+								<overheidop:ondernummer/>
+								<overheidop:vraagnummer/>
+								<overheidop:aanhangselnummer/>
+								<overheidop:datumbrief/>
+								<overheidop:datumvergadering/>
+								<overheidop:datumondertekening/>
+								<overheidop:paginanummer/>
+								<overheidop:dossierOndernummerCombinatie/>
+								<overheidop:hoofdDossiernummer/>
+								<overheidop:documentstatus/>
+								<overheidop:versieinformatie/>
+								<overheidop:handelingenitemnummer/>
+								<overheidop:bekendmakingbetreffendeplan/>
+								<overheidop:sysnumber/>
+								<overheidop:sysyear/>
+								<overheidop:sysseqnumber/>
+								<overheidop:verkeersbordcode>E4</overheidop:verkeersbordcode>
+								<overheidop:subrubriekParlementair/>
+							</overheidop:opmeta>
+						</overheidop:meta>
+					</originalData>
+					<enrichedData>
+						<locationURI>ftps://$root$/2018/12/28/stcrt/stcrt-2018-74046/</locationURI>
+						<url>https://zoek.officielebekendmakingen.nl/stcrt-2018-74046.html</url>
+						<size>5713</size>
+						<sorteersleutel>1200007981925953999900000099</sorteersleutel>
+					</enrichedData>
+				</gzd>
+			</recordData>
+			<recordPosition>1</recordPosition>
+		</record>
+	</records>
+</searchRetrieveResponse>
+
