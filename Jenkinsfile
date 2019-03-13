@@ -32,11 +32,11 @@ node {
     stage("Build dockers") {
         tryStep "build", {
             docker.withRegistry('https://repo.data.amsterdam.nl','docker-registry') {
-            def importer = docker.build("datapunt/external-data-scrapers_importer:${env.BUILD_NUMBER}", "import")
+            def importer = docker.build("datapunt/external-data-scrapers_importer:${env.BUILD_NUMBER}", "--build-arg http_proxy=${JENKINS_HTTP_PROXY_STRING} --build-arg https_proxy=${JENKINS_HTTP_PROXY_STRING} import")
                 importer.push()
                 importer.push("acceptance")
 
-            def api = docker.build("datapunt/external-data-scrapers:${env.BUILD_NUMBER}", "api")
+            def api = docker.build("datapunt/external-data-scrapers:${env.BUILD_NUMBER}", "--build-arg http_proxy=${JENKINS_HTTP_PROXY_STRING} --build-arg https_proxy=${JENKINS_HTTP_PROXY_STRING} api")
                 api.push()
             }
         }
