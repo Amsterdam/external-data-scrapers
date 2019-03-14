@@ -9,8 +9,8 @@ from zipfile import ZipFile
 
 import requests
 import shapefile
-from shapely.geometry import LineString, Point
 from bs4 import BeautifulSoup
+from shapely.geometry import LineString, Point
 
 import db_helper
 from data_sources.importer_class import Importer
