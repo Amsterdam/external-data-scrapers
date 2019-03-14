@@ -1,6 +1,6 @@
 import logging
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest.mock import patch
 
 import db_helper
@@ -44,7 +44,7 @@ def teardown_module():
 class ArgumentParser:
     debug = True
     year = 2019
-    month = None
+    monthly = True
     link_areas = False
 
     def __init__(self, **kwargs):
@@ -97,8 +97,12 @@ class TestSlurpTrafficOrder(unittest.TestCase):
         self.assertEqual(raw_count, 1)
 
     def test_url_query_trafficorder(self, fetch, s_parse):
-        slurper = slurp.TrafficOrderSlurper(year=1992, month=12)
-        self.assertEqual(slurper.date_query, 'and(jaargang=1992)and(date>1992-12-1)and(date<1992-12-31)')
+        slurper = slurp.TrafficOrderSlurper(monthly=True)
+        m = datetime.today().replace(day=1) - timedelta(days=1)
+        self.assertEqual(
+            slurper.date_query,
+            f'and(jaargang={m.year})and(date>{m.year}-{m.month}-1)and(date<{m.year}-{m.month}-{m.day})'
+        )
 
         slurper = slurp.TrafficOrderSlurper(year=1992)
         self.assertEqual(slurper.date_query, 'and(jaargang=1992)')

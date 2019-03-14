@@ -1,5 +1,4 @@
 import argparse
-import calendar
 import datetime
 import io
 import logging
@@ -21,16 +20,18 @@ class TrafficOrderSlurper(Slurper):
     url = TRAFFICORDER_URL
     fetch_json = False
 
-    def __init__(self, year=datetime.datetime.now().year, month=None, maximum=4020):
+    def __init__(self, year=datetime.datetime.now().year, monthly=False, maximum=4020):
         self.date_query = f'''and(jaargang={year})'''
+        self.month = None
+        prev = datetime.date.today().replace(day=1) - datetime.timedelta(days=1)
 
-        if month:
-            first, last = calendar.monthrange(year, month)
-            self.date_query += f'''and(date>{year}-{month}-{first})and(date<{year}-{month}-{last})'''
+        if monthly:
+            self.month = prev.month
+            self.date_query = f'''and(jaargang={prev.year})'''
+            self.date_query += f'''and(date>{prev.year}-{prev.month}-1)and(date<{prev.year}-{prev.month}-{prev.day})'''
 
         self.year = year
-        self.month = month
-        self.start = 1
+        self.offset = 1
         self.maximum = 4020
 
     def get_data(self, response_data, part):
@@ -51,7 +52,7 @@ class TrafficOrderSlurper(Slurper):
         return parts
 
     def get_url(self):
-        return self.url.format(start=self.start, maximum=self.maximum, date_query=self.date_query)
+        return self.url.format(start=self.offset, maximum=self.maximum, date_query=self.date_query)
 
     def start_import(self, make_engine):
         self.setup_db(make_engine)
@@ -61,7 +62,7 @@ class TrafficOrderSlurper(Slurper):
         part_list.append(self.get_data(response_data, part=part))
 
         for _ in self.get_part_amount(response_data):
-            self.start += self.maximum
+            self.offset += self.maximum
             part += 1
             part_list.append(self.get_data(self.fetch(), part=part))
 
@@ -75,14 +76,17 @@ def main(make_engine=True):
     desc = "Scrape TrafficOrder."
     inputparser = argparse.ArgumentParser(desc)
 
-    inputparser.add_argument('--year', type=int, action='store', required=True)
-    inputparser.add_argument('--month', type=int, action='store')
+    inputparser.add_argument('--year', type=int, action='store')
+    inputparser.add_argument('--monthly', action='store_true', default=False)
 
     args = inputparser.parse_args()
 
     start = time.time()
 
-    TrafficOrderSlurper(year=args.year, month=args.month).start_import(make_engine)
+    if args.monthly:
+        TrafficOrderSlurper(monthly=args.monthly).start_import(make_engine)
+    else:
+        TrafficOrderSlurper(year=args.year).start_import(make_engine)
 
     log.info("Took: %s", time.time() - start)
 

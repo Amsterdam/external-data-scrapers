@@ -21,10 +21,9 @@ dc build
 
 if [ "$MONTHLY" = "yes"]
 then
-    dc run --rm importer python data_sources/trafficorder/copy_to_model.py --year $year --month $month
+    dc run --rm importer python data_sources/trafficorder/slurp.py --monthly
 else
-    dc run --rm importer python data_sources/trafficorder/copy_to_model.py --year $year
+    dc run --rm importer python data_sources/trafficorder/slurp.py --year $year
 fi
 
 dc down -v
-
