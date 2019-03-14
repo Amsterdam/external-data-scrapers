@@ -10,10 +10,11 @@ from zipfile import ZipFile
 import requests
 import shapefile
 from shapely.geometry import LineString, Point
+from bs4 import BeautifulSoup
 
 import db_helper
 from data_sources.importer_class import Importer
-from data_sources.ndw.endpoints import ENDPOINTS, SHAPEFILE_URL
+from data_sources.ndw.endpoints import ENDPOINTS, ROOT_URL
 from data_sources.ndw.models import TrafficSpeedRaw, TravelTimeRaw
 from data_sources.ndw.sql_queries import (INSERT_TRAFFICSPEED,
                                           INSERT_TRAVELTIME,
@@ -23,6 +24,20 @@ from data_sources.ndw.sql_queries import (INSERT_TRAFFICSPEED,
                                           SELECT_STADSDEEL_28992)
 
 log = logging.getLogger(__name__)
+
+
+def fetch_shapefile():
+    page = requests.get(ROOT_URL).text
+    soup = BeautifulSoup(page, 'html.parser')
+    shapefile_url = [
+        node.get('href') for node in soup.find_all('a') if 'NDW_Shapefile' in node.get('href')
+    ]
+    try:
+        response = requests.get(ROOT_URL + '/' + shapefile_url[0])
+        return response.content
+
+    except Exception as e:
+        raise Exception(f'Failed to retrieve shapefile with the following error: {e}')
 
 
 class TravelTimeImporter(Importer):
@@ -105,12 +120,12 @@ class TravelTimeImporter(Importer):
         session.close()
 
     def get_shapefile_reader(self):
-        response = requests.get(SHAPEFILE_URL)
-        zipfile = ZipFile(io.BytesIO(response.content), 'r')
-        date = zipfile.namelist()[0].split('_')[0]
+        zipfile = ZipFile(io.BytesIO(fetch_shapefile()), 'r')
+        shp = [fn for fn in zipfile.namelist() if fn.endswith('Meetvakken.shp')][0]
+        dbf = [fn for fn in zipfile.namelist() if fn.endswith('Meetvakken.dbf')][0]
         return shapefile.Reader(
-            shp=zipfile.open(f"{date}_Meetvakken.shp"),
-            dbf=zipfile.open(f"{date}_Meetvakken.dbf")
+            shp=zipfile.open(shp),
+            dbf=zipfile.open(dbf)
         )
 
     def get_shapefile_records(self):
@@ -149,13 +164,14 @@ class TrafficSpeedImporter(Importer):
         return super().start_import(*args, **kwargs)
 
     def get_shapefile_reader(self):
-        response = requests.get(SHAPEFILE_URL)
-        zipfile = ZipFile(io.BytesIO(response.content), 'r')
-        date = zipfile.namelist()[0].split('_')[0]
+        zipfile = ZipFile(io.BytesIO(fetch_shapefile()), 'r')
+        shp = [fn for fn in zipfile.namelist() if fn.endswith('Telpunten.shp')][0]
+        dbf = [fn for fn in zipfile.namelist() if fn.endswith('Telpunten.dbf')][0]
+        shx = [fn for fn in zipfile.namelist() if fn.endswith('Telpunten.shx')][0]
         return shapefile.Reader(
-            shp=zipfile.open(f"{date}_Telpunten.shp"),
-            dbf=zipfile.open(f"{date}_Telpunten.dbf"),
-            shx=zipfile.open(f"{date}_Telpunten.shx")
+            shp=zipfile.open(shp),
+            dbf=zipfile.open(dbf),
+            shx=zipfile.open(shx)
         )
 
     def get_shapefile_records(self):

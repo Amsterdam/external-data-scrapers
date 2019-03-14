@@ -131,18 +131,15 @@ class TestCopyNDW(unittest.TestCase):
 
     @patch("data_sources.ndw.copy_to_model.TrafficSpeedImporter.get_stadsdeel_list", autospec=True)
     @patch("data_sources.ndw.copy_to_model.TrafficSpeedImporter.get_buurt_code_list", autospec=True)
-    @patch("data_sources.ndw.copy_to_model.requests.get")
-    def test_add_trafficspeed_coordinates(self, get, b_list, s_list, s_parse):
+    @patch("data_sources.ndw.copy_to_model.fetch_shapefile")
+    def test_add_trafficspeed_coordinates(self, fetch_shapefile, b_list, s_list, s_parse):
         self._populate_raw_trafficspeed()
         with open(
                 FIXTURE_PATH + '/ndw_shapefile.zip', 'rb'
         ) as shapefile:
             shapefile_data = shapefile.read()
 
-        class Response:
-            content = shapefile_data
-
-        get.side_effect = [Response()]
+        fetch_shapefile.side_effect = [shapefile_data]
         inputparser = ArgumentParser(endpoint=['trafficspeed'], exclude_areas=False)
         s_parse.side_effect = [inputparser]
 
@@ -154,18 +151,15 @@ class TestCopyNDW(unittest.TestCase):
 
     @patch("data_sources.ndw.copy_to_model.TravelTimeImporter.get_stadsdeel_list", autospec=True)
     @patch("data_sources.ndw.copy_to_model.TravelTimeImporter.get_buurt_code_list", autospec=True)
-    @patch("data_sources.ndw.copy_to_model.requests.get")
-    def test_add_traveltime_coordinates(self, get, b_list, s_list, s_parse):
+    @patch("data_sources.ndw.copy_to_model.fetch_shapefile")
+    def test_add_traveltime_coordinates(self, fetch_shapefile, b_list, s_list, s_parse):
         self._populate_raw_traveltime()
         with open(
                 FIXTURE_PATH + '/ndw_shapefile.zip', 'rb'
         ) as shapefile:
             shapefile_data = shapefile.read()
 
-        class Response:
-            content = shapefile_data
-
-        get.side_effect = [Response()]
+        fetch_shapefile.side_effect = [shapefile_data]
         inputparser = ArgumentParser(exclude_areas=False)
         s_parse.side_effect = [inputparser]
 
