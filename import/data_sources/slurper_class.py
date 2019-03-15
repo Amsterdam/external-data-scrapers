@@ -1,10 +1,9 @@
 import datetime
+import os
 
 import requests
 
 import db_helper
-
-import os
 
 
 class Slurper:
