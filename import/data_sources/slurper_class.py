@@ -4,6 +4,8 @@ import requests
 
 import db_helper
 
+import os
+
 
 class Slurper:
     """
@@ -17,6 +19,7 @@ class Slurper:
     url = None
     model = None
     fetch_json = True
+    verify = os.getenv('ADP_USE_SSL_CERT', False)
 
     def get_url(self):
         if not self.url:
@@ -42,7 +45,7 @@ class Slurper:
         Sometimes the datasource return files not Json.
         """
         url = self.get_url()
-        response = requests.get(url)
+        response = requests.get(url, verify=self.verify)
         if self.fetch_json:
             return response.json()
         return response.content
