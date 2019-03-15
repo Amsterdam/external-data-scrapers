@@ -5,6 +5,7 @@ services:
     # build: ../..
     environment:
       ENVIRONMENT:
+      ADP_USE_SSL_CERT:
       OVERRIDE_DATABASE:
       DATABASE_OVERRIDE_HOST: 
       DATABASE_OVERRIDE_NAME: externaldata
