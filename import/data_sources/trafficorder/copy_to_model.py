@@ -120,6 +120,7 @@ def main(make_engine=True):
 
     if args.debug:
         log.setLevel(logging.DEBUG)
+        logging.getLogger("urllib3").setLevel(logging.DEBUG)
 
     start = time.time()
 

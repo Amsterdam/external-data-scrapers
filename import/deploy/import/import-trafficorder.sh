@@ -35,7 +35,7 @@ then
 fi
 
 # copy data into final table for serving to django
-dc run --rm importer python data_sources/trafficorder/copy_to_model.py 
+dc run --rm importer python data_sources/trafficorder/copy_to_model.py --debug
 dc run --rm importer python data_sources/trafficorder/copy_to_model.py --link_areas
 
 dc down -v
