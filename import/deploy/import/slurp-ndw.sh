@@ -15,6 +15,9 @@ dc() {
 
 trap 'dc kill ; dc down ; dc rm -f' EXIT
 
+# remove extra network
+for i in $(docker network ls | awk '/ndw-slurp-acceptance_default/ {print $1}'); do docker network rm $i; done
+
 dc rm -f
 dc pull
 dc build

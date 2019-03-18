@@ -1,9 +1,9 @@
 import datetime
-import os
 
 import requests
 
 import db_helper
+from settings import VERIFY_SSL
 
 
 class Slurper:
@@ -18,7 +18,6 @@ class Slurper:
     url = None
     model = None
     fetch_json = True
-    verify = os.getenv('ADP_USE_SSL_CERT', False)
 
     def get_url(self):
         if not self.url:
@@ -44,7 +43,7 @@ class Slurper:
         Sometimes the datasource return files not Json.
         """
         url = self.get_url()
-        response = requests.get(url, verify=self.verify)
+        response = requests.get(url, verify=VERIFY_SSL)
         if self.fetch_json:
             return response.json()
         return response.content
