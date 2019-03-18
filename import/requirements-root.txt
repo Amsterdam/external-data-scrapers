@@ -1,4 +1,5 @@
 bs4
+datapunt-objectstore
 shapely
 pyshp
 psycopg2-binary

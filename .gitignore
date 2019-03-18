@@ -47,3 +47,5 @@ htmlcov
 
 #visual studio code
 .vscode
+
+openstackrc.txt
