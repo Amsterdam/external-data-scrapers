@@ -36,10 +36,6 @@ node {
                 importer.push()
                 importer.push("acceptance")
 
-            def realtime_ov = docker.build("datapunt/external-data-scrapers_realtime_ov:${env.BUILD_NUMBER}", "--build-arg http_proxy=${JENKINS_HTTP_PROXY_STRING} --build-arg https_proxy=${JENKINS_HTTP_PROXY_STRING} api/deploy/realtime_ov")
-                realtime_ov.push()
-                realtime_ov.push("acceptance")
-
             def api = docker.build("datapunt/external-data-scrapers:${env.BUILD_NUMBER}", "--build-arg http_proxy=${JENKINS_HTTP_PROXY_STRING} --build-arg https_proxy=${JENKINS_HTTP_PROXY_STRING} api")
                 api.push()                
             }
