@@ -7,8 +7,8 @@ DIR=`pwd`
 
 #source /deploy/docker-wait.sh
 # cleanup files van previous failed runs?
-rm -f stops.txt trips.txt shapes.txt gtfs-nl.zip
+rm -f stops.txt trips.txt shapes.txt stop_times.txt gtfs-nl.zip
 wget http://gtfs.ovapi.nl/nl/gtfs-nl.zip
-unzip -j gtfs-nl.zip stops.txt trips.txt shapes.txt -d .
+unzip -j gtfs-nl.zip stops.txt trips.txt shapes.txt stop_times.txt -d .
 psql -U $DATABASE_USER -h $DATABASE_HOST $DATABASE_NAME < /deploy/ovlookup_data/refresh.sql
-rm -f stops.txt trips.txt shapes.txt gtfs-nl.zip
+rm -f stops.txt trips.txt shapes.txt stop_times.txt gtfs-nl.zip

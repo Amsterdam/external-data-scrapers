@@ -1,11 +1,12 @@
 import logging
 import xml.etree.ElementTree as ET
 
+from dateutil.parser import parse
 from django.contrib.gis.geos import Point
 from django.db import models
 
 from apps.ov.bulk_inserter import bulk_inserter
-from apps.ov.models import OvKv6, OvRoutes, OvStop
+from apps.ov.models import OvKv6, OvRoutes, OvRouteSection, OvStop
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
@@ -26,6 +27,10 @@ class Kv6XMLProcessor(object):
         self.inserter = bulk_inserter(table=OvKv6, batch_size=10)
         self.stops = {}
         self.routes = set()
+        # dict(route:stopcode, distance from last stop)
+        self.distances = {}
+        # dict(route, dict(stopcode, last time))
+        self.journeys = {}
 
     def refresh_data(self):
         log.info('refreshing stops and trips data')
@@ -36,6 +41,53 @@ class Kv6XMLProcessor(object):
         tmp_routes = set(OvRoutes.objects.values_list('key', flat=True))
         if tmp_routes:
             self.routes = tmp_routes
+            # clear tracked journeys
+            self.journeys = {}
+
+        prev_route = None
+        prev_stop = None
+        prev_dist = None
+        for sect in OvRouteSection.objects.all().order_by('route_id', 'stop_sequence'):
+            if not prev_route or prev_route != sect.route_id:
+                # new route
+                prev_route = sect.route_id
+                prev_stop = sect.stop_code
+                prev_dist = sect.shape_dist_traveled
+
+            key = f'{sect.route_id}:{sect.stop_code}'
+            self.distances[key] = (sect.shape_dist_traveled - prev_dist, prev_stop)
+            prev_route = sect.route_id
+            prev_stop = sect.stop_code
+            prev_dist = sect.shape_dist_traveled
+
+        log.info('refreshing stops and trips data completed')
+        log.info(f'{len(self.stops)} {len(self.routes)} {len(self.distances)}')
+
+    def get_prev_dist_stop(self, dataowner, line, journey, stop):
+        key = f'{dataowner}:{line}:{journey}:{stop}'
+        if key in self.distances:
+            return self.distances[key]
+        return (None, None)
+
+    def store_departure(self, dataowner, line, journey, stop, deptime):
+        key = f'{dataowner}:{line}:{journey}'
+        if key not in self.journeys:
+            self.journeys[key] = {}
+        subdict = self.journeys[key]
+        subdict[stop] = deptime
+
+    def get_departure(self, dataowner, line, journey, stop):
+        key = f'{dataowner}:{line}:{journey}'
+        if key in self.journeys:
+            subdict = self.journeys[key]
+            if stop in subdict:
+                return subdict[stop]
+        return None
+
+    def remove_journey(self, dataowner, line, journey):
+        key = f'{dataowner}:{line}:{journey}'
+        if key in self.journeys:
+            del self.journeys[key]
 
     def is_ams_route(self, dataowner, line, journey):
         key = f'{dataowner}:{line}:{journey}'
@@ -73,6 +125,40 @@ class Kv6XMLProcessor(object):
             # add station location otherwise
             rec.geo_location = self.stops[rec.userstopcode]
 
+        if rec.messagetype == 'DEPARTURE' or rec.messagetype == 'INIT':
+            # store departure
+            self.store_departure(rec.dataownercode,
+                                 rec.lineplanningnumber,
+                                 rec.journeynumber,
+                                 rec.userstopcode,
+                                 rec.vehicle)
+        elif rec.messagetype == 'ARRIVAL' or rec.messagetype == 'END':
+            # get distance since distance since last stop
+            (dist, stop) = self.get_prev_dist_stop(rec.dataownercode,
+                                                   rec.lineplanningnumber,
+                                                   rec.journeynumber,
+                                                   rec.userstopcode)
+            if dist and stop:
+                # get last depature time from prev stop
+                prev_depature = self.get_departure(rec.dataownercode,
+                                                   rec.lineplanningnumber,
+                                                   rec.journeynumber,
+                                                   stop)
+                if prev_depature:
+                    # calculate avg speed over last section
+                    current = parse(rec.vehicle)
+                    prev = parse(prev_depature)
+                    delta = (current - prev).total_seconds()
+                    if delta > 0:
+                        rec.avg_speed = dist / delta
+                        # print(f'{rec.avg_speed} = {dist} / {delta}')
+
+            # journey ended, remove from cache
+            if rec.messagetype == 'END':
+                self.remove_journey(rec.dataownercode,
+                                    rec.lineplanningnumber,
+                                    rec.journeynumber)
+
     def process(self, received_time, xml):
         try:
             tree = ET.ElementTree(ET.fromstring(xml))
@@ -80,6 +166,7 @@ class Kv6XMLProcessor(object):
             timestamp = root.find('tmi8:Timestamp', NS)
             if timestamp is None:
                 log.info(f'Skipping invalid xml {xml}')
+                log.info(f'Size of cache: {len(self.journeys)}')
                 return
             message_time = timestamp.text
 

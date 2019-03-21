@@ -62,10 +62,12 @@ class OvKv6(models.Model):
     numberofcoaches = models.SmallIntegerField(null=True)
     trip_hash = models.BigIntegerField(null=True)
     geo_location = PointField(srid=28992, null=True)
+    avg_speed = models.FloatField(null=True)
 
 
 class OvStop(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
+    stop_id = models.CharField(max_length=255, null=True, db_index=True)
     name = models.CharField(max_length=255)
     geo_location = PointField(srid=4326)
 
@@ -79,3 +81,11 @@ class OvRoutes(models.Model):
     headsign = models.CharField(max_length=255, null=True)
     short_name = models.CharField(max_length=255, null=True)
     long_name = models.CharField(max_length=255, null=True)
+
+
+class OvRouteSection(models.Model):
+    stop_id = models.CharField(max_length=255, db_index=True)
+    stop_code = models.CharField(max_length=255, db_index=True)
+    stop_sequence = models.IntegerField()
+    shape_dist_traveled = models.IntegerField()
+    route = models.ForeignKey(OvRoutes, on_delete=models.CASCADE)

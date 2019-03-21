@@ -69,14 +69,40 @@ CREATE INDEX csv_trips_shape_id_idx on csv_trips(shape_id);
 
 ANALYZE VERBOSE csv_trips;
 
+-- reload stop times
+-- trip_id,stop_sequence,stop_id,stop_headsign,arrival_time,departure_time,
+-- pickup_type,drop_off_type,timepoint,shape_dist_traveled,fare_units_traveled
+DROP TABLE IF EXISTS csv_stop_times;
+CREATE TABLE csv_stop_times (
+    trip_id                 INTEGER NOT NULL,
+    stop_sequence           SMALLINT NOT NULL,
+    stop_id                 VARCHAR(255) NOT NULL,
+    stop_headsign           VARCHAR(255),
+    arrival_time            VARCHAR(255),
+    departure_time          VARCHAR(255),    
+    pickup_type             SMALLINT,
+    drop_off_type           SMALLINT,
+    timepoint               SMALLINT,
+    shape_dist_traveled     INTEGER,
+    fare_units_traveled     INTEGER,
+    CONSTRAINT csv_stop_times_pkey PRIMARY KEY(trip_id, stop_id, stop_sequence)
+);
+
+\COPY csv_stop_times FROM '/app/stop_times.txt' DELIMITER ',' CSV HEADER;
+
+ANALYZE VERBOSE csv_stop_times;
+
+
+
 BEGIN;
 -- refresh ovstop
 DELETE FROM ov_ovstop;
 INSERT INTO ov_ovstop
 SELECT DISTINCT ON (stop_code)
-    stop_code,
+    stop_code,    
     stop_name,
-    ST_SetSRID(ST_MakePoint(CAST(stop_lon AS FLOAT), CAST(stop_lat AS FLOAT)), 4326)
+    ST_SetSRID(ST_MakePoint(CAST(stop_lon AS FLOAT), CAST(stop_lat AS FLOAT)), 4326),
+    stop_id
 FROM
     csv_stops
 WHERE
@@ -99,5 +125,19 @@ WHERE
     t.shape_id = s.shape_id AND t.realtime_trip_id IS NOT NULL
     AND :TOPLEFT_LAT >= shape_pt_lat AND :BOTTOMRIGHT_LAT <= shape_pt_lat
     AND :TOPLEFT_LON <= shape_pt_lon AND :BOTTOMRIGHT_LON >= shape_pt_lon;
+
+-- fill sections for the routes
+TRUNCATE TABLE ov_OvRouteSection;
+INSERT INTO ov_OvRouteSection (stop_id, stop_code, stop_sequence, shape_dist_traveled, route_id)
+SELECT 
+    s.stop_id,
+    t.id,
+    s.stop_sequence,
+    s.shape_dist_traveled,
+    r.key
+FROM 
+    csv_stop_times s, ov_ovroutes r, ov_ovstop t
+WHERE
+    s.trip_id = r.trip_id and s.stop_id = t.stop_id;
 
 COMMIT;

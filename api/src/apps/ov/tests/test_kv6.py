@@ -2,14 +2,21 @@ import gzip
 import logging
 import threading
 import time
+from datetime import datetime
 
 import zmq
+from dateutil.tz import tzlocal
 from django.contrib.gis.geos import Point
-from django.test import TestCase
+from django.db import connection
+from django.test import TransactionTestCase
 
-from apps.ov.management.commands.kv6sub import ZmqClient
+from apps.ov.bulk_inserter import bulk_inserter
+from apps.ov.kv6xml import Kv6XMLProcessor
 # import gc
-from apps.ov.models import OvRaw, OvRoutes, OvStop
+from apps.ov.models import OvKv6, OvRaw, OvRoutes, OvRouteSection, OvStop
+from apps.ov.partition_util import PartitionUtil
+from apps.ov.zmq_base_client import ZmqBaseClient
+from apps.ov.zmq_subscriber import ZmqSubscriber
 
 # Create your tests here.
 PORT = 9999
@@ -37,32 +44,32 @@ XML = b'''<?xml version="1.0" encoding="utf-8"?>
             <rd-x>81434</rd-x>
             <rd-y>451631</rd-y>
         </OFFROUTE>
-        <ARRIVAL>
-            <dataownercode>CXX</dataownercode>
-            <lineplanningnumber>W069</lineplanningnumber>
-            <operatingday>2019-01-24</operatingday>
-            <journeynumber>87</journeynumber>
-            <reinforcementnumber>0</reinforcementnumber>
-            <userstopcode>03099</userstopcode>
-            <passagesequencenumber>0</passagesequencenumber>
-            <timestamp>2019-01-24T15:36:36+01:00</timestamp>
-            <source>VEHICLE</source>
-            <vehiclenumber>6741</vehiclenumber>
-            <punctuality>-24</punctuality>
-        </ARRIVAL>
         <DEPARTURE>
             <dataownercode>CXX</dataownercode>
-            <lineplanningnumber>W043</lineplanningnumber>
+            <lineplanningnumber>W053</lineplanningnumber>
             <operatingday>2019-01-24</operatingday>
-            <journeynumber>37</journeynumber>
+            <journeynumber>35</journeynumber>
             <reinforcementnumber>0</reinforcementnumber>
-            <userstopcode>54445050</userstopcode>
+            <userstopcode>stop1</userstopcode>
             <passagesequencenumber>0</passagesequencenumber>
             <timestamp>2019-01-24T15:36:40+01:00</timestamp>
             <source>VEHICLE</source>
             <vehiclenumber>6631</vehiclenumber>
             <punctuality>-20</punctuality>
         </DEPARTURE>
+        <ARRIVAL>
+            <dataownercode>CXX</dataownercode>
+            <lineplanningnumber>W053</lineplanningnumber>
+            <operatingday>2019-01-24</operatingday>
+            <journeynumber>35</journeynumber>
+            <reinforcementnumber>0</reinforcementnumber>
+            <userstopcode>stop2</userstopcode>
+            <passagesequencenumber>0</passagesequencenumber>
+            <timestamp>2019-01-24T15:37:40+01:00</timestamp>
+            <source>VEHICLE</source>
+            <vehiclenumber>6741</vehiclenumber>
+            <punctuality>-24</punctuality>
+        </ARRIVAL>
         <ONROUTE>
             <dataownercode>CXX</dataownercode>
             <lineplanningnumber>W055</lineplanningnumber>
@@ -117,6 +124,37 @@ class MockZmqServer(object):
         log.info('server thread finished')
 
 
+class MockSubscriber(ZmqSubscriber):
+    def __init__(self, url):
+        self.inserter = bulk_inserter(table=OvRaw, batch_size=10)
+        self.xmlprocessor = Kv6XMLProcessor()
+        super().__init__(url)
+
+    def handle_refreshdata(self):
+        self.xmlprocessor.refresh_data()
+
+    def handle_message(self):
+        [envelop, contents] = self.sock.recv_multipart()
+        envelop = envelop.decode('utf-8')
+        # contents is transferred as gzipped uni code
+        log.info(f'{envelop} received')
+        if 'KV6posinfo' in envelop:
+            record = OvRaw(feed=envelop, xml=contents)
+            self.inserter.add(record)
+            unpacked = gzip.decompress(record.xml).decode('utf-8')
+            now = datetime.now(tzlocal())
+            self.xmlprocessor.process(now, unpacked)
+        else:
+            log.info(f'Skipping envelop {envelop}')
+
+
+class ZmqClient(ZmqBaseClient):
+    def __init__(self, publisher=ADDR):
+        super().__init__(publisher)
+        # Add additional subscribers to the list
+        self.subscribers = [MockSubscriber(self.publisher)]
+
+
 class MockKv6Client(object):
     def __init__(self):
         self.worker = None
@@ -137,18 +175,41 @@ class MockKv6Client(object):
         log.info('client thread finished')
 
 
-class Kv6Tests(TestCase):
+class Kv6Tests(TransactionTestCase):
     def setUp(self):
+        log.info('Set up mock data for tests')
         # set dummy stations and locations
-        stop = OvStop(id="05065", geo_location=Point(x=1.0, y=1.0))
-        stop.save()
-        route = OvRoutes(
+        OvStop.objects.create(id="05065", stop_id=1, geo_location=Point(x=1.0, y=1.0))
+        OvStop.objects.create(id="stop1", stop_id=2, geo_location=Point(x=1.0, y=2.0))
+        OvStop.objects.create(id="stop2", stop_id=3, geo_location=Point(x=1.0, y=3.0))
+
+        route = OvRoutes.objects.create(
             key="CXX:W053:35",
             route_id=1,
             service_id=1,
             trip_id=1
         )
-        route.save()
+
+        OvRouteSection.objects.create(
+            route=route,
+            stop_sequence=0,
+            stop_id=2,
+            stop_code='stop1',
+            shape_dist_traveled=0)
+
+        OvRouteSection.objects.create(
+            route=route,
+            stop_sequence=1,
+            stop_id=3,
+            stop_code='stop1',
+            shape_dist_traveled=1000)
+
+        pu = PartitionUtil()
+        d = datetime.strptime('2019-01-24', '%Y-%m-%d').date()
+        q = pu.make_partition_query(OvKv6._meta.db_table, pu.week_partition(d))
+        with connection.cursor() as c:
+            c.execute(q)
+        log.info('Set up mock data for tests completed')
         self.server = MockZmqServer()
         self.client = MockKv6Client()
 

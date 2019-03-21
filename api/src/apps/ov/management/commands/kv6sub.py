@@ -2,17 +2,15 @@
 # pylint: disable=unbalanced-tuple-unpacking
 import gzip
 import logging
-import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from dateutil.tz import tzlocal
 from django.core.management.base import BaseCommand
-from django.db import connection
 
 from apps.ov.bulk_inserter import bulk_inserter
 from apps.ov.kv6xml import Kv6XMLProcessor
 from apps.ov.models import OvRaw
-from apps.ov.zmq_poller import ZmqPoller
+from apps.ov.zmq_base_client import ZmqBaseClient
 from apps.ov.zmq_subscriber import ZmqSubscriber
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
@@ -20,7 +18,6 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.ERROR)
 KV6KEY = "KV6posinfo"
 PUBLISHER = "tcp://pubsub.besteffort.ndovloket.nl:7658"
-TIMEOUTMS = 60
 
 
 class KV6Subscriber(ZmqSubscriber):
@@ -47,58 +44,11 @@ class KV6Subscriber(ZmqSubscriber):
             log.info(f'Skipping envelop {envelop}')
 
 
-class ZmqClient(object):
+class ZmqClient(ZmqBaseClient):
     def __init__(self, publisher=PUBLISHER):
-        self.stop = False
-        self.publisher = publisher
-        self.poller = ZmqPoller()
+        super().__init__(publisher)
         # Add additional subscribers to the list
         self.subscribers = [KV6Subscriber(self.publisher)]
-        self.next_refresh = None
-
-    def subscribe(self):
-        try:
-            for sub in self.subscribers:
-                sub.connect()
-                self.poller.register(sub)
-            return True
-        except Exception as err:
-            log.error(err)
-            return False
-
-    def check_refresh(self):
-        if self.next_refresh is None or self.next_refresh <= datetime.now():
-            for sub in self.subscribers:
-                sub.handle_refreshdata()
-            self.next_refresh = datetime.now() + timedelta(days=1)
-
-    def message_loop(self):
-        while True:
-            try:
-                self.check_refresh()
-                if self.stop:
-                    # we need to close the connection within the
-                    # thread, else it will be kept alive
-                    connection.close()
-                    log.info('Stop: Terminating message loop')
-                    break
-                for subscr in self.poller.poll():
-                    subscr.handle_message()
-            except Exception as err:
-                log.error(err)
-
-    def subscribe_and_process(self):
-        while True:
-            if self.subscribe():
-                self.message_loop()
-                log.info('Timed out, trying to reconnect...')
-            else:
-                log.info(f'Connection failed, sleeping {0.5 * TIMEOUTMS} (ms)')
-            if self.stop:
-                connection.close()
-                log.info('Stop: Terminating pubsub')
-                break
-            time.sleep(0.5 * TIMEOUTMS)
 
 
 class Command(BaseCommand):
