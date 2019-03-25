@@ -3,7 +3,7 @@ import asyncio
 import logging
 
 from geoalchemy2 import Geometry
-from sqlalchemy import TIMESTAMP, Column, Integer, String
+from sqlalchemy import TIMESTAMP, Column, Integer, String, Text
 from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -59,8 +59,8 @@ class TrafficOrder(Base):
     year = Column(Integer)
     creator = Column(String(length=255))
     identifier = Column(String(length=255))
-    title = Column(String(length=255))
-    alternative = Column(String(length=255))
+    title = Column(Text)
+    alternative = Column(Text)
     spatial_coordinates = Column(String(length=100))
 
     geometrie = Column(Geometry('Point', srid=28992))
