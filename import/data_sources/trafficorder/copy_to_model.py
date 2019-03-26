@@ -49,7 +49,7 @@ class TrafficOrderImporter(Importer):
             if tag_name in self.columns.keys() and tag_name != 'traffic_sign_code':
                 trafficorder_attr[tag_name] = tag.attrib['content']
 
-            if tag_name == 'spatial' and tag.attrib['scheme'].split('.')[1] != 'Gemeente':
+            if tag_name == 'spatial' and tag.attrib['scheme'].split('.')[1] == 'EPSG28992':
                 spatial = {}
                 coordinates = tag.attrib['content'].split(' ')
                 spatial['geometrie'] = self.point_to_str(28992, coordinates)
