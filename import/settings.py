@@ -18,3 +18,13 @@ ENVIRONMENT_OVERRIDES = [
 
 DATABASE_IMPORT_LIMIT = int(os.getenv('IMPORT_LIMIT', 1000))
 VERIFY_SSL = os.getenv('ADP_USE_SSL_CERT', False)
+
+OBJECTSTORE_CONF = dict(
+    VERSION='2.0',
+    AUTHURL='https://identity.stack.cloudvps.com/v2.0',
+    TENANT_NAME=os.getenv('OS_TENANT_NAME'),
+    TENANT_ID=os.getenv('OS_TENANT_ID'),
+    USER=os.getenv('OS_USERNAME'),
+    PASSWORD=os.getenv('OS_PASSWORD'),
+    REGION_NAME='NL',
+)
