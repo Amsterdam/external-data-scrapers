@@ -17,6 +17,8 @@ Python project with slurp (retrieve from data source) and copy_to_model (cleanup
 - OvFiets
 - Parkeergarages
 - NDW (Traveltime)
+- VerkeerBesluiten (TrafficOrder)
+- WifiInfo
 
 (NDW: Nationale Databank Wegverkeersgegevens)
 
@@ -59,16 +61,9 @@ docker-compose run api ./manage.py migrate
 ```
 
 ### Import local data
-#### Ovfiets
 
 ```
-docker-compose run --rm import ./data_sources/ovfiets/import-local.sh
-```
-
-#### ParkeerGarages
-
-```
-docker-compose run --rm import ./data_sources/parkeergarages/import-local.sh
+docker-compose run --rm import ./data_sources/{data_source}/import-local.sh
 ```
 
 ### Running the server
