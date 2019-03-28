@@ -66,7 +66,7 @@ class TestCopyWifiInfo(unittest.TestCase):
     def test_copy_wifiinfo(self, file_stream, meta_list, c_parse):
         csvfile = open(FIXTURE_PATH + '/wifiinfo.csv', 'rb')
 
-        meta_list.return_value = [{'name': 'wifiinfo.csv'}]
+        meta_list.return_value = iter([{'name': 'wifiinfo.csv'}])
         c_parse.side_effect = [ArgumentParser()]
         file_stream.side_effect = [csvfile]
         copy_to_model.main(make_engine=False)

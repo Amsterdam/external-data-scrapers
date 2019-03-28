@@ -73,7 +73,7 @@ class WifiInfoImporter:
     def start_import(self):
         os_meta_list = self.get_os_meta_list()
         csv_list = self.get_csv_list(os_meta_list)
-        log.info(f'fetched {len(os_meta_list)} metadata')
+        log.info(f'Importing {len(csv_list)} file(s)')
 
         for csv_meta in csv_list:
             self.session.query(TempWifiInfo).delete()
