@@ -62,7 +62,8 @@ class OvKv6(models.Model):
     numberofcoaches = models.SmallIntegerField(null=True)
     trip_hash = models.BigIntegerField(null=True)
     geo_location = PointField(srid=28992, null=True)
-    avg_speed = models.FloatField(null=True)
+    distance = models.IntegerField(null=True)
+    time = models.IntegerField(null=True)
 
 
 class OvStop(models.Model):

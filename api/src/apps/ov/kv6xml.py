@@ -69,14 +69,14 @@ class Kv6XMLProcessor(object):
             return self.distances[key]
         return (None, None)
 
-    def store_departure(self, dataowner, line, journey, stop, deptime):
+    def store_arrival(self, dataowner, line, journey, stop, deptime):
         key = f'{dataowner}:{line}:{journey}'
         if key not in self.journeys:
             self.journeys[key] = {}
         subdict = self.journeys[key]
         subdict[stop] = deptime
 
-    def get_departure(self, dataowner, line, journey, stop):
+    def get_arrival(self, dataowner, line, journey, stop):
         key = f'{dataowner}:{line}:{journey}'
         if key in self.journeys:
             subdict = self.journeys[key]
@@ -125,39 +125,38 @@ class Kv6XMLProcessor(object):
             # add station location otherwise
             rec.geo_location = self.stops[rec.userstopcode]
 
-        if rec.messagetype == 'DEPARTURE' or rec.messagetype == 'INIT':
-            # store departure
-            self.store_departure(rec.dataownercode,
-                                 rec.lineplanningnumber,
-                                 rec.journeynumber,
-                                 rec.userstopcode,
-                                 rec.vehicle)
-        elif rec.messagetype == 'ARRIVAL' or rec.messagetype == 'END':
+        if rec.messagetype == 'ARRIVAL':
+            # store own arrival
+            self.store_arrival(rec.dataownercode,
+                               rec.lineplanningnumber,
+                               rec.journeynumber,
+                               rec.userstopcode,
+                               rec.vehicle)
             # get distance since distance since last stop
             (dist, stop) = self.get_prev_dist_stop(rec.dataownercode,
                                                    rec.lineplanningnumber,
                                                    rec.journeynumber,
                                                    rec.userstopcode)
             if dist and stop:
-                # get last depature time from prev stop
-                prev_depature = self.get_departure(rec.dataownercode,
-                                                   rec.lineplanningnumber,
-                                                   rec.journeynumber,
-                                                   stop)
-                if prev_depature:
+                # get last arrival time from prev stop
+                prev_arrival = self.get_arrival(rec.dataownercode,
+                                                rec.lineplanningnumber,
+                                                rec.journeynumber,
+                                                stop)
+                if prev_arrival:
                     # calculate avg speed over last section
                     current = parse(rec.vehicle)
-                    prev = parse(prev_depature)
+                    prev = parse(prev_arrival)
                     delta = (current - prev).total_seconds()
                     if delta > 0:
-                        rec.avg_speed = dist / delta
-                        # print(f'{rec.avg_speed} = {dist} / {delta}')
-
-            # journey ended, remove from cache
-            if rec.messagetype == 'END':
-                self.remove_journey(rec.dataownercode,
-                                    rec.lineplanningnumber,
-                                    rec.journeynumber)
+                        rec.distance = dist
+                        rec.time = delta
+                        # print(f'{dist/delta} = {dist} / {delta}')
+        # journey ended, remove from cache
+        elif rec.messagetype == 'END':
+            self.remove_journey(rec.dataownercode,
+                                rec.lineplanningnumber,
+                                rec.journeynumber)
 
     def process(self, received_time, xml):
         try:
