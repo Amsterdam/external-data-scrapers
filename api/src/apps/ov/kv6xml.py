@@ -27,7 +27,7 @@ class Kv6XMLProcessor(object):
         self.inserter = bulk_inserter(table=OvKv6, batch_size=10)
         self.stops = {}
         self.routes = set()
-        # dict(route:stopcode, distance from last stop)
+        # dict(route:stopcode, distance from last stop, prev stop)
         self.distances = {}
         # dict(route, dict(stopcode, last time))
         self.journeys = {}
@@ -54,6 +54,7 @@ class Kv6XMLProcessor(object):
                 prev_stop = sect.stop_code
                 prev_dist = sect.shape_dist_traveled
 
+            # route_id format: 'dataownercode:line:journey'
             key = f'{sect.route_id}:{sect.stop_code}'
             self.distances[key] = (sect.shape_dist_traveled - prev_dist, prev_stop)
             prev_route = sect.route_id
@@ -63,21 +64,30 @@ class Kv6XMLProcessor(object):
         log.info('refreshing stops and trips data completed')
         log.info(f'{len(self.stops)} {len(self.routes)} {len(self.distances)}')
 
+    def make_key(self, dataowner, line, journey):
+        return f'{dataowner}:{line}:{journey}'
+
+    def is_first_stop(self, dataowner, line, journey, stop):
+        key = f'{self.make_key(dataowner, line, journey)}:{stop}'
+        if key in self.distances:
+            return self.distances[key][1] == stop
+        return False
+
     def get_prev_dist_stop(self, dataowner, line, journey, stop):
-        key = f'{dataowner}:{line}:{journey}:{stop}'
+        key = f'{self.make_key(dataowner, line, journey)}:{stop}'
         if key in self.distances:
             return self.distances[key]
         return (None, None)
 
     def store_arrival(self, dataowner, line, journey, stop, deptime):
-        key = f'{dataowner}:{line}:{journey}'
+        key = self.make_key(dataowner, line, journey)
         if key not in self.journeys:
             self.journeys[key] = {}
         subdict = self.journeys[key]
         subdict[stop] = deptime
 
     def get_arrival(self, dataowner, line, journey, stop):
-        key = f'{dataowner}:{line}:{journey}'
+        key = self.make_key(dataowner, line, journey)
         if key in self.journeys:
             subdict = self.journeys[key]
             if stop in subdict:
@@ -85,12 +95,12 @@ class Kv6XMLProcessor(object):
         return None
 
     def remove_journey(self, dataowner, line, journey):
-        key = f'{dataowner}:{line}:{journey}'
+        key = self.make_key(dataowner, line, journey)
         if key in self.journeys:
             del self.journeys[key]
 
     def is_ams_route(self, dataowner, line, journey):
-        key = f'{dataowner}:{line}:{journey}'
+        key = self.make_key(dataowner, line, journey)
         return key in self.routes
 
     def strip_ns(self, xmltag):
@@ -125,13 +135,32 @@ class Kv6XMLProcessor(object):
             # add station location otherwise
             rec.geo_location = self.stops[rec.userstopcode]
 
-        if rec.messagetype == 'ARRIVAL':
-            # store own arrival
+        if rec.messagetype == 'DEPARTURE' and self.is_first_stop(
+                rec.dataownercode,
+                rec.lineplanningnumber,
+                rec.journeynumber,
+                rec.userstopcode):
+
+            # store departure as arrival for first stop
             self.store_arrival(rec.dataownercode,
                                rec.lineplanningnumber,
                                rec.journeynumber,
                                rec.userstopcode,
                                rec.vehicle)
+
+        elif rec.messagetype == 'ARRIVAL' and not self.is_first_stop(
+                rec.dataownercode,
+                rec.lineplanningnumber,
+                rec.journeynumber,
+                rec.userstopcode):
+
+            # store own arrival if we are not the first stop
+            self.store_arrival(rec.dataownercode,
+                               rec.lineplanningnumber,
+                               rec.journeynumber,
+                               rec.userstopcode,
+                               rec.vehicle)
+
             # get distance since distance since last stop
             (dist, stop) = self.get_prev_dist_stop(rec.dataownercode,
                                                    rec.lineplanningnumber,
