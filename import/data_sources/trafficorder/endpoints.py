@@ -1,1 +1,1 @@
-TRAFFICORDER_URL = 'https://zoekdienst.overheid.nl/sru/Search?x-connection=oep&operation=searchRetrieve&version=1.2&startRecord={start}&maximumRecords={maximum}&query=(type=Verkeersbesluiten)and(creator=Amsterdam){date_query}' # noqa
+TRAFFICORDER_URL = 'https://zoekdienst.overheid.nl/sru/Search?x-connection=oep&operation=searchRetrieve&version=1.2&startRecord={start}&maximumRecords={maximum}&query=(type=Verkeersbesluiten){date_query}' # noqa

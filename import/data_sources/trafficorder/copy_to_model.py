@@ -47,7 +47,7 @@ class TrafficOrderImporter(Importer):
             tag_name = self.get_tag_name(tag)
 
             if tag_name in self.columns.keys() and tag_name != 'traffic_sign_code':
-                trafficorder_attr[tag_name] = tag.attrib['content']
+                trafficorder_attr[tag_name] = tag.attrib['content'].replace('\n', ' ')
 
             if tag_name == 'spatial' and tag.attrib['scheme'].split('.')[1] == 'EPSG28992':
                 spatial = {}
