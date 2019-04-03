@@ -49,3 +49,4 @@ htmlcov
 .vscode
 
 openstackrc.txt
+mapserver/
