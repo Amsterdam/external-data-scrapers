@@ -9,6 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
 
 import db_helper
+from data_sources.ndw import sql_queries
 
 LOG = logging.getLogger(__name__)
 
@@ -24,6 +25,11 @@ DAILY_TABLES = [
     "daily_trafficspeed_summary"
 ]
 
+VIEWS = [
+    "latest_traveltime_with_speed",
+    "traveltime_with_speed"
+]
+
 NDW_TABLES = IMPORTER_TABLES + DAILY_TABLES
 
 
@@ -32,16 +38,35 @@ async def main(args):
     engine = db_helper.make_engine(section="docker")
 
     db_helper.set_session(engine)
+    drop_views(args)
     drop_tables(args)
 
     LOG.warning("CREATING DEFINED TABLES")
     # recreate tables
     Base.metadata.create_all(engine)
+    create_views(args)
+
+
+def create_views(args):
+    session = db_helper.session
+    if args.drop or args.drop_import:
+        for view in VIEWS:
+            LOG.warning(f"CREATING VIEW {view}")
+            session.execute(getattr(sql_queries, view.upper()))
+        session.commit()
+
+
+def drop_views(args):
+    session = db_helper.session
+    if args.drop or args.drop_import:
+        for view in VIEWS:
+            LOG.warning(f"DROPPING VIEW {view}")
+            session.execute(f"DROP view if exists {view};")
+        session.commit()
 
 
 def drop_tables(args):
     session = db_helper.session
-
     tables = []
     if args.drop:
         tables = NDW_TABLES
@@ -53,6 +78,7 @@ def drop_tables(args):
     for table in tables:
         LOG.warning(f"DROPPING {table}")
         session.execute(f"DROP table if exists {table};")
+
     session.commit()
 
 
@@ -158,6 +184,7 @@ if __name__ == "__main__":
     inputparser.add_argument(
         "--drop_daily", action="store_true", default=False, help="Drop existing"
     )
+
     args = inputparser.parse_args()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(args))
