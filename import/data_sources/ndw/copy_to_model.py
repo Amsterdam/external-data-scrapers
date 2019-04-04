@@ -92,8 +92,7 @@ class TravelTimeImporter(Importer):
                 number_of_incomplete_input = int(trvt.attrib.get('numberOfIncompleteInputs', -1))
                 number_of_input_values_used = int(trvt.attrib.get('numberOfInputValuesUsed', -1))
 
-                geometrie, length, stadsdeel, buurt_code = self.sf_records.get(api_id, (None, None, None, None))
-                # geometrie, length = None, None
+                sf_record = self.sf_records.get(api_id, {})
 
                 traveltime = (
                     api_id,
@@ -105,10 +104,11 @@ class TravelTimeImporter(Importer):
                     duration,
                     data_error,
                     timestamp,
-                    geometrie,
-                    length,
-                    stadsdeel,
-                    buurt_code,
+                    sf_record.get('linestring', None),
+                    sf_record.get('length', None),
+                    sf_record.get('road_type', None),
+                    sf_record.get('stadsdeel', None),
+                    sf_record.get('buurt_code', None),
                     str(row.scraped_at)
                 )
                 traveltime_list.append(str(traveltime).replace('None', 'null'))
@@ -137,12 +137,15 @@ class TravelTimeImporter(Importer):
         records = {}
         start = time.time()
         for sr in sf.iterShapeRecords():
-            id = sr.record.as_dict().get('dgl_loc')
-            linestring = self.linestring_to_str('4326', sr.shape.points)
-            length = sr.record.as_dict().get('lengte')
             sh = LineString(sr.shape.__geo_interface__['coordinates'])
-
-            records[id] = (linestring, length, self.get_stadsdeel(sh), self.get_buurt_code(sh))
+            id = sr.record.as_dict().get('dgl_loc')
+            records[id] = dict(
+                linestring=self.linestring_to_str('4326', sr.shape.points),
+                length=sr.record.as_dict().get('lengte'),
+                road_type=sr.record.as_dict().get('wegtype'),
+                stadsdeel=self.get_stadsdeel(sh),
+                buurt_code=self.get_buurt_code(sh)
+            )
 
         log.info(f"populated {len(records)} records")
         log.info("Took: %s", time.time() - start)
