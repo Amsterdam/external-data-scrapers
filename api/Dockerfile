@@ -23,4 +23,4 @@ RUN export DJANGO_SETTINGS_MODULE=config.settings
 
 RUN python manage.py collectstatic --no-input
 
-CMD uwsgi
+CMD OVERRIDE_WRITE_ACCESS_DB=1 python manage.py kv6sub & uwsgi
