@@ -52,7 +52,7 @@ class LocationKey:
 def get_database_key():
     if os.getenv('OVERRIDE_WRITE_ACCESS_DB'):
         log.warning("Using override database(write access) information")
-        return LocationKey.realtime_ov
+        return LocationKey.override_write
 
     if os.getenv(OVERRIDE_HOST_ENV_VAR):
         log.warning("Using override database information")
