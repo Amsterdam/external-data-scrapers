@@ -46,9 +46,14 @@ class LocationKey:
     docker = "docker"
     override = "override"
     kilogram = "kilogram"
+    override_write = "override_write"
 
 
 def get_database_key():
+    if os.getenv('OVERRIDE_WRITE_ACCESS_DB'):
+        log.warning("Using override database(write access) information")
+        return LocationKey.realtime_ov
+
     if os.getenv(OVERRIDE_HOST_ENV_VAR):
         log.warning("Using override database information")
         return LocationKey.override

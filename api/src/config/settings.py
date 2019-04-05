@@ -151,6 +151,14 @@ DATABASE_OPTIONS = {
         'HOST': os.getenv(OVERRIDE_HOST_ENV_VAR),
         'PORT': os.getenv(OVERRIDE_PORT_ENV_VAR, '5432'),
     },
+    LocationKey.override_write: {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': os.getenv('DATABASE_NAME', 'externaldata'),
+        'USER': os.getenv('DATABASE_WRITE_USER', 'externaldata'),
+        'PASSWORD': os.getenv('DATABASE_WRITE_PASSWORD', 'insecure'),
+        'HOST': os.getenv('DATABASE_WRITE_HOST_OVERRIDE'),
+        'PORT': os.getenv(OVERRIDE_PORT_ENV_VAR, '5432'),
+    }
 }
 
 DATABASES = {
