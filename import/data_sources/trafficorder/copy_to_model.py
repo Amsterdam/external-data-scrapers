@@ -5,6 +5,8 @@ import time
 from xml.etree import ElementTree
 
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 import db_helper
 from data_sources.importer_class import Importer
@@ -28,10 +30,17 @@ class TrafficOrderImporter(Importer):
             'jaargang': 'year'
         }
         self.columns = TrafficOrder.__table__.columns
+
+        self.http_session = requests.Session()
+        retries = Retry(total=5,
+                        backoff_factor=0.5,
+                        status_forcelist=[500])
+
+        self.http_session.mount('https://', HTTPAdapter(max_retries=retries))
         return super().__init__(*args, **kwargs)
 
     def fetch(self, metadata_url):
-        response = requests.get(metadata_url, verify=VERIFY_SSL)
+        response = self.http_session.get(metadata_url, verify=VERIFY_SSL)
         return response.content
 
     def get_tag_name(self, tag):
