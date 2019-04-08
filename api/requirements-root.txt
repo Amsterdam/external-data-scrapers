@@ -20,6 +20,7 @@ pygments
 
 datapunt-authorization-django
 datapunt-authorization-levels
+datapunt-objectstore
 
 tox
 pytest
