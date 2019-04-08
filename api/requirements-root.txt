@@ -10,7 +10,7 @@ djangorestframework-xml
 djangorestframework-gis
 drf-extensions
 drf_amsterdam
-graypy==0.3.2
+graypy
 psycopg2-binary
 factory-boy
 drf_yasg
