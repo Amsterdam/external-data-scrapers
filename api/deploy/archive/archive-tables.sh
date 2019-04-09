@@ -10,5 +10,7 @@ export PGPASSWORD=${DATABASE_PASSWORD:='insecure'}
 export TENANT_NAME=${TENENT_NAME:='BGE000081 externaldata'}
 export TENANT_ID=${TENANT_ID:='12777ad76d604757a0499fb62d7ab4a9'}
 export OBJECTSTORE_USER=${OBJECTSTORE_USER:='externaldata'}
+export OBJECTSTORE_PASSWORD=${EXTERNALDATA_OBJECTSTORE_PASSWORD}
 
-python -m apps.objectstore.archive_pgtables -t ov_ovraw ovfiets_raw parkinglocation_raw guidancesign_raw thirdparty_traveltime_raw -f backups
+# python -m apps.objectstore.archive_pgtables -t ov_ovraw ovfiets_raw parkinglocation_raw guidancesign_raw thirdparty_traveltime_raw -f backups
+python -m apps.objectstore.archive_pgtables -t ov_ovraw -f backups
