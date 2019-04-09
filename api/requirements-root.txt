@@ -20,6 +20,7 @@ pygments
 
 datapunt-authorization-django
 datapunt-authorization-levels
+datapunt-config-loader
 
 tox
 pytest
@@ -33,3 +34,6 @@ pytest-django
 
 pyzmq
 pyyaml>=4.2b1
+
+python-swiftclient
+python-keystoneclient
