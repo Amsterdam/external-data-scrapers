@@ -1,4 +1,4 @@
-FROM amsterdam/python
+FROM amsterdam/python_pg11
 MAINTAINER datapunt@amsterdam.nl
 
 ENV PYTHONUNBUFFERED 1
