@@ -13,5 +13,5 @@ export OBJECTSTORE_USER=${OBJECTSTORE_USER:='externaldata'}
 export OBJECTSTORE_PASSWORD=${EXTERNALDATA_OBJECTSTORE_PASSWORD}
 
 cd /app
-python apps/objectstore/archive_pgtables.py -t ov_ovraw ovfiets_raw parkinglocation_raw guidancesign_raw thirdparty_traveltime_raw -f backups
+python apps/objectstore/archive_pgtables.py -t ov_ovraw ovfiets_raw parkinglocation_raw guidancesign_raw thirdparty_traveltime_raw -f backups --empty-tables
 #python apps/objectstore/archive_pgtables -t ov_ovraw -f backups

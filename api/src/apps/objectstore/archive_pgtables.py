@@ -123,7 +123,7 @@ class Archiver(object):
             log.error(ex)
             return -1
 
-    def process(self, tables, folder):
+    def process(self, tables, folder, truncate=False):
         error_count = 0
         for table in tables:
             if self.archive_table(table) != 0:
@@ -131,7 +131,7 @@ class Archiver(object):
         if error_count == 0:
             archive_file = self.make_archive()
             # upload to object store
-            if self.upload_to_objectstore(folder, archive_file) == 0:
+            if self.upload_to_objectstore(folder, archive_file) == 0 and truncate:
                 # only issue truncate if there are no errors
                 self.truncate_tables(tables)
 
@@ -166,13 +166,14 @@ def main():
                             required=True, type=str)
         parser.add_argument('-f', '--folder', help='folder on objectstore',
                             type=str, default='/')
+        parser.add_argument('--empty-tables', help='truncate tables', action='store_true')
         args = parser.parse_args()
         if len(sys.argv) == 1:
             parser.print_help()
             return 0
         log.info(args)
         archiver = Archiver()
-        archiver.process(args.table, args.folder)
+        archiver.process(args.table, args.folder. args.empty_tables)
         return 0
     else:
         log.error(f'Missing env vars. Aborting.')
