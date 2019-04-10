@@ -173,7 +173,7 @@ def main():
             return 0
         log.info(args)
         archiver = Archiver()
-        archiver.process(args.table, args.folder. args.empty_tables)
+        archiver.process(args.table, args.folder, args.empty_tables)
         return 0
     else:
         log.error(f'Missing env vars. Aborting.')
