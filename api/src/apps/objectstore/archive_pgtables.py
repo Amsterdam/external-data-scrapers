@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 import objectstore
+import databasedumps
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
@@ -40,15 +41,30 @@ class Archiver(object):
         self.tmp = tmp_folder if tmp_folder else DEFAULT_TMPFOLDER
         self.stamp = self.make_stamp()
 
-    def cmd(self, cmd, filename=None):
-        log.info(f'Cmd: {cmd}, outputfile: {filename}')
+    def cmd(self, cmd, piped_cmd=None, filename=None):
+        log.info(f'Cmd: {cmd}, pipe: {piped_cmd}, outputfile: {filename}')
         try:
             if filename:
                 with open(filename, 'wb') as outfile:
-                    p = subprocess.Popen(cmd, stdout=outfile)
+                    if piped_cmd:
+                        sub = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                        p = subprocess.Popen(
+                            piped_cmd,
+                            stdin=sub.stdout,
+                            stdout=outfile
+                        )
+                    else:
+                        p = subprocess.Popen(cmd, stdout=outfile)
                     p.wait()
             else:
-                p = subprocess.Popen(cmd)
+                if piped_cmd:
+                    sub = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                    p = subprocess.Popen(
+                        piped_cmd,
+                        stdin=sub.stdout
+                    )
+                else:
+                    p = subprocess.Popen(cmd)
                 p.wait()
             log.info(f'Ret. code: {p.returncode}')
             return p.returncode
@@ -64,7 +80,7 @@ class Archiver(object):
             'zip',
             archive,
         ]
-        cmd.extend(glob.glob(f'{self.tmp}/*{self.stamp}.sql'))
+        cmd.extend(glob.glob(f'{self.tmp}/*{self.stamp}.sql*'))
         return archive if self.cmd(cmd) == 0 else None
 
     def cleanup_tmpfiles(self):
@@ -72,12 +88,13 @@ class Archiver(object):
             'rm',
             '-rf'
         ]
-        cmd.extend(glob.glob(f'{self.tmp}/*{self.stamp}.sql'))
+        cmd.extend(glob.glob(f'{self.tmp}/*{self.stamp}.sql*'))
         cmd.extend(glob.glob(f'{self.tmp}/*{self.stamp}.zip'))
         return self.cmd(cmd)
 
     def archive_table(self, tbl):
         error_count = 0
+        outfile = f'{self.tmp}/{tbl}-data-{self.stamp}.sql.gz'
         cmd = [
             'pg_dump',
             '--data-only',      # only data
@@ -86,8 +103,8 @@ class Archiver(object):
             '-t',               # single table
             f'{tbl}'
         ]
-        outfile = f'{self.tmp}/{tbl}-data-{self.stamp}.sql'
-        if self.cmd(cmd, outfile) != 0:
+        pipe_cmd = ['gzip']
+        if self.cmd(cmd, pipe_cmd, outfile) != 0:
             error_count += 1
 
         cmd = [
@@ -97,7 +114,7 @@ class Archiver(object):
             f'{tbl}'
         ]
         outfile = f'{self.tmp}/{tbl}-schema-{self.stamp}.sql'
-        if self.cmd(cmd, outfile) != 0:
+        if self.cmd(cmd, filename=outfile) != 0:
             error_count += 1
         return error_count
 
@@ -117,7 +134,7 @@ class Archiver(object):
             log.info('Connecting to objectstore')
             connection = objectstore.get_connection()
             log.info('Uploading to objectstore')
-            objectstore.databasedumps.upload_database(connection, folder, archive)
+            databasedumps.upload_database(connection, folder, archive)
             return 0
         except Exception as ex:
             log.error(ex)
