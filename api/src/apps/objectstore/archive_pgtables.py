@@ -20,10 +20,10 @@ class Archiver(object):
     """
     Archive specified tables.
 
-    - Dumps postgres sql copy format - data
+    - Dumps postgres sql copy format - data (gzip)
     - Dumps schema
-    - zip the resulting archives
-    - upload zip file to objectstore
+    - tar the resulting archives
+    - upload tar file to objectstore
     - cleanup tmp files
     - truncate tables IF ONLY everything was successfull!
 
@@ -75,9 +75,10 @@ class Archiver(object):
             return -1
 
     def make_archive(self):
-        archive = f'{self.tmp}/archive-{self.stamp}.zip'
+        archive = f'{self.tmp}/archive-{self.stamp}.tar'
         cmd = [
-            'zip',
+            'tar',
+            '-cvf',
             archive,
         ]
         cmd.extend(glob.glob(f'{self.tmp}/*{self.stamp}.sql*'))
@@ -89,7 +90,7 @@ class Archiver(object):
             '-rf'
         ]
         cmd.extend(glob.glob(f'{self.tmp}/*{self.stamp}.sql*'))
-        cmd.extend(glob.glob(f'{self.tmp}/*{self.stamp}.zip'))
+        cmd.extend(glob.glob(f'{self.tmp}/*{self.stamp}.tar'))
         return self.cmd(cmd)
 
     def archive_table(self, tbl):
@@ -133,8 +134,8 @@ class Archiver(object):
         try:
             log.info('Connecting to objectstore')
             connection = objectstore.get_connection()
-            log.info('Uploading to objectstore')
-            databasedumps.upload_database(connection, folder, archive)
+            log.info(f'Uploading {archive} to objectstore {folder}')
+            databasedumps.upload_database(connection, container=folder, location=archive)
             return 0
         except Exception as ex:
             log.error(ex)
