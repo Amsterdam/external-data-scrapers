@@ -6,9 +6,8 @@ import os
 import subprocess
 import sys
 
-import objectstore
-
 import databasedumps
+import objectstore
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
