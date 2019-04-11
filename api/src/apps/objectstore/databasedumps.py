@@ -32,10 +32,9 @@ import logging
 import os
 import sys
 
-from dateutil import parser as dateparser
-
 # import connection
 import objectstore
+from dateutil import parser as dateparser
 
 LOG = logging.getLogger(__name__)
 LOG.setLevel(logging.DEBUG)

@@ -7,6 +7,7 @@ import subprocess
 import sys
 
 import objectstore
+
 import databasedumps
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
