@@ -6,9 +6,6 @@ import os
 import subprocess
 import sys
 
-import databasedumps
-import objectstore
-
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -41,8 +38,9 @@ class Archiver(object):
         self.tmp = tmp_folder if tmp_folder else DEFAULT_TMPFOLDER
         self.stamp = self.make_stamp()
 
-    def cmd(self, cmd, piped_cmd=None, filename=None):
-        log.info(f'Cmd: {cmd}, pipe: {piped_cmd}, outputfile: {filename}')
+    def cmd(self, cmd, piped_cmd=None, filename=None, silent=False):
+        if not silent:
+            log.info(f'Cmd: {cmd}, pipe: {piped_cmd}, outputfile: {filename}')
         try:
             if filename:
                 with open(filename, 'wb') as outfile:
@@ -132,11 +130,25 @@ class Archiver(object):
 
     def upload_to_objectstore(self, folder, archive):
         try:
-            log.info('Connecting to objectstore')
-            connection = objectstore.get_connection()
+            os_vars = dict(
+                AUTHURL='https://identity.stack.cloudvps.com/v2.0',
+                TENANT_NAME=os.getenv('TENANT_NAME'),
+                TENANT_ID=os.getenv('TENANT_ID'),
+                USER=os.getenv('OBJECTSTORE_USER'),
+                PASSWORD=os.getenv('OBJECTSTORE_PASSWORD')
+            )
             log.info(f'Uploading {archive} to objectstore {folder}')
-            databasedumps.upload_database(connection, container=folder, location=archive)
-            return 0
+            cmd = [
+                'swift',
+                '--os-auth-url', f"{os_vars['AUTHURL']}",
+                '--os-tenant-name', f"{os_vars['TENANT_NAME']}",
+                '--os-username', f"{os_vars['USER']}",
+                '--os-password', f"{os_vars['PASSWORD']}",
+                'upload', folder,
+                '-S', '4294967296',
+                archive
+            ]
+            return self.cmd(cmd, silent=True)
         except Exception as ex:
             log.error(ex)
             return -1
