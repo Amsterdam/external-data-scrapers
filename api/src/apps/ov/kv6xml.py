@@ -1,5 +1,6 @@
 import logging
 import xml.etree.ElementTree as ET
+from datetime import datetime, timedelta
 
 from dateutil.parser import parse
 from django.contrib.gis.geos import Point
@@ -33,6 +34,8 @@ class Kv6XMLProcessor(object):
         self.journeys = {}
 
     def refresh_data(self):
+        log.info('removing inactive journeys')
+        self.remove_inactive_journeys()
         log.info('refreshing stops and trips data')
         tmp_stops = dict(OvStop.objects.values_list('id', 'geo_location'))
         if tmp_stops:
@@ -94,6 +97,17 @@ class Kv6XMLProcessor(object):
                 return subdict[stop]
         return None
 
+    def remove_inactive_journeys(self):
+        if self.journeys:
+            # make copy of keys since we are going to remove elements
+            keys = self.journeys.keys()
+            for key in keys:
+                subdict = self.journeys[key]
+                m = max(subdict.values())
+                # no update on this route for more than a day, remove it
+                if m and m + timedelta(days=1) <= datetime.now():
+                    del self.journeys[key]
+
     def remove_journey(self, dataowner, line, journey):
         key = self.make_key(dataowner, line, journey)
         if key in self.journeys:
@@ -146,7 +160,7 @@ class Kv6XMLProcessor(object):
                                rec.lineplanningnumber,
                                rec.journeynumber,
                                rec.userstopcode,
-                               rec.vehicle)
+                               parse(rec.vehicle))
 
         elif rec.messagetype == 'ARRIVAL' and not self.is_first_stop(
                 rec.dataownercode,
@@ -155,11 +169,12 @@ class Kv6XMLProcessor(object):
                 rec.userstopcode):
 
             # store own arrival if we are not the first stop
+            parsed_arrival = parse(rec.vehicle)
             self.store_arrival(rec.dataownercode,
                                rec.lineplanningnumber,
                                rec.journeynumber,
                                rec.userstopcode,
-                               rec.vehicle)
+                               parsed_arrival)
 
             # get distance since distance since last stop
             (dist, stop) = self.get_prev_dist_stop(rec.dataownercode,
@@ -174,9 +189,7 @@ class Kv6XMLProcessor(object):
                                                 stop)
                 if prev_arrival:
                     # calculate avg speed over last section
-                    current = parse(rec.vehicle)
-                    prev = parse(prev_arrival)
-                    delta = (current - prev).total_seconds()
+                    delta = (parsed_arrival - prev_arrival).total_seconds()
                     if delta > 0:
                         rec.distance = dist
                         rec.time = delta
