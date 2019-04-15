@@ -21,5 +21,6 @@ dc build
 
 dc run --rm api python manage.py kv6partition
 dc run --rm api /deploy/ovlookup_data/refresh_stop_data.sh
+dc run --rm api /deploy/archive/archive-tables.sh
 
 dc down -v
