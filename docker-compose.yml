@@ -39,3 +39,18 @@ services:
       - UWSGI_HARAKIRI=15
       - UWSGI_DIE_ON_TERM=1
       - UWSGI_MODULE=wsgi:application
+
+  mapserver:
+    build: mapserver/
+
+    ports:
+      - "8070:80"
+    links:
+      - database
+
+    environment:
+      EXT_DB_HOST: database
+      EXT_DB_NAME: externaldata
+      EXT_DB_USER: externaldata
+      EXT_DB_PASSWORD: insecure
+      MAP_URL: "http://mapserver"
