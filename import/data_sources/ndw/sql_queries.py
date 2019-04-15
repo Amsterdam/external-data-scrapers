@@ -13,6 +13,7 @@ data_error,
 measurement_time,
 geometrie,
 length,
+road_type,
 stadsdeel,
 buurt_code,
 scraped_at

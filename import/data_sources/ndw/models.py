@@ -82,6 +82,7 @@ class TravelTime(Base):
     geometrie = Column(Geometry('LineString', srid=4326))
     stadsdeel = Column(String, index=True)
     buurt_code = Column(String, index=True)
+    road_type = Column(String(length=2))
     length = Column(Integer)
 
 
