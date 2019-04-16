@@ -134,7 +134,7 @@ class Kv6XMLProcessor(object):
         except models.FieldDoesNotExist:
             pass
 
-    def augment(self, rec):
+    def augment_geolocation(self, rec):
         # convert rd_x and rd_y to geo location if present
         # coordinates should be > 0 for NL.
         # see https://nl.wikipedia.org/wiki/Rijksdriehoeksco%C3%B6rdinaten
@@ -148,6 +148,9 @@ class Kv6XMLProcessor(object):
         if not valid_geo and rec.userstopcode in self.stops:
             # add station location otherwise
             rec.geo_location = self.stops[rec.userstopcode]
+
+    def augment(self, rec):
+        self.augment_geolocation(rec)
 
         if rec.messagetype == 'DEPARTURE' and self.is_first_stop(
                 rec.dataownercode,
@@ -182,6 +185,9 @@ class Kv6XMLProcessor(object):
                                                    rec.journeynumber,
                                                    rec.userstopcode)
             if dist and stop:
+                rec.prev_userstopcode = stop
+                if stop in self.stops:
+                    rec.prev_geo_location = self.stops[stop]
                 # get last arrival time from prev stop
                 prev_arrival = self.get_arrival(rec.dataownercode,
                                                 rec.lineplanningnumber,

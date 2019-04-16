@@ -64,6 +64,8 @@ class OvKv6(models.Model):
     geo_location = PointField(srid=28992, null=True)
     distance = models.IntegerField(null=True)
     time = models.IntegerField(null=True)
+    prev_geo_location = PointField(srid=28992, null=True)
+    prev_userstopcode = models.CharField(null=True, max_length=255)
 
 
 class OvStop(models.Model):
