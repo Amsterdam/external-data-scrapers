@@ -8,9 +8,9 @@ create table if not exists sum_time (
 );
 
 -- 'upserts'
-insert into sum_time(setid, start_time, end_time, description) values(1, 6, 9, 'ochtend spits') ON CONFLICT DO NOTHING;
-insert into sum_time(setid, start_time, end_time, description) values(1, 16, 18, 'avond spits') ON CONFLICT DO NOTHING;
-insert into sum_time(setid, start_time, end_time, description) values(1, null, null, 'anders') ON CONFLICT DO NOTHING;
+insert into sum_time(id, setid, start_time, end_time, description) values(1, 1, 6, 9, 'ochtend spits') ON CONFLICT DO NOTHING;
+insert into sum_time(id, setid, start_time, end_time, description) values(2, 1, 16, 18, 'avond spits') ON CONFLICT DO NOTHING;
+insert into sum_time(id, setid, start_time, end_time, description) values(3, 1, null, null, 'anders') ON CONFLICT DO NOTHING;
 
 create table if not exists sum_ovkv6_speed (
 	id bigserial, -- for mapserver 
@@ -38,10 +38,13 @@ select
 	o.vehicle::date as grouped_day,
 	coalesce((
 		select id from sum_time t 
-		where t.start_time >= extract(hour from o.vehicle)::int
-		and t.end_time <= extract(hour from o.vehicle)::int
+		where (
+			(t.start_time >= extract(hour from o.vehicle)::int and t.end_time <= extract(hour from o.vehicle)::int) 
+			or (t.start_time is null and t.end_time is null)
+		)			
 		and setid = 1 -- can store different sets for different slices
-	), 3) as bucket,
+		order by t.start_time nulls last limit 1
+	), -1) as bucket, -- -1 wil cause fk error
 	o.dataownercode,
 	o.lineplanningnumber,
 	o.journeynumber,
