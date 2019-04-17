@@ -24,10 +24,10 @@
             width: 100%;
         }
     </style>
-    <title>Test winkelgebieden en verzinkbare palen kaart</title>
+    <title>Test</title>
 </head>
 <body>
-<h1>Test winkelgebieden en verzinkbare palen kaart</h1>
+<h1>Test</h1>
 <div id="mapid"></div>
 
 <script type="text/javascript">
@@ -58,8 +58,8 @@ L.tileLayer('https://acc.{s}.data.amsterdam.nl/{id}/{z}/{x}/{y}.png', {
 }).addTo(mymap)
 
 
-var wmsLayer = L.tileLayer.wms('http://localhost:8070/maps/traveltime?scraped_at=2019-04-11&REQUEST=GetCapabilities&VERSION=1.1.0&SERVICE=wms', {
-      layers: ['latest_traveltime'],
+var wmsLayer = L.tileLayer.wms('http://localhost:80/maps/ovtraveltime?scraped_at=2019-04-16&REQUEST=GetCapabilities&VERSION=1.1.0&SERVICE=wms', {
+      layers: ['ovlatest_traveltime'],
       transparent: true,
       format: 'image/png',
       isBaseLayer: false,
