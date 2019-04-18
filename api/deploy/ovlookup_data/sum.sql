@@ -62,8 +62,8 @@ where
 	and o.distance is not null
 	and o.time is not null
 	-- get start and end date of current week, will match with ov_kv6raw week partitions
-	and o.vehicle::date >= date_trunc('week', now()::date)
-	and o.vehicle::date < date_trunc('week', now()::date) + interval '1 week'
+	and o.vehicle >= date_trunc('week', now()::date)
+	and o.vehicle < date_trunc('week', now()::date) + interval '1 week'
 group by 
 	grouped_day,
 	o.dataownercode,
