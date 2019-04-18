@@ -7,7 +7,7 @@ The client (ip address) should be whitelisted by ovloket in order to receive the
 
 The client requires the static data from http://gtfs.ovapi.nl/nl/gtfs-nl.zip
 This file contains trips and routes for the comming weeks. The archive should be reloaded every week.
-[refresh_stop_data.sh](api/deploy/ovlookup_data/refresh_stop_data.sh)
+[refresh_stop_data.sh](../../../deploy/ovlookup_data/refresh_stop_data.sh)
 
 file  | contents
 ----- | --------
@@ -29,7 +29,7 @@ These tables will be used by the kv6sub client.
 ## Postgresql partitions
 
 The realtime ov data is stored in Postgresql partitions. The partitions range has been set to a week. 
-A job should be run weekly to create new partitions [dc-import-trips.sh](api/deploy/ovlookup_data/dc-import-trips.sh). 
+A job should be run weekly to create new partitions [dc-import-trips.sh](../../../deploy/ovlookup_data/dc-import-trips.sh). 
 
 ```
 # or manually from the cmd line
@@ -38,11 +38,11 @@ python manage.py kv6partition
 
 # kv6sub.py
 
-The kv6sub client should run as a service. The client inherits [ZmqBaseClient](api/src/apps/ov/zmq_base_client.py). 
+The kv6sub client should run as a service. The client inherits [ZmqBaseClient](zmq_base_client.py). 
 The ZmqBaseClient class handles reconnect and retry. A client can have multiple ZmqSubscribers. 
 (Add new subscribers in self.subscribers[])
 
-Currently only the kv6subscriber has been implemented. A subscriber must inherit [ZmqSubscriber](api/src/apps/ov/zmq_subscriber.py).
+Currently only the kv6subscriber has been implemented. A subscriber must inherit [ZmqSubscriber](zmq_subscriber.py).
 Within this class 2 methods should be implemented:
 
 * handle_refreshdata (init lookup data, is invoked once a day)
@@ -66,7 +66,7 @@ Override handle_refreshdata and handle_message and this subscriber in self.subsc
 
 # Archiving data
 
-The Raw realtime data is archived by [archive-tables.sh](api/deploy/archive/archive-tables.sh)
+The Raw realtime data is archived by [archive-tables.sh](../../../deploy/archive/archive-tables.sh)
 The following actions will be performed:
 * dump postgres sql copy format - data (gzip)
 * dump schema
@@ -92,7 +92,7 @@ OBJECTSTORE_PASSWORD
 
 # Summarize data
 
-The real time parsed data is summarized every week by [sum.sql](api/deploy/ovlookup_data/sum.sql)
+The real time parsed data is summarized every week by [sum.sql](../../../deploy/ovlookup_data/sum.sql)
 The sql script is made idempotent. The data is compacted and stored per journey and travelled distance.
 Currently 3 buckets have been defined.
 
