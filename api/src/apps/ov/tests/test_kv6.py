@@ -30,20 +30,36 @@ XML = b'''<?xml version="1.0" encoding="utf-8"?>
     <DossierName>KV6posinfo</DossierName>
     <Timestamp>2019-01-24T15:36:43.0867087+01:00</Timestamp>
     <KV6posinfo>
-        <OFFROUTE>
+        <INIT>
             <dataownercode>CXX</dataownercode>
             <lineplanningnumber>W053</lineplanningnumber>
             <operatingday>2019-01-24</operatingday>
             <journeynumber>35</journeynumber>
             <reinforcementnumber>0</reinforcementnumber>
-            <timestamp>2019-01-24T15:36:39+01:00</timestamp>
-            <source>VEHICLE</source>
-            <userstopcode>05065</userstopcode>
+            <userstopcode>stop1</userstopcode>
             <passagesequencenumber>0</passagesequencenumber>
-            <vehiclenumber>4962</vehiclenumber>
-            <rd-x>81434</rd-x>
-            <rd-y>451631</rd-y>
-        </OFFROUTE>
+            <timestamp>2019-01-24T15:34:40+01:00</timestamp>
+            <source>VEHICLE</source>
+            <vehiclenumber>6631</vehiclenumber>
+            <punctuality>-20</punctuality>
+            <rd-x>89797</rd-x>
+            <rd-y>448598</rd-y>
+        </INIT>
+        <ARRIVAL>
+            <dataownercode>CXX</dataownercode>
+            <lineplanningnumber>W053</lineplanningnumber>
+            <operatingday>2019-01-24</operatingday>
+            <journeynumber>35</journeynumber>
+            <reinforcementnumber>0</reinforcementnumber>
+            <userstopcode>stop1</userstopcode>
+            <passagesequencenumber>0</passagesequencenumber>
+            <timestamp>2019-01-24T15:35:40+01:00</timestamp>
+            <source>VEHICLE</source>
+            <vehiclenumber>6741</vehiclenumber>
+            <punctuality>-24</punctuality>
+            <rd-x>89797</rd-x>
+            <rd-y>448598</rd-y>
+        </ARRIVAL>
         <DEPARTURE>
             <dataownercode>CXX</dataownercode>
             <lineplanningnumber>W053</lineplanningnumber>
@@ -56,6 +72,8 @@ XML = b'''<?xml version="1.0" encoding="utf-8"?>
             <source>VEHICLE</source>
             <vehiclenumber>6631</vehiclenumber>
             <punctuality>-20</punctuality>
+            <rd-x>89797</rd-x>
+            <rd-y>448598</rd-y>
         </DEPARTURE>
         <ARRIVAL>
             <dataownercode>CXX</dataownercode>
@@ -69,8 +87,54 @@ XML = b'''<?xml version="1.0" encoding="utf-8"?>
             <source>VEHICLE</source>
             <vehiclenumber>6741</vehiclenumber>
             <punctuality>-24</punctuality>
+            <rd-x>89797</rd-x>
+            <rd-y>448599</rd-y>
         </ARRIVAL>
+        <DEPARTURE>
+            <dataownercode>CXX</dataownercode>
+            <lineplanningnumber>W053</lineplanningnumber>
+            <operatingday>2019-01-24</operatingday>
+            <journeynumber>35</journeynumber>
+            <reinforcementnumber>0</reinforcementnumber>
+            <userstopcode>stop2</userstopcode>
+            <passagesequencenumber>0</passagesequencenumber>
+            <timestamp>2019-01-24T15:38:40+01:00</timestamp>
+            <source>VEHICLE</source>
+            <vehiclenumber>6631</vehiclenumber>
+            <punctuality>-20</punctuality>
+            <rd-x>89797</rd-x>
+            <rd-y>448599</rd-y>
+        </DEPARTURE>
+        <ARRIVAL>
+            <dataownercode>CXX</dataownercode>
+            <lineplanningnumber>W053</lineplanningnumber>
+            <operatingday>2019-01-24</operatingday>
+            <journeynumber>35</journeynumber>
+            <reinforcementnumber>0</reinforcementnumber>
+            <userstopcode>stop3</userstopcode>
+            <passagesequencenumber>0</passagesequencenumber>
+            <timestamp>2019-01-24T15:39:40+01:00</timestamp>
+            <source>VEHICLE</source>
+            <vehiclenumber>6741</vehiclenumber>
+            <punctuality>-24</punctuality>
+            <rd-x>89797</rd-x>
+            <rd-y>448600</rd-y>
+        </ARRIVAL>
+        <END>
+            <dataownercode>CXX</dataownercode>
+            <lineplanningnumber>W053</lineplanningnumber>
+            <operatingday>2019-01-24</operatingday>
+            <journeynumber>35</journeynumber>
+            <reinforcementnumber>0</reinforcementnumber>
+            <userstopcode>stop3</userstopcode>
+            <passagesequencenumber>0</passagesequencenumber>
+            <timestamp>2019-01-24T15:41:40+01:00</timestamp>
+            <source>VEHICLE</source>
+            <vehiclenumber>6741</vehiclenumber>
+            <punctuality>-24</punctuality>
+        </END>
         <ONROUTE>
+            <some_dummy_error>error</some_dummy_error>
             <dataownercode>CXX</dataownercode>
             <lineplanningnumber>W055</lineplanningnumber>
             <operatingday>2019-01-24</operatingday>
@@ -78,7 +142,7 @@ XML = b'''<?xml version="1.0" encoding="utf-8"?>
             <reinforcementnumber>0</reinforcementnumber>
             <userstopcode>54200150</userstopcode>
             <passagesequencenumber>0</passagesequencenumber>
-            <timestamp>2019-01-24T15:36:39+01:00</timestamp>
+            <timestamp>2019-01-24T15:40:39+01:00</timestamp>
             <source>VEHICLE</source>
             <vehiclenumber>6747</vehiclenumber>
             <punctuality>70</punctuality>
@@ -86,6 +150,36 @@ XML = b'''<?xml version="1.0" encoding="utf-8"?>
             <rd-x>89797</rd-x>
             <rd-y>448598</rd-y>
         </ONROUTE>
+        <DEPARTURE>
+            <dataownercode>CXX-unknown</dataownercode>
+            <lineplanningnumber>W053</lineplanningnumber>
+            <operatingday>2019-01-24</operatingday>
+            <journeynumber>35</journeynumber>
+            <reinforcementnumber>0</reinforcementnumber>
+            <userstopcode>stop2</userstopcode>
+            <passagesequencenumber>0</passagesequencenumber>
+            <timestamp>2019-01-24T15:38:40+01:00</timestamp>
+            <source>VEHICLE</source>
+            <vehiclenumber>6631</vehiclenumber>
+            <punctuality>-20</punctuality>
+            <rd-x>89797</rd-x>
+            <rd-y>448599</rd-y>
+        </DEPARTURE>
+        <ARRIVAL>
+            <dataownercode>CXX-unknown</dataownercode>
+            <lineplanningnumber>W053</lineplanningnumber>
+            <operatingday>2019-01-24</operatingday>
+            <journeynumber>35</journeynumber>
+            <reinforcementnumber>0</reinforcementnumber>
+            <userstopcode>stop3</userstopcode>
+            <passagesequencenumber>0</passagesequencenumber>
+            <timestamp>2019-01-24T15:39:40+01:00</timestamp>
+            <source>VEHICLE</source>
+            <vehiclenumber>6741</vehiclenumber>
+            <punctuality>-24</punctuality>
+            <rd-x>89797</rd-x>
+            <rd-y>448600</rd-y>
+        </ARRIVAL>
     </KV6posinfo>
 </VV_TM_PUSH>
 '''
@@ -144,8 +238,6 @@ class MockSubscriber(ZmqSubscriber):
             unpacked = gzip.decompress(record.xml).decode('utf-8')
             now = datetime.now(tzlocal())
             self.xmlprocessor.process(now, unpacked)
-        else:
-            log.info(f'Skipping envelop {envelop}')
 
 
 class ZmqClient(ZmqBaseClient):
@@ -182,7 +274,7 @@ class Kv6Tests(TransactionTestCase):
         OvStop.objects.create(id="05065", stop_id=1, geo_location=Point(x=1.0, y=1.0))
         OvStop.objects.create(id="stop1", stop_id=2, geo_location=Point(x=1.0, y=2.0))
         OvStop.objects.create(id="stop2", stop_id=3, geo_location=Point(x=1.0, y=3.0))
-
+        OvStop.objects.create(id="stop3", stop_id=4, geo_location=Point(x=1.0, y=4.0))
         route = OvRoutes.objects.create(
             key="CXX:W053:35",
             route_id=1,
@@ -192,17 +284,24 @@ class Kv6Tests(TransactionTestCase):
 
         OvRouteSection.objects.create(
             route=route,
-            stop_sequence=0,
+            stop_sequence=1,
             stop_id=2,
             stop_code='stop1',
             shape_dist_traveled=0)
 
         OvRouteSection.objects.create(
             route=route,
-            stop_sequence=1,
+            stop_sequence=2,
             stop_id=3,
-            stop_code='stop1',
+            stop_code='stop2',
             shape_dist_traveled=1000)
+
+        OvRouteSection.objects.create(
+            route=route,
+            stop_sequence=3,
+            stop_id=4,
+            stop_code='stop3',
+            shape_dist_traveled=1500)
 
         pu = PartitionUtil()
         d = datetime.strptime('2019-01-24', '%Y-%m-%d').date()

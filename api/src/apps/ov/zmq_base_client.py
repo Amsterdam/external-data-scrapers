@@ -23,6 +23,13 @@ class ZmqBaseClient(object):
         self.subscribers = []
         self.next_refresh = None
 
+    def __del__(self):
+        try:
+            for sub in self.subscribers:
+                self.poller.unregister(sub)
+        except Exception as err:
+            log.error(err)
+
     def subscribe(self):
         try:
             for sub in self.subscribers:

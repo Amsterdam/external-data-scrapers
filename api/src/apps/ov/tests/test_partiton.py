@@ -10,6 +10,9 @@ class TestPartition(TestCase):
         self.part = PartitionUtil()
         self.day = datetime(2019, 2, 5)
 
+    def test_today(self):
+        self.assertEqual(self.part.today().date(), datetime.today().date())
+
     def test_partitions(self):
         dp = self.part.day_partition(self.day)
         self.assertEqual(dp[0].date(), self.day.date())
