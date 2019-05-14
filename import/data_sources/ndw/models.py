@@ -49,7 +49,7 @@ async def main(args):
 
 def create_views(args):
     session = db_helper.session
-    if args.drop or args.drop_import:
+    if args.drop or args.drop_import or args.drop_views:
         for view in VIEWS:
             LOG.warning(f"CREATING VIEW {view}")
             session.execute(getattr(sql_queries, view.upper()))
@@ -58,7 +58,7 @@ def create_views(args):
 
 def drop_views(args):
     session = db_helper.session
-    if args.drop or args.drop_import:
+    if args.drop or args.drop_import or args.drop_views:
         for view in VIEWS:
             LOG.warning(f"DROPPING VIEW {view}")
             session.execute(f"DROP view if exists {view};")
@@ -68,6 +68,7 @@ def drop_views(args):
 def drop_tables(args):
     session = db_helper.session
     tables = []
+
     if args.drop:
         tables = NDW_TABLES
     elif args.drop_daily:
@@ -176,13 +177,16 @@ if __name__ == "__main__":
     inputparser = argparse.ArgumentParser(desc)
 
     inputparser.add_argument(
-        "--drop", action="store_true", default=False, help="Drop existing"
+        "--drop", action="store_true", default=False, help="Drop all views and tables"
     )
     inputparser.add_argument(
-        "--drop_import", action="store_true", default=False, help="Drop existing"
+        "--drop_import", action="store_true", default=False, help="Drop existing import tables"
     )
     inputparser.add_argument(
-        "--drop_daily", action="store_true", default=False, help="Drop existing"
+        "--drop_daily", action="store_true", default=False, help="Drop existing daily tables"
+    )
+    inputparser.add_argument(
+        "--drop_views", action="store_true", default=False, help="Drop existing views"
     )
 
     args = inputparser.parse_args()
