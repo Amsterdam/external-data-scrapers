@@ -28,6 +28,6 @@ else
    dc run --rm importer python data_sources/ndw/models.py
 fi
 
-psql -U $DATABASE_USER -h $DATABASE_HOST $DATABASE_NAME < data_sources/ndw/insert_daily.sql
+psql -U $DATABASE_OVERRIDE_USER -h $DATABASE_OVERRIDE_HOST $DATABASE_OVERRIDE_NAME < data_sources/ndw/insert_daily.sql
 
 dc down -v
