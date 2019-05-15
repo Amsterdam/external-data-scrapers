@@ -3,7 +3,7 @@ import asyncio
 import logging
 
 from geoalchemy2 import Geometry
-from sqlalchemy import TIMESTAMP, Boolean, Column, Float, Integer, String
+from sqlalchemy import TIMESTAMP, Boolean, Column, Date, Float, Integer, String
 from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Sequence
@@ -149,27 +149,14 @@ class DailyTravelTimeSummary(Base):
     """Summarized Traveltime table by averaging values to 4 per day (every 6hours)"""
     __tablename__ = f"daily_traveltime_summary"
     id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
+    grouped_day = Column(Date)
+    bucket = Column(Integer)
     duration = Column(Float)
     measurement_site_reference = Column(String(length=255), index=True)
     geometrie = Column(Geometry('LineString', srid=4326))
     stadsdeel = Column(String, index=True)
     buurt_code = Column(String, index=True)
-    length = Column(Integer)
-    scraped_at = Column(TIMESTAMP, index=True)
-
-
-class DailyTrafficSpeedSummary(Base):
-    """Summarized TrafficSpeed table by averaging values to 4 per day (every 6hours)"""
-    __tablename__ = f"daily_trafficspeed_summary"
-    id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
-    duration = Column(Float)
-    measurement_site_reference = Column(String(length=255), index=True)
-    geometrie = Column(Geometry('Point', srid=28992))
-    stadsdeel = Column(String, index=True)
-    buurt_code = Column(String, index=True)
-    speed = Column(Float, nullable=True)
-    length = Column(Integer)
-    scraped_at = Column(TIMESTAMP, index=True)
+    velocity = Column(Float, index=True)
 
 
 if __name__ == "__main__":
