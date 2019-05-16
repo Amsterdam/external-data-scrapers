@@ -8,9 +8,9 @@ create table if not exists sum_time (
 );
 
 -- 'upserts'
-insert into sum_time(id, setid, start_time, end_time, description) values(1, 1, 6, 9, 'ochtend spits') ON CONFLICT DO NOTHING;
-insert into sum_time(id, setid, start_time, end_time, description) values(2, 1, 16, 18, 'avond spits') ON CONFLICT DO NOTHING;
-insert into sum_time(id, setid, start_time, end_time, description) values(3, 1, null, null, 'anders') ON CONFLICT DO NOTHING;
+insert into sum_time(id, setid, start_time, end_time, description) values(1, 1, 6, 9, 'Morning rushhour') ON CONFLICT DO NOTHING;
+insert into sum_time(id, setid, start_time, end_time, description) values(2, 1, 16, 18, 'Evening rushhour') ON CONFLICT DO NOTHING;
+insert into sum_time(id, setid, start_time, end_time, description) values(3, 1, null, null, 'Rest of day') ON CONFLICT DO NOTHING;
 
 insert into daily_traveltime_summary
     (grouped_day, bucket, duration, measurement_site_reference, geometrie, stadsdeel, buurt_code, velocity)
@@ -19,7 +19,7 @@ select
     coalesce((
         select id from sum_time t
         where (
-            (t.start_time >= extract(hour from i.measurement_time)::int and t.end_time <= extract(hour from i.measurement_time)::int)
+            (t.start_time <= extract(hour from i.measurement_time)::int and t.end_time >= extract(hour from i.measurement_time)::int)
             or (t.start_time is null and t.end_time is null)
         )
         and setid = 1 -- can store different sets for different slices
