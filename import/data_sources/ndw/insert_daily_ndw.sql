@@ -30,7 +30,8 @@ select
     i.geometrie,
     i.stadsdeel,
     i.buurt_code,
-    avg((i.length/i.duration)*3.6) as velocity
+    -- Avoid division by zero
+    avg(coalesce(length/NULLIF(duration, 0), 0)*3.6) as velocity
 from importer_traveltime i
 where
     i.data_error=false

@@ -48,7 +48,7 @@ SELECT_BUURT_CODE_4326 = "select code, ST_Transform(wkb_geometry, 4326) FROM buu
 
 LATEST_TRAVELTIME_WITH_SPEED = """
 create view latest_traveltime_with_speed as
-select id, measurement_site_reference, length, duration, measurement_time, scraped_at, geometrie, road_type, stadsdeel, buurt_code, (length/duration)*3.6 as velocity
+select id, measurement_site_reference, length, duration, measurement_time, scraped_at, geometrie, road_type, stadsdeel, buurt_code, coalesce(length/NULLIF(duration, 0), 0)*3.6 as velocity
 from
     importer_traveltime
 where
@@ -62,7 +62,7 @@ where
 
 TRAVELTIME_WITH_SPEED = """
 create view traveltime_with_speed as
-select id, measurement_site_reference, length, duration, measurement_time, scraped_at, geometrie, road_type, stadsdeel, buurt_code, (length/duration)*3.6 as velocity
+select id, measurement_site_reference, length, duration, measurement_time, scraped_at, geometrie, road_type, stadsdeel, buurt_code, coalesce(length/NULLIF(duration, 0), 0)*3.6 as velocity
 from
     importer_traveltime
 where
