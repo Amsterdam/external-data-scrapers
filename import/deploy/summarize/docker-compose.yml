@@ -22,3 +22,4 @@ services:
       OS_TENANT_ID:
       OS_TENANT_NAME:
       OS_REGION_NAME:
+      PGPASSWORD:
