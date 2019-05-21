@@ -54,7 +54,7 @@ select
 	o.prev_userstopcode,
 	sum(o.distance) as sum_distance,
 	sum(o.time) as sum_time,
-	sum(o.distance) / sum(o.time) * 60*60/1000.0 as avg_speed -- km/hour
+	coalesce(sum(o.distance) /NULLIF(sum(o.time), 0), 0) * 60*60/1000.0 as avg_speed -- km/hour
 from ov_ovkv6 o
 where 
 	o.geo_location is not null
@@ -74,6 +74,6 @@ group by
 	o.userstopcode,
 	o.prev_userstopcode,	
 	bucket
-	ON CONFLICT DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 

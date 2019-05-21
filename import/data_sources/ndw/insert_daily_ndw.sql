@@ -36,8 +36,7 @@ from importer_traveltime i
 where
     i.data_error=false
     and i.duration >= 0
-    and i.measurement_time::date != now()::date
-    and i.measurement_time::date not in (select grouped_day from daily_traveltime_summary)
+    and i.measurement_time::date = now()::date -1
 group by 
 	grouped_day,
     i.measurement_site_reference,
@@ -45,4 +44,4 @@ group by
     i.stadsdeel,
     i.buurt_code,
 	bucket
-	ON CONFLICT DO NOTHING;
+ON CONFLICT DO NOTHING;

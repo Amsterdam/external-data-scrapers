@@ -6,7 +6,7 @@ from geoalchemy2 import Geometry
 from sqlalchemy import TIMESTAMP, Boolean, Column, Date, Float, Integer, String
 from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.schema import Sequence
+from sqlalchemy.schema import Index, Sequence
 
 import db_helper
 from data_sources.ndw import sql_queries
@@ -26,8 +26,8 @@ DAILY_TABLES = [
 ]
 
 VIEWS = [
-    "latest_traveltime_with_speed",
-    "traveltime_with_speed"
+    "traveltime_with_speed",
+    "daily_traveltime_wms_view"
 ]
 
 NDW_TABLES = IMPORTER_TABLES + DAILY_TABLES
@@ -49,7 +49,7 @@ async def main(args):
 
 def create_views(args):
     session = db_helper.session
-    if args.drop or args.drop_import or args.drop_views:
+    if args.drop or args.drop_import or args.drop_daily or args.drop_views:
         for view in VIEWS:
             LOG.warning(f"CREATING VIEW {view}")
             session.execute(getattr(sql_queries, view.upper()))
@@ -58,7 +58,7 @@ def create_views(args):
 
 def drop_views(args):
     session = db_helper.session
-    if args.drop or args.drop_import or args.drop_views:
+    if args.drop or args.drop_import or args.drop_daily or args.drop_views:
         for view in VIEWS:
             LOG.warning(f"DROPPING VIEW {view}")
             session.execute(f"DROP view if exists {view};")
@@ -148,15 +148,16 @@ class TrafficSpeed(Base):
 class DailyTravelTimeSummary(Base):
     """Summarized Traveltime table by averaging values to 4 per day (every 6hours)"""
     __tablename__ = f"daily_traveltime_summary"
-    id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
-    grouped_day = Column(Date)
+    id = Column(Integer, primary_key=True, autoincrement='auto')
+    grouped_day = Column(Date, index=True)
+    measurement_site_reference = Column(String(length=255))
     bucket = Column(Integer)
     duration = Column(Float)
-    measurement_site_reference = Column(String(length=255), index=True)
     geometrie = Column(Geometry('LineString', srid=4326))
-    stadsdeel = Column(String, index=True)
-    buurt_code = Column(String, index=True)
-    velocity = Column(Float, index=True)
+    stadsdeel = Column(String)
+    buurt_code = Column(String)
+    velocity = Column(Float)
+    __table_args__ = (Index('unique_day_idx', "grouped_day", "measurement_site_reference", "bucket", unique=True),)
 
 
 if __name__ == "__main__":
