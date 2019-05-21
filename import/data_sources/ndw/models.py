@@ -156,7 +156,8 @@ class DailyTravelTimeSummary(Base):
     geometrie = Column(Geometry('LineString', srid=4326))
     stadsdeel = Column(String)
     buurt_code = Column(String)
-    velocity = Column(Float)
+    road_type = Column(String(length=2))
+    avg_speed = Column(Float)
     __table_args__ = (Index('unique_day_idx', "grouped_day", "measurement_site_reference", "bucket", unique=True),)
 
 

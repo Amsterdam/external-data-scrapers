@@ -13,7 +13,7 @@ insert into sum_time(id, setid, start_time, end_time, description) values(2, 1, 
 insert into sum_time(id, setid, start_time, end_time, description) values(3, 1, null, null, 'Rest of day') ON CONFLICT DO NOTHING;
 
 insert into daily_traveltime_summary
-    (grouped_day, bucket, duration, measurement_site_reference, geometrie, stadsdeel, buurt_code, velocity)
+    (grouped_day, bucket, duration, measurement_site_reference, geometrie, stadsdeel, buurt_code, road_type, avg_speed)
 select 
     i.measurement_time::date as grouped_day,
     coalesce((
@@ -30,12 +30,13 @@ select
     i.geometrie,
     i.stadsdeel,
     i.buurt_code,
+    i.road_type,
     -- Avoid division by zero
-    avg(coalesce(length/NULLIF(duration, 0), 0)*3.6) as velocity
+    avg(coalesce(length/NULLIF(duration, 0), 0)*3.6) as avg_speed
 from importer_traveltime i
 where
     i.data_error=false
-    and i.duration >= 0
+    and i.duration >= -1
     and i.measurement_time::date = now()::date -1
 group by 
 	grouped_day,
@@ -43,5 +44,6 @@ group by
     i.geometrie,
     i.stadsdeel,
     i.buurt_code,
+    i.road_type,
 	bucket
 ON CONFLICT DO NOTHING;
