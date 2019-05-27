@@ -15,8 +15,8 @@ psycopg2-binary
 factory-boy
 drf_yasg
 swagger-spec-validator
-markdown
-pygments
+Markdown
+Pygments
 
 datapunt-authorization-django
 datapunt-authorization-levels
@@ -33,7 +33,7 @@ pytest-mock
 pytest-django
 
 pyzmq
-pyyaml>=4.2b1
+PyYAML>=4.2b1
 
 python-swiftclient
 python-keystoneclient
