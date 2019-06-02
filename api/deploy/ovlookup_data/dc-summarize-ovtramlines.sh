@@ -17,7 +17,8 @@ dc rm -f
 dc pull
 dc build
 
-dc run --rm api psql -U $DATABASE_USER -h $DATABASE_HOST $DATABASE_NAME -v ON_ERROR_STOP=1 -f /deploy/ovlookup_data/sum.sql
-dc run --rm api psql -U $DATABASE_USER -h $DATABASE_HOST $DATABASE_NAME -v ON_ERROR_STOP=1 -f /deploy/ovlookup_data/sum_ov.sql
+dc run --rm api psql -U $DATABASE_USER -h $DATABASE_HOST $DATABASE_NAME -v ON_ERROR_STOP=1 -f /deploy/ovlookup_data/sum_time.sql
+dc run --rm api psql -U $DATABASE_USER -h $DATABASE_HOST $DATABASE_NAME -v ON_ERROR_STOP=1 -f /deploy/ovlookup_data/sum_ov_tramlines.sql
 
 dc down -v
+

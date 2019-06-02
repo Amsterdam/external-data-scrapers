@@ -92,7 +92,7 @@ OBJECTSTORE_PASSWORD
 
 # Summarize data
 
-The real time parsed data is summarized every week by [sum.sql](../../../deploy/ovlookup_data/sum.sql)
+The real time parsed data is summarized every week by [sum_ov.sql](../../../deploy/ovlookup_data/sum_ov.sql)
 The sql script is made idempotent. The data is compacted and stored per journey and travelled distance.
 Currently 3 buckets have been defined.
 
@@ -101,3 +101,7 @@ Currently 3 buckets have been defined.
 * other
 
 Multiple sets with different slices are supported. For every compacted row the distance and time will be stored.
+
+[sum_ov_tramlines.sql](../../../deploy/ovlookup_data/sum_ov_tramlines.sql) saves the 'GVB' tramlines only as a smaller
+subset in a new table. The [trajectories_tramlines_govi.geojson](../../deploy/ovlookup_data/trajectories_tramlines_govi.geojson)
+file contains the multiline coordinates of the tram routes that is mapped to the summarized routes. The file is loaded manually to the database.
