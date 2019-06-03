@@ -8,7 +8,7 @@ clean%: pyclean
 	@rm -rf venv-requirements
 
 venv: clean
-	virtualenv -p python3.6 venv-requirements
+	virtualenv -p `which python3` venv-requirements
 	$(PIP) install -U "pip"
 	$(PIP) install -r requirements-root.txt
 
