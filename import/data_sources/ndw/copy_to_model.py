@@ -37,7 +37,38 @@ def fetch_shapefile():
         return response.content
 
     except Exception as e:
-        raise Exception(f'Failed to retrieve shapefile with the following error: {e}')
+        raise Exception(f'Failed to retrieve shapefile: {e}')
+
+
+def get_shapefile_reader(layer):
+    """
+    Due to the regular change of the zip file structure the loop searches
+    for the shapefile 2 levels deep. The sequence is as follows:
+
+    -   Retrieve list of direct children and keep current zipfile as root
+    -   Loop starts by checking if shapefile extensions are in zipfile
+    -   If not found in root, pop the next child.
+    -   If child is zipfile assign as current zipfile otherwise do not change zipfile.
+    -   repeat from point 2
+    """
+
+    try:
+        zipfile = ZipFile(io.BytesIO(fetch_shapefile()), 'r')
+        children = zipfile.namelist()
+
+        while len(children):
+            if f'Shapefiles_{layer}_WGS84.shp' in zipfile.namelist():
+                return shapefile.Reader(
+                    shp=zipfile.open(f'Shapefiles_{layer}_WGS84.shp'),
+                    dbf=zipfile.open(f'Shapefiles_{layer}_WGS84.dbf'),
+                    shx=zipfile.open(f'Shapefiles_{layer}_WGS84.shx')
+                )
+            else:
+                child = children.pop()
+                zipfile = ZipFile(zipfile.open(child)) if child.endswith('.zip') else zipfile
+        raise FileNotFoundError
+    except Exception as e:
+        raise Exception(f'Failed to process shapefile: {e}')
 
 
 class TravelTimeImporter(Importer):
@@ -58,6 +89,7 @@ class TravelTimeImporter(Importer):
         traveltime_list = []
 
         for row in raw_data:
+            log.info(f"Storing raw_data scraped at {row.scraped_at}")
             xml_file = gzip.GzipFile(fileobj=io.BytesIO(row.data), mode='rb')
             tree = ElementTree.parse(xml_file)
             root = tree.getroot()
@@ -119,18 +151,9 @@ class TravelTimeImporter(Importer):
         session.commit()
         session.close()
 
-    def get_shapefile_reader(self):
-        zipfile = ZipFile(io.BytesIO(fetch_shapefile()), 'r')
-        shp = [fn for fn in zipfile.namelist() if fn.endswith('Meetvakken.shp')][0]
-        dbf = [fn for fn in zipfile.namelist() if fn.endswith('Meetvakken.dbf')][0]
-        return shapefile.Reader(
-            shp=zipfile.open(shp),
-            dbf=zipfile.open(dbf)
-        )
-
     def get_shapefile_records(self):
         log.info("Retrieving shapefile..")
-        sf = self.get_shapefile_reader()
+        sf = get_shapefile_reader('Trajecten')
 
         log.info("Populating records..")
 
@@ -166,20 +189,9 @@ class TrafficSpeedImporter(Importer):
             self.sf_records = self.get_shapefile_records()
         return super().start_import(*args, **kwargs)
 
-    def get_shapefile_reader(self):
-        zipfile = ZipFile(io.BytesIO(fetch_shapefile()), 'r')
-        shp = [fn for fn in zipfile.namelist() if fn.endswith('Telpunten.shp')][0]
-        dbf = [fn for fn in zipfile.namelist() if fn.endswith('Telpunten.dbf')][0]
-        shx = [fn for fn in zipfile.namelist() if fn.endswith('Telpunten.shx')][0]
-        return shapefile.Reader(
-            shp=zipfile.open(shp),
-            dbf=zipfile.open(dbf),
-            shx=zipfile.open(shx)
-        )
-
     def get_shapefile_records(self):
         log.info("Retrieving shapefile..")
-        sf = self.get_shapefile_reader()
+        sf = get_shapefile_reader('Telpunten')
 
         records = {}
 
