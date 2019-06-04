@@ -72,14 +72,14 @@ class Importer:
         model = self.clean_model if isinstance(self.clean_model, str) else self.clean_model.__table__.name
 
         latest = self.session.execute(
-            f'SELECT scraped_at FROM {model} ORDER bY scraped_at DESC LIMIT 1;'
+            f'SELECT scraped_at FROM {model} ORDER BY scraped_at DESC LIMIT 1;'
         ).first()
 
         if latest:
             # update since api
             return (
                 self.session.query(self.raw_model)
-                    .order_by(self.raw_model.scraped_at.desc())
+                    .order_by(self.raw_model.scraped_at.asc())
                     .filter(self.raw_model.scraped_at > latest.scraped_at)
             )
         # empty api.
