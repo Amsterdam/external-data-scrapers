@@ -8,7 +8,7 @@ export pythonpath=/app/
 dir=`dirname "$0"`
 
 dc() {
-	docker-compose -p ov-api-summarize-jobs${ENVIRONMENT} -f $dir/docker-compose.yml $*
+	docker-compose -p ov-api-summarize-tramelines-jobs-${ENVIRONMENT} -f $dir/docker-compose.yml $*
 }
 
 trap 'dc kill ; dc down ; dc rm -f' exit
