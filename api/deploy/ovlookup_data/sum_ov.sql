@@ -1,3 +1,6 @@
+-- Should be already set on the server but to be sure when testing locally.
+set time zone 'Europe/Amsterdam';
+
 create table if not exists sum_ovkv6_speed (
 	id bigserial, -- for mapserver 
 	bucket integer references sum_time(id),
@@ -61,5 +64,3 @@ group by
 	o.prev_userstopcode,	
 	bucket
 ON CONFLICT DO NOTHING;
-
-
