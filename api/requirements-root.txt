@@ -18,10 +18,6 @@ swagger-spec-validator
 Markdown
 Pygments
 
-datapunt-authorization-django
-datapunt-authorization-levels
-datapunt-config-loader
-
 tox
 pytest
 pytest-cov
