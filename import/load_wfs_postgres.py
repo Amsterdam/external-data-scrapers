@@ -68,6 +68,7 @@ def load_wfs_layer_into_postgres(url_wfs, layer_name, srs, db, retry_count=3):
         "TYPENAME": layer_name,
         "SERVICE": "WFS",
         "VERSION": "2.0.0",
+        "outputformat": "geojson",
         # "SRSNAME": "EPSG:{}".format(srs)
     }
 
