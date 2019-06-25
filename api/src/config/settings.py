@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from config.settings_databases import (OVERRIDE_HOST_ENV_VAR,
                                        OVERRIDE_PORT_ENV_VAR, LocationKey,
                                        get_database_key, get_docker_host)
@@ -340,3 +343,11 @@ LOGGING = {
 }
 
 TESTING = os.getenv('TESTING', False)
+
+SENTRY_DSN = os.getenv('SENTRY_DSN')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        ignore_errors=['ExpiredSignatureError']
+)

@@ -17,6 +17,7 @@ drf_yasg
 swagger-spec-validator
 Markdown
 Pygments
+sentry-sdk
 
 tox
 pytest
