@@ -130,8 +130,8 @@ let isTrafficSigns = (service) => {
 };
 change_bucket = function(value){
     for (service in wmsServices) {
-        if (isTrafficSigns(service)){
-        wmsServices[service].setParams({bucket: value})
+        if (isTrafficSigns(service) == false){
+            wmsServices[service].setParams({bucket: value})
         }
     }
     currentBucket = value
@@ -139,8 +139,8 @@ change_bucket = function(value){
 
 change_date = function(value){
     for (service in wmsServices) {
-        if (isTrafficSigns(service)){
-        wmsServices[service].setParams({date: value})
+        if (isTrafficSigns(service) == false){
+            wmsServices[service].setParams({date: value})
         }
     }
     currentDate = value
@@ -206,6 +206,9 @@ trafficSignControl.onAdd = function(mymap){
 let setDefaultwmsControl = () => {
     document.getElementById("bucket"+currentBucket).checked = true; // set to current bucket
     document.getElementById("dateInput").value = currentDate; // set to current date
+    document.getElementById("dateInput").addEventListener("change", function() {
+        change_date(this.value)
+    });
 }
 mymap.on('layeradd', function (eventLayer) {
         this.removeControl(ndwLegend);
@@ -233,6 +236,3 @@ ndwLegend.addTo(mymap);
 wmsControl.addTo(mymap);
 
 setDefaultwmsControl()
-document.getElementById("dateInput").addEventListener("change", function() {
-    change_date(this.value)
-});
