@@ -57,11 +57,11 @@ def get_shapefile_reader(layer):
         children = zipfile.namelist()
 
         while len(children):
-            if f'Shapefiles_{layer}_WGS84.shp' in zipfile.namelist():
+            if f'{layer}_WGS84.shp' in zipfile.namelist():
                 return shapefile.Reader(
-                    shp=zipfile.open(f'Shapefiles_{layer}_WGS84.shp'),
-                    dbf=zipfile.open(f'Shapefiles_{layer}_WGS84.dbf'),
-                    shx=zipfile.open(f'Shapefiles_{layer}_WGS84.shx')
+                    shp=zipfile.open(f'{layer}_WGS84.shp'),
+                    dbf=zipfile.open(f'{layer}_WGS84.dbf'),
+                    shx=zipfile.open(f'{layer}_WGS84.shx')
                 )
             else:
                 child = children.pop()
@@ -153,7 +153,7 @@ class TravelTimeImporter(Importer):
 
     def get_shapefile_records(self):
         log.info("Retrieving shapefile..")
-        sf = get_shapefile_reader('Trajecten')
+        sf = get_shapefile_reader('Meetvakken')
 
         log.info("Populating records..")
 
