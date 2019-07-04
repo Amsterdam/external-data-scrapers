@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg id="Nederlands_verkeersbord_B6_mb" width="672" height="587" xmlns="http://www.w3.org/2000/svg" version="1.1">
+
+  <path id="driehoek_20_rood" stroke="#c1121c" stroke-width="40px" d="m 20.641,20 630.718,0 z M 651.359,20 336,566.218 z M 336,566.218 20.641,20 z"/>
+
+  <circle id="cirkel_20_rood_1" fill="#c1121c" r="20" cx="20.641" cy="20"/>
+  <circle id="cirkel_20_rood_2" fill="#c1121c" r="20" cx="651.359" cy="20"/>
+  <circle id="cirkel_20_rood_3" fill="#c1121c" r="20" cx="336" cy="566.218"/>
+
+  <path id="driehoek_20_wit" stroke="#f7fbf5" stroke-width="20px" d="m 20.641,20 630.718,0 z M 651.359,20 336,566.218 z M 336,566.218 20.641,20 z"/>
+
+  <circle id="cirkel_20_wit_1" fill="#f7fbf5" r="10" cx="20.641" cy="20"/>
+  <circle id="cirkel_20_wit_2" fill="#f7fbf5" r="10" cx="651.359" cy="20"/>
+  <circle id="cirkel_20_wit_3" fill="#f7fbf5" r="10" cx="336" cy="566.218"/>
+
+  <path id="driehoek_30_rood" fill="#c1121c" d="M 20.641,20 651.359,20 336,566.218 z"/>
+
+  <path id="driehoek_40_wit" fill="#f7fbf5" d="m 137.208,87.3 397.584,0 L 336,431.618 z"/>
+
+</svg>
