@@ -2,10 +2,9 @@
 # pylint: disable=unbalanced-tuple-unpacking
 import gzip
 import logging
-from datetime import datetime
 
-from dateutil.tz import tzlocal
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from apps.ov.bulk_inserter import bulk_inserter
 from apps.ov.kv6xml import Kv6XMLProcessor
@@ -38,7 +37,7 @@ class KV6Subscriber(ZmqSubscriber):
             record = OvRaw(feed=envelop, xml=contents)
             self.inserter.add(record)
             unpacked = gzip.decompress(record.xml).decode('utf-8')
-            now = datetime.now(tzlocal())
+            now = timezone.now()
             self.xmlprocessor.process(now, unpacked)
         else:
             log.info(f'Skipping envelop {envelop}')

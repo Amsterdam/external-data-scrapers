@@ -1,10 +1,11 @@
 import argparse
-import datetime
 import glob
 import logging
 import os
 import subprocess
 import sys
+
+from django.utils import timezone
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
@@ -31,7 +32,7 @@ class Archiver(object):
     avoid version conflict because we dump in copy format.
     """
     def make_stamp(self, dt=None):
-        ts = dt if dt else datetime.datetime.now()
+        ts = dt if dt else timezone.now()
         return ts.strftime("%Y%m%d-%H%M%S")
 
     def __init__(self, tmp_folder=None):
