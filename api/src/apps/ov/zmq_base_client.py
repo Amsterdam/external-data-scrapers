@@ -2,9 +2,10 @@
 # pylint: disable=unbalanced-tuple-unpacking
 import logging
 import time
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.db import connection
+from django.utils import timezone
 
 from apps.ov.zmq_poller import ZmqPoller
 
@@ -41,10 +42,10 @@ class ZmqBaseClient(object):
             return False
 
     def check_refresh(self):
-        if self.next_refresh is None or self.next_refresh <= datetime.now():
+        if self.next_refresh is None or self.next_refresh <= timezone.now():
             for sub in self.subscribers:
                 sub.handle_refreshdata()
-            self.next_refresh = datetime.now() + timedelta(days=1)
+            self.next_refresh = timezone.now() + timedelta(days=1)
 
     def message_loop(self):
         while True:

@@ -5,10 +5,10 @@ import time
 from datetime import datetime
 
 import zmq
-from dateutil.tz import tzlocal
 from django.contrib.gis.geos import Point
 from django.db import connection
 from django.test import TransactionTestCase
+from django.utils import timezone
 
 from apps.ov.bulk_inserter import bulk_inserter
 from apps.ov.kv6xml import Kv6XMLProcessor
@@ -236,7 +236,7 @@ class MockSubscriber(ZmqSubscriber):
             record = OvRaw(feed=envelop, xml=contents)
             self.inserter.add(record)
             unpacked = gzip.decompress(record.xml).decode('utf-8')
-            now = datetime.now(tzlocal())
+            now = timezone.now()
             self.xmlprocessor.process(now, unpacked)
 
 

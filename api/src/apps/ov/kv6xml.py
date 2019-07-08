@@ -1,17 +1,18 @@
 import logging
 import xml.etree.ElementTree as ET
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from dateutil.parser import parse
 from django.contrib.gis.geos import Point
 from django.db import models
+from django.utils import timezone
 
 from apps.ov.bulk_inserter import bulk_inserter
 from apps.ov.models import OvKv6, OvRoutes, OvRouteSection, OvStop
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 NS = {'tmi8': 'http://bison.connekt.nl/tmi8/kv6/msg'}
 KV6KEY = '{' + NS['tmi8'] + '}' + 'KV6posinfo'
 
@@ -104,8 +105,9 @@ class Kv6XMLProcessor(object):
             for key in keys:
                 subdict = self.journeys[key]
                 m = max(subdict.values())
+
                 # no update on this route for more than a day, remove it
-                if m and m + timedelta(days=1) <= datetime.now():
+                if m and m + timedelta(days=1) <= timezone.now():
                     del self.journeys[key]
 
     def remove_journey(self, dataowner, line, journey):
