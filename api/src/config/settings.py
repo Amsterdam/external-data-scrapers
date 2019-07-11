@@ -74,6 +74,7 @@ LOCAL_APPS = [
     'apps.parkeergarages',
     'apps.ov',
     'apps.ndw',
+    'apps.commercial_boat_tracking',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -343,8 +344,14 @@ LOGGING = {
 }
 
 TESTING = os.getenv('TESTING', False)
+VERIFY_SSL = os.getenv('ADP_USE_SSL_CERT', True)
 
 SENTRY_DSN = os.getenv('SENTRY_DSN')
+
+
+WATERNET_USERNAME = os.getenv('waternet_username')
+WATERNET_PASSWORD = os.getenv('waternet_password')
+
 if SENTRY_DSN:
     sentry_sdk.init(
         dsn=SENTRY_DSN,
