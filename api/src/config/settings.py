@@ -16,10 +16,6 @@ import os
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from config.settings_databases import (OVERRIDE_HOST_ENV_VAR,
-                                       OVERRIDE_PORT_ENV_VAR, LocationKey,
-                                       get_database_key, get_docker_host)
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -128,44 +124,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wsgi.application'
 
-# Database
-DATABASE_OPTIONS = {
-    LocationKey.docker: {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.getenv('DATABASE_NAME', 'externaldata'),
-        'USER': os.getenv('DATABASE_USER', 'externaldata'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'insecure'),
-        'HOST': 'database',
-        'PORT': '5432',
-    },
-    LocationKey.local: {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.getenv('DATABASE_NAME', 'externaldata'),
-        'USER': os.getenv('DATABASE_USER', 'externaldata'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'insecure'),
-        'HOST': get_docker_host(),
-        'PORT': '5432',
-    },
-    LocationKey.override: {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.getenv('DATABASE_NAME', 'externaldata'),
-        'USER': os.getenv('DATABASE_USER', 'externaldata'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'insecure'),
-        'HOST': os.getenv(OVERRIDE_HOST_ENV_VAR),
-        'PORT': os.getenv(OVERRIDE_PORT_ENV_VAR, '5432'),
-    },
-    LocationKey.override_write: {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.getenv('DATABASE_NAME', 'externaldata'),
-        'USER': os.getenv('DATABASE_WRITE_USER', 'externaldata'),
-        'PASSWORD': os.getenv('DATABASE_WRITE_PASSWORD', 'insecure'),
-        'HOST': os.getenv('DATABASE_WRITE_HOST_OVERRIDE'),
-        'PORT': os.getenv(OVERRIDE_PORT_ENV_VAR, '5432'),
-    }
-}
 
 DATABASES = {
-    'default': DATABASE_OPTIONS[get_database_key()]
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': os.getenv('DATABASE_NAME', 'externaldata'),
+        'USER': os.getenv('DATABASE_USER', 'externaldata'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'insecure'),
+        'HOST': os.getenv('DATABASE_HOST', 'database'),
+        'PORT': os.getenv('DATABASE_PORT', '5432')
+    }
 }
 
 
