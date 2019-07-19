@@ -6,7 +6,7 @@ import logging
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from apps.ov.bulk_inserter import bulk_inserter
+from apps.ov.bulk_inserter import BulkInserter
 from apps.ov.kv6xml import Kv6XMLProcessor
 from apps.ov.models import OvRaw
 from apps.ov.zmq_base_client import ZmqBaseClient
@@ -21,7 +21,7 @@ PUBLISHER = "tcp://pubsub.besteffort.ndovloket.nl:7658"
 
 class KV6Subscriber(ZmqSubscriber):
     def __init__(self, url):
-        self.inserter = bulk_inserter(table=OvRaw, batch_size=10)
+        self.inserter = BulkInserter(table=OvRaw, batch_size=10)
         self.xmlprocessor = Kv6XMLProcessor()
         super().__init__(url)
 

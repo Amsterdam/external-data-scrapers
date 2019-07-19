@@ -7,7 +7,7 @@ from django.contrib.gis.geos import Point
 from django.db import models
 from django.utils import timezone
 
-from apps.ov.bulk_inserter import bulk_inserter
+from apps.ov.bulk_inserter import BulkInserter
 from apps.ov.models import OvKv6, OvRoutes, OvRouteSection, OvStop
 
 logging.basicConfig(level=logging.DEBUG, format='%(message)s')
@@ -26,7 +26,7 @@ class Kv6XMLProcessor(object):
             'rd-x': 'rd_x',
             'rd-y': 'rd_y',
         }
-        self.inserter = bulk_inserter(table=OvKv6, batch_size=10)
+        self.inserter = BulkInserter(table=OvKv6, batch_size=10)
         self.stops = {}
         self.routes = set()
         # dict(route:stopcode, distance from last stop, prev stop)

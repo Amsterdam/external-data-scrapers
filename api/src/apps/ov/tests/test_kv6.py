@@ -10,7 +10,7 @@ from django.db import connection
 from django.test import TransactionTestCase
 from django.utils import timezone
 
-from apps.ov.bulk_inserter import bulk_inserter
+from apps.ov.bulk_inserter import BulkInserter
 from apps.ov.kv6xml import Kv6XMLProcessor
 # import gc
 from apps.ov.models import OvKv6, OvRaw, OvRoutes, OvRouteSection, OvStop
@@ -220,7 +220,7 @@ class MockZmqServer(object):
 
 class MockSubscriber(ZmqSubscriber):
     def __init__(self, url):
-        self.inserter = bulk_inserter(table=OvRaw, batch_size=10)
+        self.inserter = BulkInserter(table=OvRaw, batch_size=10)
         self.xmlprocessor = Kv6XMLProcessor()
         super().__init__(url)
 
