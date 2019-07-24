@@ -4,8 +4,7 @@ from django.core.management import call_command
 from django.test import TestCase, override_settings
 
 from apps.boat_tracking.models import BoatTrackingRaw
-from apps.boat_tracking.scraper import (InvalidCredentials,
-                                                   MissingEnvVariables)
+from apps.boat_tracking.scraper import InvalidCredentials, MissingEnvVariables
 
 
 @override_settings(WATERNET_PASSWORD='test', WATERNET_USERNAME='test')
