@@ -10,9 +10,6 @@ log.setLevel(logging.INFO)
 
 
 class Command(BaseCommand):
-    def add_arguments(self, parser):
-        pass
-
     def handle(self, *args, **options):
         log.info("Starting Scraper")
         BoatTrackingScraper().start()

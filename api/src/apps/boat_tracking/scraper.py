@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from apps.base_scraper import BaseScraper
+from apps.base_api_scraper import BaseAPIScraper
 from apps.boat_tracking.models import BoatTrackingRaw
 
 PARAMS = {'left': 4, 'top': 55, 'right': 8, 'bottom': 50, 'age': 10}
@@ -14,7 +14,7 @@ class InvalidCredentials(Exception):
     """Could not authenticate with provided credentials"""
 
 
-class BoatTrackingScraper(BaseScraper):
+class BoatTrackingScraper(BaseAPIScraper):
     url = 'https://waternet.globalguidesystems.com/api/v0/object'
     auth_url = 'https://waternet.globalguidesystems.com/api/v0/auth/login'
     model = BoatTrackingRaw
@@ -32,7 +32,7 @@ class BoatTrackingScraper(BaseScraper):
         return credentials
 
     def authenticate(self):
-        """Send authenticate request and add token to headers"""
+        """Send authentication request and add token to headers"""
         response = self.requests.post(self.auth_url, self.get_credentials())
 
         if response.status_code != 200:
