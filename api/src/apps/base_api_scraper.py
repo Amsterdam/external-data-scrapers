@@ -1,29 +1,36 @@
 import requests
 from django.conf import settings
+from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
-
-
-class InvalidDataField(Exception):
-    '''RawModel missing jsonb 'data' field.'''
 
 
 class BaseAPIScraper:
     '''
-    BaseScraper for scraping an api.
+    BaseAPIScraper for scraping an api.
 
     Due to the multiple reuse of the same logic when scraping
     for every datasource, this class has been created.
 
-    Override the methods for custom logic.
+    The following class attributes are required:
+    url (str): the endpoint the class will use to scrape api
+    model (Django model instance): The model that the scraped data will be saved
     '''
     url = None
-    auth_url = None
     model = None
 
-    params = None
-    headers = {}
-    verify_ssl = settings.VERIFY_SSL
-    session = None
+    def __init__(self):
+        self.params = None
+        self.session = None
+        self.auth_url = None
+        self.headers = {}
+        self.verify_ssl = settings.VERIFY_SSL
+        self.validate_class_attributes()
+
+    def validate_class_attributes(self):
+        assert isinstance(self.url, str), 'url attribute missing or is not string'
+        assert self.model and issubclass(self.model, models.Model), 'model attribute missing or not django model'
+        assert isinstance(self.model._meta.get_field('data'), JSONField), \
+            'data field is Not a JSONField'
 
     @property
     def requests(self):
@@ -53,8 +60,6 @@ class BaseAPIScraper:
         return self.parse(response)
 
     def store(self, data):
-        if not isinstance(self.model._meta.get_field('data'), JSONField):
-            raise InvalidDataField
         self.model.objects.create(data=data)
 
     def start(self):

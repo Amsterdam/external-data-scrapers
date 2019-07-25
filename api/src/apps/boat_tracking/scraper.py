@@ -16,10 +16,12 @@ class InvalidCredentials(Exception):
 
 class BoatTrackingScraper(BaseAPIScraper):
     url = 'https://waternet.globalguidesystems.com/api/v0/object'
-    auth_url = 'https://waternet.globalguidesystems.com/api/v0/auth/login'
     model = BoatTrackingRaw
 
-    params = PARAMS
+    def __init__(self):
+        super().__init__()
+        self.auth_url = 'https://waternet.globalguidesystems.com/api/v0/auth/login'
+        self.params = PARAMS
 
     def get_credentials(self):
         """Retrieve api Credentials"""
