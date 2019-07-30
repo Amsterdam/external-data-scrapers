@@ -42,8 +42,6 @@ services:
     build: ./api
     links:
       - database
-    environment:
-        OVERRIDE_WRITE_ACCESS_DB: 1
     command: python manage.py kv6sub
 
   mapserver:
