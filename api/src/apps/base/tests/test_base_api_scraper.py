@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import FieldDoesNotExist
 from django.test import TestCase
 
-from apps.base_api_scraper import BaseAPIScraper
+from apps.base.base_api_scraper import BaseAPIScraper
 
 
 class TestBaseAPIScraper(TestCase):

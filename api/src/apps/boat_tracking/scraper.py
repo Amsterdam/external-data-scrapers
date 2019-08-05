@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from apps.base_api_scraper import BaseAPIScraper
+from apps.base.base_api_scraper import BaseAPIScraper
 from apps.boat_tracking.models import BoatTrackingRaw
 
 PARAMS = {'left': 4, 'top': 55, 'right': 8, 'bottom': 50, 'age': 10}
