@@ -71,6 +71,7 @@ LOCAL_APPS = [
     'apps.ov',
     'apps.ndw',
     'apps.boat_tracking',
+    'apps.base',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
