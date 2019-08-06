@@ -23,7 +23,7 @@ class BoatTracking(models.Model):
     status = models.IntegerField()
     sensor = models.CharField(max_length=255)
     lastupdate = models.DateTimeField()
-    lastMoved = models.DateTimeField(null=True)
+    lastmoved = models.DateTimeField(null=True)
 
     scraped_at = models.DateTimeField()
 

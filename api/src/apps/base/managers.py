@@ -3,8 +3,9 @@ from django.db import models
 
 class BaseRawManager(models.Manager):
     '''
-    RawModels Manager. Contains a few methods that makes it
-    easier to query the raw models.
+    RawModels Manager. Used to add query iterator with limit-offset feature.
+    This feature allows querying the whole table in batches without loading all the rows
+    in memory.
     '''
 
     def get_import_model(self):
@@ -28,8 +29,6 @@ class BaseRawManager(models.Manager):
         Iterates over all records and returns
         them in sets. The size of the sets is defined
         by the limit parameter.
-
-        Raw models tend to have a very large amount of records.
         '''
         queryset = self.get_query()
 
