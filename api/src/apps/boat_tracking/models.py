@@ -13,7 +13,7 @@ class BoatTrackingRaw(models.Model):
 
 class BoatTracking(models.Model):
     mmsi = models.CharField(max_length=255)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True)
     type = models.IntegerField(null=True)
     length = models.IntegerField(null=True)
     width = models.IntegerField(null=True)
