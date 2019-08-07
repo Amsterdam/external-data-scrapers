@@ -2,7 +2,7 @@ FROM amsterdam/python_pg11
 MAINTAINER datapunt@amsterdam.nl
 
 ENV PYTHONUNBUFFERED 1
-
+ENV REQUESTS_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
 EXPOSE 8000
 
 RUN mkdir -p /app && chown datapunt /app
