@@ -1,9 +1,7 @@
 version: '3.0'
 services:
-  api: 
-    image: repo.data.amsterdam.nl/datapunt/external-data-scrapers_realtime_ov:${ENVIRONMENT}
-    ports:
-      - "8001:8001"
+  importer:
+    image: repo.data.amsterdam.nl/datapunt/external-data-scrapers:${ENVIRONMENT}
     environment:
       DATABASE_NAME: externaldata
       DATABASE_USER: externaldata
