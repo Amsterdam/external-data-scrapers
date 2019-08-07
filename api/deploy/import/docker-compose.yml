@@ -1,6 +1,6 @@
 version: '3.0'
 services:
-  importer:
+  api:
     image: repo.data.amsterdam.nl/datapunt/external-data-scrapers:${ENVIRONMENT}
     environment:
       DATABASE_NAME: externaldata
