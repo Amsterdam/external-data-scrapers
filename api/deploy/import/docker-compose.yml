@@ -3,6 +3,7 @@ services:
   api:
     image: repo.data.amsterdam.nl/datapunt/external-data-scrapers:${ENVIRONMENT}
     environment:
+      ADP_USE_SSL_CERT:
       DATABASE_NAME: externaldata
       DATABASE_USER: externaldata
       DATABASE_PASSWORD:
