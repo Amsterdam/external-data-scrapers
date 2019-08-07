@@ -318,8 +318,8 @@ VERIFY_SSL = os.getenv('ADP_USE_SSL_CERT', True)
 SENTRY_DSN = os.getenv('SENTRY_DSN')
 
 
-WATERNET_USERNAME = os.getenv('waternet_username')
-WATERNET_PASSWORD = os.getenv('waternet_password')
+WATERNET_USERNAME = os.getenv('WATERNET_USERNAME')
+WATERNET_PASSWORD = os.getenv('WATERNET_PASSWORD')
 
 if SENTRY_DSN:
     sentry_sdk.init(

@@ -7,3 +7,5 @@ services:
       DATABASE_USER: externaldata
       DATABASE_PASSWORD:
       DATABASE_HOST:
+      WATERNET_USERNAME:
+      WATERNET_PASSWORD:
