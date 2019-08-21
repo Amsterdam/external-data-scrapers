@@ -7,7 +7,6 @@ from apps.ovfiets.managers import OvFietsRawManager
 class OvFietsRaw(models.Model):
     id = models.BigAutoField(primary_key=True, unique=True)
     scraped_at = models.DateTimeField(auto_now_add=True, editable=False, db_index=True)
-    scraped_at = models.DateTimeField(auto_now_add=True, editable=False)
     data = JSONField()
 
     objects = OvFietsRawManager()

@@ -26,9 +26,10 @@ class BulkInserter:
         try:
             self.table.objects.bulk_create(self.batch, len(self.batch))
         except Exception as e:
-            log.error("Exception occured when bulk creating batch. Batch will be cleared")
+            log.error(f"Exception occured when bulk creating batch, type: {type(e)}, message: {e}")
             raise e
         finally:
+            log.warning("Batch will be cleared")
             # Make sure batch is cleared even when an error
             # occurs to avoid the batch getting endlessly bigger.
             self.batch.clear()
