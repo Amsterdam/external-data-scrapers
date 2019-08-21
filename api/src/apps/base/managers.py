@@ -14,14 +14,19 @@ class BaseRawManager(models.Manager):
         '''
         raise NotImplementedError
 
+    def get_latest_timestamp(self):
+        latest = self.get_import_model().objects.order_by('scraped_at').last()
+        if latest:
+            return latest.scraped_at
+        return None
+
     def get_query(self):
         '''
         Returns all records or records since last imported timestamp.
         '''
-        latest = self.get_import_model().objects.values('scraped_at').last()
-
-        if latest:
-            return self.model.objects.filter(scraped_at__gt=latest['scraped_at'])
+        latest_timestamp = self.get_latest_timestamp()
+        if latest_timestamp:
+            return self.model.objects.filter(scraped_at__gt=latest_timestamp)
         return self.model.objects.all()
 
     def query_iterator(self, limit):
@@ -71,7 +76,10 @@ class DistrictManager(models.Manager):
 
 class NeighbourhoodManager(models.Manager):
     '''
-    Check District description. It is identical.
+    This custom manager is created to simplify augmenting datasources
+    with the neighbourhood code. Simply using the `get_neighbourhood` method
+    checks if a geo point lies inside a certain neighbourhood.
+    The neighbourhood list is retrieved only once from the db and is then cached.
     '''
     neighbourhood_list = None
 
