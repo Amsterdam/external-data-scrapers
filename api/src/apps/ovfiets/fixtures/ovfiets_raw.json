@@ -1,0 +1,342 @@
+[
+{
+    "model": "ovfiets.ovfietsraw",
+    "pk": 1,
+    "fields": {
+        "scraped_at": "2019-08-14T16:18:17.291",
+        "data": {
+            "locaties": {
+                "o001": {
+                    "lat": 51.76545,
+                    "lng": 5.53072,
+                    "apps": [],
+                    "city": "Oss",
+                    "link": {
+                        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-o001",
+                        "params": {}
+                    },
+                    "name": "O - OV-fiets - Oss",
+                    "open": "Yes",
+                    "extra": {
+                        "fetchTime": 1565792283,
+                        "rentalBikes": "3",
+                        "locationCode": "o001"
+                    },
+                    "sites": [],
+                    "street": "Spoorlaan",
+                    "extraInfo": [],
+                    "thumbnail": {
+                        "uri": "api/v1/location/thumbnail/51.76545,5.53072",
+                        "params": {}
+                    },
+                    "infoImages": [
+                        {
+                            "body": "Hier wordt u ge\u00efdentificeerd aan de hand van de chip in uw OV-chipkaart. U heeft alleen uw OV-chipkaart nodig. Meer informatie: \r\n<a href=\"https://www.ns.nl/deur-tot-deur/ov-fiets/#zelfstandige-stalling\"> gebruiksaanwijzing van de zelfservice huurlocatie</a>",
+                            "name": "locationInfo_Zelfservice OV-fiets uitgiftepunt-o001_Zelfservicehuurlocatie",
+                            "title": "Zelfservice huurlocatie"
+                        }
+                    ],
+                    "postalCode": "5348 KC",
+                    "description": "Oss",
+                    "houseNumber": "64A",
+                    "stationCode": "O",
+                    "openingHours": [
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 1,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 2,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 3,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 4,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 5,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 6,
+                            "startTime": "06:25",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 7,
+                            "startTime": "07:35",
+                            "closesNextDay": true
+                        }
+                    ]
+                },
+                "Bd003": {
+                    "lat": 51.59502,
+                    "lng": 4.779437,
+                    "apps": [],
+                    "city": "Breda",
+                    "link": {
+                        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-Bd003",
+                        "params": {}
+                    },
+                    "name": "BD - OV-fiets - Breda Centrum",
+                    "open": "Yes",
+                    "extra": {
+                        "fetchTime": 1565792283,
+                        "rentalBikes": "58",
+                        "serviceType": "Bemenst",
+                        "locationCode": "Bd003"
+                    },
+                    "sites": [],
+                    "street": "Stationsplein",
+                    "extraInfo": [],
+                    "thumbnail": {
+                        "uri": "api/v1/location/thumbnail/51.59502,4.779437",
+                        "params": {}
+                    },
+                    "infoImages": [
+                        {
+                            "body": "Buiten deze openingstijden kunt u terecht in Fietsenstalling Belcrum aan de\nandere kant van het station. Deze fietsenstalling is open van een kwartier voor\nde eerste trein tot een kwartier na de laatste trein.\n\n\n",
+                            "name": "locationInfo_Bemenst OV-fiets uitgiftepunt-Bd003_Bijzonderheden",
+                            "title": "Bijzonderheden"
+                        }
+                    ],
+                    "postalCode": "4811 BN",
+                    "description": "Breda Centrum",
+                    "houseNumber": "16",
+                    "stationCode": "BD",
+                    "openingHours": [
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 1,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 2,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 3,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 4,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 5,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "20:00",
+                            "dayOfWeek": 6,
+                            "startTime": "07:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "20:00",
+                            "dayOfWeek": 7,
+                            "startTime": "08:00",
+                            "closesNextDay": false
+                        }
+                    ]
+                }
+            }
+        }
+    }
+},
+{
+    "model": "ovfiets.ovfietsraw",
+    "pk": 2,
+    "fields": {
+        "scraped_at": "2019-08-14T16:18:17.291",
+        "data": {
+            "locaties": {
+                "o001": {
+                    "lat": 51.76545,
+                    "lng": 5.53072,
+                    "apps": [],
+                    "city": "Oss",
+                    "link": {
+                        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-o001",
+                        "params": {}
+                    },
+                    "name": "O - OV-fiets - Oss",
+                    "open": "Yes",
+                    "extra": {
+                        "fetchTime": 1565792283,
+                        "rentalBikes": "3",
+                        "locationCode": "o001"
+                    },
+                    "sites": [],
+                    "street": "Spoorlaan",
+                    "extraInfo": [],
+                    "thumbnail": {
+                        "uri": "api/v1/location/thumbnail/51.76545,5.53072",
+                        "params": {}
+                    },
+                    "infoImages": [
+                        {
+                            "body": "Hier wordt u ge\u00efdentificeerd aan de hand van de chip in uw OV-chipkaart. U heeft alleen uw OV-chipkaart nodig. Meer informatie: \r\n<a href=\"https://www.ns.nl/deur-tot-deur/ov-fiets/#zelfstandige-stalling\"> gebruiksaanwijzing van de zelfservice huurlocatie</a>",
+                            "name": "locationInfo_Zelfservice OV-fiets uitgiftepunt-o001_Zelfservicehuurlocatie",
+                            "title": "Zelfservice huurlocatie"
+                        }
+                    ],
+                    "postalCode": "5348 KC",
+                    "description": "Oss",
+                    "houseNumber": "64A",
+                    "stationCode": "O",
+                    "openingHours": [
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 1,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 2,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 3,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 4,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 5,
+                            "startTime": "05:35",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 6,
+                            "startTime": "06:25",
+                            "closesNextDay": true
+                        },
+                        {
+                            "endTime": "01:00",
+                            "dayOfWeek": 7,
+                            "startTime": "07:35",
+                            "closesNextDay": true
+                        }
+                    ]
+                },
+                "Bd003": {
+                    "lat": 51.59502,
+                    "lng": 4.779437,
+                    "apps": [],
+                    "city": "Breda",
+                    "link": {
+                        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-Bd003",
+                        "params": {}
+                    },
+                    "name": "BD - OV-fiets - Breda Centrum",
+                    "open": "Yes",
+                    "extra": {
+                        "fetchTime": 1565792283,
+                        "rentalBikes": "58",
+                        "serviceType": "Bemenst",
+                        "locationCode": "Bd003"
+                    },
+                    "sites": [],
+                    "street": "Stationsplein",
+                    "extraInfo": [],
+                    "thumbnail": {
+                        "uri": "api/v1/location/thumbnail/51.59502,4.779437",
+                        "params": {}
+                    },
+                    "infoImages": [
+                        {
+                            "body": "Buiten deze openingstijden kunt u terecht in Fietsenstalling Belcrum aan de\nandere kant van het station. Deze fietsenstalling is open van een kwartier voor\nde eerste trein tot een kwartier na de laatste trein.\n\n\n",
+                            "name": "locationInfo_Bemenst OV-fiets uitgiftepunt-Bd003_Bijzonderheden",
+                            "title": "Bijzonderheden"
+                        }
+                    ],
+                    "postalCode": "4811 BN",
+                    "description": "Breda Centrum",
+                    "houseNumber": "16",
+                    "stationCode": "BD",
+                    "openingHours": [
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 1,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 2,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 3,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 4,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "21:00",
+                            "dayOfWeek": 5,
+                            "startTime": "06:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "20:00",
+                            "dayOfWeek": 6,
+                            "startTime": "07:00",
+                            "closesNextDay": false
+                        },
+                        {
+                            "endTime": "20:00",
+                            "dayOfWeek": 7,
+                            "startTime": "08:00",
+                            "closesNextDay": false
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
+]
