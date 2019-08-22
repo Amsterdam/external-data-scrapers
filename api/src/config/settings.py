@@ -140,7 +140,7 @@ DATABASES = {
 
 
 # Internationalization
-LANGUAGE_CODE = 'nl-NL'
+LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'nl-NL')
 TIME_ZONE = 'Europe/Amsterdam'
 USE_I18N = True
 USE_L10N = True

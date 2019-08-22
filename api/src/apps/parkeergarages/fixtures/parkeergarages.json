@@ -1,0 +1,222 @@
+[
+{
+    "model": "parkeergarages.parkinglocationsnapshot",
+    "pk": 1,
+    "fields": {
+        "scraped_at": "2019-08-28T13:50:18.439Z",
+        "data": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "Id": "02900c40-0e95-4369-b9c4-22b2233a3440",
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            4.915205,
+                            52.377864
+                        ]
+                    },
+                    "properties": {
+                        "Name": "CE-P28 PTA Touringcars",
+                        "Type": "parkinglocation",
+                        "State": "ok",
+                        "PubDate": "2019-08-28T13:49:41.892Z",
+                        "LongCapacity": "",
+                        "FreeSpaceLong": "",
+                        "ShortCapacity": "42",
+                        "FreeSpaceShort": "0"
+                    }
+                },
+                {
+                    "Id": "900000118_parkinglocation",
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            4.92911,
+                            52.35694
+                        ]
+                    },
+                    "properties": {
+                        "Name": "CE-P20 Oostpoort",
+                        "Type": "parkinglocation",
+                        "State": "ok",
+                        "PubDate": "2019-08-28T13:49:41.892Z",
+                        "LongCapacity": "0",
+                        "FreeSpaceLong": "0",
+                        "ShortCapacity": "373",
+                        "FreeSpaceShort": "175"
+                    }
+                }
+            ]
+        }
+    }
+},
+{
+    "model": "parkeergarages.parkinglocationsnapshot",
+    "pk": 2,
+    "fields": {
+        "scraped_at": "2019-08-28T14:03:06.897Z",
+        "data": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "Id": "02900c40-0e95-4369-b9c4-22b2233a3440",
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            4.915205,
+                            52.377864
+                        ]
+                    },
+                    "properties": {
+                        "Name": "CE-P28 PTA Touringcars",
+                        "Type": "parkinglocation",
+                        "State": "ok",
+                        "PubDate": "2019-08-28T14:02:41.883Z",
+                        "LongCapacity": "",
+                        "FreeSpaceLong": "",
+                        "ShortCapacity": "42",
+                        "FreeSpaceShort": "0"
+                    }
+                }
+            ]
+        }
+    }
+},
+{
+    "model": "parkeergarages.guidancesignsnapshot",
+    "pk": 1,
+    "fields": {
+        "scraped_at": "2019-08-28T13:50:27.265Z",
+        "data": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "Id": "34280b21-5a1c-429d-94c0-a1706b4e3f62",
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            4.944938,
+                            52.315838
+                        ]
+                    },
+                    "properties": {
+                        "Name": "FJ462B13 - ZO-B13 Burg.Stramanweg 02510/080",
+                        "Type": "guidancesign",
+                        "State": "ok",
+                        "PubDate": "2019-08-28T13:49:41.892Z",
+                        "Removed": "false",
+                        "ParkingguidanceDisplay": [
+                            {
+                                "Id": "397a43d2-355a-42fe-ab5a-1f9f0ffb4624",
+                                "Type": "VVX",
+                                "Output": "X",
+                                "Description": "ZO-B13_VVX_02510/080  P+R Arena",
+                                "OutputDescription": "X"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Id": "768730c0-de14-40f3-a59a-2ef423a68e7f",
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            4.41146,
+                            52.330788
+                        ]
+                    },
+                    "properties": {
+                        "Name": "FJ212CE_VVXN_63225/003_Mauritskade",
+                        "Type": "guidancesign",
+                        "State": "ok",
+                        "PubDate": "2019-08-28T13:49:41.892Z",
+                        "Removed": "false",
+                        "ParkingguidanceDisplay": [
+                            {
+                                "Id": "e3c2295d-bd21-462a-b1f7-c9bbe7730f84",
+                                "Type": "VVXNUMERIC",
+                                "Output": "850",
+                                "Description": "FJ212CE_VVXN558_63225/003_Museumkwartier(groep)",
+                                "OutputDescription": ""
+                            },
+                            {
+                                "Id": "fe1c9e78-6ee3-4415-8e45-fe600ad44adc",
+                                "Type": "VVXNUMERIC",
+                                "Output": "50",
+                                "Description": "FJ212CE_VVXN559_63225/003_Muntplein(groep)",
+                                "OutputDescription": ""
+                            },
+                            {
+                                "Id": "a7b4a301-c672-4ed1-8b99-a07a2815f65c",
+                                "Type": "VVXNUMERIC",
+                                "Output": "550",
+                                "Description": "FJ212CE_VVXN560_63225/003_Burgwallen(groep)",
+                                "OutputDescription": ""
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+},
+{
+    "model": "parkeergarages.guidancesignsnapshot",
+    "pk": 2,
+    "fields": {
+        "scraped_at": "2019-08-28T14:36:11.471Z",
+        "data": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "Id": "768230c0-de14-40f3-a59a-2ef423a68e7f",
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            4.41146,
+                            52.330788
+                        ]
+                    },
+                    "properties": {
+                        "Name": "FJ212CE_VVXN_63225/003_Mauritskade",
+                        "Type": "guidancesign",
+                        "State": "ok",
+                        "PubDate": "2019-08-28T14:35:41.994Z",
+                        "Removed": "false",
+                        "ParkingguidanceDisplay": [
+                            {
+                                "Id": "e3c2295d-bd21-462a-b1f7-c9bbe7730f84",
+                                "Type": "VVXNUMERIC",
+                                "Output": "850",
+                                "Description": "FJ212CE_VVXN558_63225/003_Museumkwartier(groep)",
+                                "OutputDescription": ""
+                            },
+                            {
+                                "Id": "fe1c9e78-6ee3-4415-8e45-fe600ad44adc",
+                                "Type": "VVXNUMERIC",
+                                "Output": "50",
+                                "Description": "FJ212CE_VVXN559_63225/003_Muntplein(groep)",
+                                "OutputDescription": ""
+                            },
+                            {
+                                "Id": "a7b4a301-c672-4ed1-8b99-a07a2815f65c",
+                                "Type": "VVXNUMERIC",
+                                "Output": "600",
+                                "Description": "FJ212CE_VVXN560_63225/003_Burgwallen(groep)",
+                                "OutputDescription": ""
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}
+]
