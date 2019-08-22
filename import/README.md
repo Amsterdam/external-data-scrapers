@@ -5,7 +5,6 @@ Imported data
 * [Parkeergarages](data_sources/parkeergarages/README.md)
 * [NDW](data_sources/ndw/README.md)
 * [Verkeerbesluiten](data_sources/trafficorder/README.md)
-* [WifiInfo](data_sources/wifiinfo/README.md)
 
 
 ## Run tests
