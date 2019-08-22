@@ -158,12 +158,9 @@ class OvFietsImporter:
 
     def queryset_to_model_instance_list(self, queryset):
         '''
-        1- Create empty model_instance list
-        2- Loop through the raw_instances in the queryset
-        3- Loop through the data_instances in the raw_instance json field
-        4- Build a model_instance
-        5- Append to list
-        6- Repeat from step 2
+        Each raw_instance contains a jsonfield list of objects. This method
+        loops through the objects to map them to model instances then returns
+        a list of model instances that will then be bulk inserted.
 
         Args:
             queryset (django queryset): OvFietsRaw Queryset
@@ -174,6 +171,7 @@ class OvFietsImporter:
         model_instance_list = []
 
         for raw_instance in queryset:
+            log.info(f"Raw record scraped_at {raw_instance.scraped_at} raw records")
             #  raw_instance contains multiple data instances as a json list
             for data_instance in raw_instance.data['locaties'].values():
                 model_instance_list.append(
@@ -182,12 +180,6 @@ class OvFietsImporter:
         return model_instance_list
 
     def start(self):
-        '''
-        Process:
-            1- Retrieve the query iterator from the manager
-            2- Map to model instances
-            3- Store the model instances list
-        '''
         query_iterator = OvFietsRaw.objects.query_iterator(10)
         for queryset in query_iterator:
             log.info(f"Processing {len(queryset)} raw records")

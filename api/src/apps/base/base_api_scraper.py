@@ -11,9 +11,13 @@ class BaseAPIScraper:
     Due to the multiple reuse of the same logic when scraping
     for every datasource, this class has been created.
 
-    The following class attributes are required:
-    url (str): the endpoint the class will use to scrape api
-    model (Django model instance): The model that the scraped data will be saved
+    Attributes:
+    -----------
+    url: dict
+        The url of the api that will be scraped
+
+    model: Django Model class
+        The model that the scraped data will be saved
     '''
     url = None
     model = None
@@ -37,6 +41,9 @@ class BaseAPIScraper:
         '''
         Retrieve Session or create new instance.
         Adds the ssl location if it has been added in the class
+
+        Returns:
+            Session obj: The requests.Session object
         '''
         if not self.session:
             self.session = requests.Session()
@@ -52,7 +59,15 @@ class BaseAPIScraper:
         raise NotImplementedError
 
     def parse(self, response):
-        '''Parses the response. Default is json, override to change it'''
+        '''
+        Parses the response. Default is json, override to change it
+
+        Args:
+            response (obj:Response): the response object.
+
+        Returns:
+            dict: The json response converted dict
+        '''
         return response.json()
 
     def fetch(self):
