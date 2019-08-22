@@ -18,7 +18,6 @@ Python project with slurp (retrieve from data source) and copy_to_model (cleanup
 - Parkeergarages
 - NDW (Traveltime)
 - VerkeerBesluiten (TrafficOrder)
-- WifiInfo
 
 (NDW: Nationale Databank Wegverkeersgegevens)
 
