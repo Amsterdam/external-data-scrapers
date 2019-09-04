@@ -313,7 +313,6 @@ LOGGING = {
 }
 
 TESTING = os.getenv('TESTING', False)
-VERIFY_SSL = os.getenv('ADP_USE_SSL_CERT', True)
 
 SENTRY_DSN = os.getenv('SENTRY_DSN')
 

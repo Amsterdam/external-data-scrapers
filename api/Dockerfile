@@ -32,7 +32,8 @@ WORKDIR /app
 
 USER datapunt
 
-RUN export DJANGO_SETTINGS_MODULE=config.settings
+ENV DJANGO_SETTINGS_MODULE config.settings
+ENV REQUESTS_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
 
 RUN python manage.py collectstatic --no-input
 

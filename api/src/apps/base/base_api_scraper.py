@@ -27,7 +27,6 @@ class BaseAPIScraper:
         self.session = None
         self.auth_url = None
         self.headers = {}
-        self.verify_ssl = settings.VERIFY_SSL
         self.validate_class_attributes()
 
     def validate_class_attributes(self):
@@ -47,7 +46,6 @@ class BaseAPIScraper:
         '''
         if not self.session:
             self.session = requests.Session()
-            self.session.verify = self.verify_ssl
         return self.session
 
     def authenticate(self):
