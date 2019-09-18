@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Import parkeergarages"
+    help = "Import ParkingLocationSnapshot"
 
     def handle(self, *args, **options):
         log.info("Starting Importing")

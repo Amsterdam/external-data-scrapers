@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "My shiny new management command."
+    help = "Scrape GuidanceSigns"
 
     def handle(self, *args, **options):
         log.info("Starting Scraper")

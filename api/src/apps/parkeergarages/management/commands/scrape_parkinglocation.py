@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Scrape parkeergarages"
+    help = "Scrape parking locations"
 
     def handle(self, *args, **options):
         log.info("Starting Scraper")

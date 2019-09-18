@@ -24,7 +24,7 @@ class TestOvFietsImporter(TestCase):
         self.assertEqual(len(next(iterator)), 1)
 
         with self.assertRaises(StopIteration):
-            self.assertIsNone(next(iterator))
+            next(iterator)
 
     def test_only_latest(self):
         call_command('import_ovfiets')

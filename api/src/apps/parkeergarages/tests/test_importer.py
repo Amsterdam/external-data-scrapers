@@ -30,7 +30,7 @@ class TestParkingLocationImporter(TestCase):
         self.assertEqual(next(iterator), ParkingLocationSnapshot.objects.get(id=2))
 
         with self.assertRaises(StopIteration):
-            self.assertIsNone(next(iterator))
+            next(iterator)
 
     def test_only_latest(self):
         call_command('import_parkinglocation')
@@ -67,7 +67,7 @@ class TestGuidanceSignImporter(TestCase):
         self.assertEqual(next(iterator), GuidanceSignSnapshot.objects.get(id=2))
 
         with self.assertRaises(StopIteration):
-            self.assertIsNone(next(iterator))
+            next(iterator)
 
     def test_guidance_sign_ignored(self):
         call_command('import_guidancesign')

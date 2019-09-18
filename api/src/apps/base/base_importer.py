@@ -1,5 +1,7 @@
 import logging
 
+from django.core.exceptions import ValidationError
+
 log = logging.getLogger(__name__)
 
 
@@ -32,6 +34,13 @@ class BaseImportFactory:
     def __init__(self, snapshot):
         self.snapshot = snapshot
 
+    def assert_attributes(self):
+        log_message = "Implementation of the BaseImportFactory must set the '{}' attribute"
+
+        assert self.model_form, log_message.format('model_form')
+        assert self.raw_to_model_fields, log_message.format('raw_to_model_fields')
+        assert self.snapeshot, log_message.format('snapshot')
+
     def convert_keys(self, raw_data):
         '''
         Returns new raw_data dict with the keys converted to match
@@ -43,7 +52,6 @@ class BaseImportFactory:
             key = self.raw_to_model_fields.get(key, key)
             new_raw_data[key] = value
 
-        self._old_raw_data = raw_data
         return new_raw_data
 
     def prepare_raw_data(self, raw_data):
@@ -69,7 +77,7 @@ class BaseImportFactory:
         model_form = self.model_form(data=prepared_data)
 
         if not model_form.is_valid():
-            raise Exception(model_form.errors)
+            raise ValidationError(model_form.errors)
 
         self.finalize_model_instance(model_form.instance)
         return model_form.instance
@@ -84,14 +92,26 @@ class BaseSnapshotImporter:
     ----------
     import_factory: BaseImportFactory instance
         The import factory that will process the snapshot data.
+
     import_model: Model instance
         The model that the processed data will be saved in
+
+    snapshot: Model instance
+        The snapshot instance.
     '''
     import_factory = None
     import_model = None
+    snapshot = None
 
     def __init__(self, snapshot):
         self.snapshot = snapshot
+
+    def assert_attributes(self):
+        log_message = "Implementation of the BaseSnapshotImporter must set the '{}' attribute"
+
+        assert self.import_model, log_message.format('import_model')
+        assert self.import_factory, log_message.format('import_factory')
+        assert self.snapeshot, log_message.format('snapshot')
 
     def store(self, model_instance_list):
         '''Bulk insert the model_instance_list'''

@@ -10,7 +10,8 @@ class AreasImportFactory(BaseImportFactory):
     Attributes:
     -----------
     areas_fields: dict
-        Dict that contains the import model fieldnames of the areas. e.g the `neighbourhood_field` is named `buurt_code`.
+        Dict that contains the import model fieldnames of the areas.
+        e.g the `neighbourhood_field` is named `buurt_code`.
     '''
     areas_fields = {
         'neighbourhood_field': 'buurt_code',
