@@ -50,6 +50,38 @@ class BaseRawManager(models.Manager):
             offset += limit
             index += limit
 
+    def limit_offset_iterator(self, chunk):
+        '''
+        Iterates over all records and returns
+        them one by one, using limit and offset instead of a db cursor.
+
+        The default .iterator() Uses db cursor which forces the db
+        load all the records in memory at the db server. We want to avoid that here
+        because it is expected for the raw models to have millions of records
+
+        Attributes:
+        ----------
+        chunk: int
+            The amount of records to retrieve from the db at one time
+        '''
+        queryset = self.get_query()
+
+        limit = chunk
+        index = limit
+        offset = 0
+
+        while True:
+            query = queryset[offset:index]
+
+            if not query:
+                break
+
+            for item in query:
+                yield item
+
+            offset += limit
+            index += limit
+
 
 class DistrictManager(models.Manager):
     '''
