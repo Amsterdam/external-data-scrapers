@@ -1,7 +1,7 @@
-from apps.base.managers import BaseRawManager
+from apps.base.managers import BaseSnapshotManager
 from apps.boat_tracking import models
 
 
-class BoatTrackingRawManager(BaseRawManager):
+class BoatTrackingSnapshotManager(BaseSnapshotManager):
     def get_import_model(self):
         return models.BoatTracking

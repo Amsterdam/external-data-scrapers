@@ -1,8 +1,8 @@
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
 
-from apps.parkeergarages.managers import (GuidanceSignManager,
-                                          ParkingLocationManager)
+from apps.parkeergarages.managers import (GuidanceSignSnapshotManager,
+                                          ParkingLocationSnapshotManager)
 
 
 class ParkingLocationSnapshot(models.Model):
@@ -10,7 +10,7 @@ class ParkingLocationSnapshot(models.Model):
     scraped_at = models.DateTimeField(auto_now_add=True, editable=False, db_index=True)
     data = JSONField()
 
-    objects = ParkingLocationManager()
+    objects = ParkingLocationSnapshotManager()
 
     class Meta:
         db_table = 'parkinglocation_raw'
@@ -22,7 +22,7 @@ class GuidanceSignSnapshot(models.Model):
     scraped_at = models.DateTimeField(auto_now_add=True, editable=False, db_index=True)
     data = JSONField()
 
-    objects = GuidanceSignManager()
+    objects = GuidanceSignSnapshotManager()
 
     class Meta:
         db_table = 'guidancesign_raw'

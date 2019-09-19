@@ -1,7 +1,7 @@
 from django.conf import settings
 
 from apps.base.base_api_scraper import BaseAPIScraper
-from apps.boat_tracking.models import BoatTrackingRaw
+from apps.boat_tracking.models import BoatTrackingSnapshot
 
 PARAMS = {'left': 4, 'top': 55, 'right': 8, 'bottom': 50, 'age': 10}
 
@@ -16,7 +16,7 @@ class InvalidCredentials(Exception):
 
 class BoatTrackingScraper(BaseAPIScraper):
     url = 'https://waternet.globalguidesystems.com/api/v0/object'
-    model = BoatTrackingRaw
+    model = BoatTrackingSnapshot
 
     def __init__(self):
         super().__init__()

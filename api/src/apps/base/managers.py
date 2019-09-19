@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class BaseRawManager(models.Manager):
+class BaseSnapshotManager(models.Manager):
     '''
     RawModels Manager. Used to add query iterator with limit-offset feature.
     This feature allows querying the whole table in batches without loading all the rows
