@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
 
+from apps.constants import WGS84_SRID
 from apps.ovfiets.managers import OvFietsSnapshotManager
 
 
@@ -23,7 +24,7 @@ class OvFiets(models.Model):
     station_code = models.CharField(max_length=4, null=True, blank=True)
     location_code = models.CharField(max_length=7, blank=True)
     open = models.CharField(max_length=7)
-    geometrie = models.PointField(name="geometrie", srid=4326, null=True)
+    geometrie = models.PointField(name="geometrie", srid=WGS84_SRID, null=True)
     rental_bikes = models.IntegerField(null=True, blank=True)
     fetch_time = models.DateTimeField(db_index=True)
     opening_hours = JSONField(null=True, blank=True)

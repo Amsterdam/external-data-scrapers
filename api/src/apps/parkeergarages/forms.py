@@ -1,5 +1,6 @@
 from django.contrib.gis import forms, geos
 
+from apps.constants import WGS84_SRID
 from apps.parkeergarages import constants
 from apps.parkeergarages.models import (GuidanceSign, ParkingGuidanceDisplay,
                                         ParkingLocation)
@@ -9,7 +10,8 @@ class GeoJsonPointField(forms.PointField):
     def to_python(self, value):
         return geos.Point(
             value['coordinates'][0],
-            value['coordinates'][1]
+            value['coordinates'][1],
+            srid=WGS84_SRID
         )
 
 

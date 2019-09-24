@@ -1,6 +1,7 @@
 from django.contrib.gis import forms, geos
 from django.utils import timezone
 
+from apps.constants import WGS84_SRID
 from apps.ovfiets import constants
 from apps.ovfiets.models import OvFiets
 
@@ -15,7 +16,7 @@ class CustomGeometryField(forms.PointField):
         return geos.Point(
             value[0],
             value[1],
-            srid=4326
+            srid=WGS84_SRID
         )
 
 

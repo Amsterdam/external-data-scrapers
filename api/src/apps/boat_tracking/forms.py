@@ -2,6 +2,7 @@ from django.contrib.gis import forms, geos
 
 from apps.boat_tracking import constants
 from apps.boat_tracking.models import BoatTracking
+from apps.constants import WGS84_SRID
 
 
 class CustomPointField(forms.PointField):
@@ -9,7 +10,7 @@ class CustomPointField(forms.PointField):
         return geos.Point(
             value['x'],
             value['y'],
-            srid=4326
+            srid=WGS84_SRID
         )
 
 
