@@ -1,8 +1,9 @@
 from django.contrib.gis.db import models
 from django.contrib.postgres.fields import JSONField
 
-from apps.parkeergarages.managers import (GuidanceSignManager,
-                                          ParkingLocationManager)
+from apps.constants import WGS84_SRID
+from apps.parkeergarages.managers import (GuidanceSignSnapshotManager,
+                                          ParkingLocationSnapshotManager)
 
 
 class ParkingLocationSnapshot(models.Model):
@@ -10,7 +11,7 @@ class ParkingLocationSnapshot(models.Model):
     scraped_at = models.DateTimeField(auto_now_add=True, editable=False, db_index=True)
     data = JSONField()
 
-    objects = ParkingLocationManager()
+    objects = ParkingLocationSnapshotManager()
 
     class Meta:
         db_table = 'parkinglocation_raw'
@@ -22,7 +23,7 @@ class GuidanceSignSnapshot(models.Model):
     scraped_at = models.DateTimeField(auto_now_add=True, editable=False, db_index=True)
     data = JSONField()
 
-    objects = GuidanceSignManager()
+    objects = GuidanceSignSnapshotManager()
 
     class Meta:
         db_table = 'guidancesign_raw'
@@ -33,7 +34,7 @@ class ParkingLocation(models.Model):
     api_id = models.CharField(max_length=255)
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=20)
-    geometrie = models.PointField(name="geometrie", srid=4326, null=True)
+    geometrie = models.PointField(name="geometrie", srid=WGS84_SRID, null=True)
     state = models.CharField(max_length=10)
 
     free_space_short = models.IntegerField(
@@ -61,7 +62,7 @@ class ParkingLocation(models.Model):
 
 class GuidanceSign(models.Model):
     api_id = models.CharField(max_length=255, unique=True)
-    geometrie = models.PointField(name="geometrie", srid=4326, null=True)
+    geometrie = models.PointField(name="geometrie", srid=WGS84_SRID, null=True)
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=20)
     state = models.CharField(max_length=10)

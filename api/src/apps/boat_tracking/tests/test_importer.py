@@ -2,7 +2,7 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.utils import timezone
 
-from apps.boat_tracking.models import BoatTracking, BoatTrackingRaw
+from apps.boat_tracking.models import BoatTracking, BoatTrackingSnapshot
 
 
 class TestBoatTrackingImporter(TestCase):
@@ -13,10 +13,11 @@ class TestBoatTrackingImporter(TestCase):
         self.assertEqual(BoatTracking.objects.count(), 18)
 
     def test_extra_field_ignored(self):
-        BoatTrackingRaw.objects.all().delete()
-        BoatTrackingRaw.objects.create(data=[{
+        BoatTrackingSnapshot.objects.all().delete()
+        BoatTrackingSnapshot.objects.create(data=[{
             'Id': '120',
             'ExtraField': 12,
+            "Sensor": 'test',
             "Speed": 1,
             'Position': {
                 "x": 4.919753551483154,
@@ -30,7 +31,7 @@ class TestBoatTrackingImporter(TestCase):
         self.assertEqual(BoatTracking.objects.count(), 1)
 
     def test_iterate_raw_model(self):
-        iterator = BoatTrackingRaw.objects.query_iterator(2)
+        iterator = BoatTrackingSnapshot.objects.query_iterator(2)
 
         self.assertEqual(len(next(iterator)), 2)
         self.assertEqual(len(next(iterator)), 2)
@@ -44,7 +45,7 @@ class TestBoatTrackingImporter(TestCase):
         self.assertEqual(BoatTracking.objects.count(), 18)
 
         hour_later = timezone.now() + timezone.timedelta(hours=1)
-        BoatTrackingRaw.objects.filter(pk=1).update(scraped_at=hour_later)
+        BoatTrackingSnapshot.objects.filter(pk=1).update(scraped_at=hour_later)
 
         call_command('import_boat_tracking')
         self.assertEqual(BoatTracking.objects.count(), 21)

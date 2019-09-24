@@ -1,6 +1,6 @@
 [
 {
-    "model": "boat_tracking.boattrackingraw",
+    "model": "boat_tracking.boattrackingsnapshot",
     "pk": 1,
     "fields": {
         "scraped_at": "2019-07-24T14:26:43.355Z",
@@ -60,7 +60,7 @@
     }
 },
 {
-    "model": "boat_tracking.boattrackingraw",
+    "model": "boat_tracking.boattrackingsnapshot",
     "pk": 2,
     "fields": {
         "scraped_at": "2019-07-31T11:04:37.963Z",
@@ -120,7 +120,7 @@
     }
 },
 {
-    "model": "boat_tracking.boattrackingraw",
+    "model": "boat_tracking.boattrackingsnapshot",
     "pk": 3,
     "fields": {
         "scraped_at": "2019-07-31T11:04:39.555Z",
@@ -197,7 +197,7 @@
     }
 },
 {
-    "model": "boat_tracking.boattrackingraw",
+    "model": "boat_tracking.boattrackingsnapshot",
     "pk": 4,
     "fields": {
         "scraped_at": "2019-07-31T11:04:41.174Z",
@@ -274,7 +274,7 @@
     }
 },
 {
-    "model": "boat_tracking.boattrackingraw",
+    "model": "boat_tracking.boattrackingsnapshot",
     "pk": 5,
     "fields": {
         "scraped_at": "2019-07-31T11:04:45.763Z",

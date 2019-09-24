@@ -2,7 +2,7 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.utils import timezone
 
-from apps.ovfiets.models import OvFiets, OvFietsRaw
+from apps.ovfiets.models import OvFiets, OvFietsSnapshot
 
 
 class TestOvFietsImporter(TestCase):
@@ -18,7 +18,7 @@ class TestOvFietsImporter(TestCase):
         self.assertEqual(ovfiets.geometrie.srid, 4326)
 
     def test_iterate_raw_model(self):
-        iterator = OvFietsRaw.objects.query_iterator(1)
+        iterator = OvFietsSnapshot.objects.query_iterator(1)
 
         self.assertEqual(len(next(iterator)), 1)
         self.assertEqual(len(next(iterator)), 1)
@@ -31,7 +31,7 @@ class TestOvFietsImporter(TestCase):
         self.assertEqual(OvFiets.objects.count(), 4)
 
         hour_later = timezone.now() + timezone.timedelta(hours=1)
-        OvFietsRaw.objects.filter(pk=1).update(scraped_at=hour_later)
+        OvFietsSnapshot.objects.filter(pk=1).update(scraped_at=hour_later)
 
         call_command('import_ovfiets')
         self.assertEqual(OvFiets.objects.count(), 6)

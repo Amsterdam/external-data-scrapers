@@ -8,3 +8,6 @@ STADSDELEN = (
     ("K", "Zuid (K)"),
     ("T", "Zuidoost (T)"),
 )
+
+# Global spatial reference
+WGS84_SRID = 4326

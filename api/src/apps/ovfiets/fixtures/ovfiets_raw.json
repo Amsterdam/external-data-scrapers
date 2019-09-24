@@ -1,6 +1,6 @@
 [
 {
-    "model": "ovfiets.ovfietsraw",
+    "model": "ovfiets.ovfietssnapshot",
     "pk": 1,
     "fields": {
         "scraped_at": "2019-08-14T16:18:17.291",
@@ -170,7 +170,7 @@
     }
 },
 {
-    "model": "ovfiets.ovfietsraw",
+    "model": "ovfiets.ovfietssnapshot",
     "pk": 2,
     "fields": {
         "scraped_at": "2019-08-14T16:18:17.291",

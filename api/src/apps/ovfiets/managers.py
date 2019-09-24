@@ -1,7 +1,7 @@
-from apps.base.managers import BaseRawManager
+from apps.base.managers import BaseSnapshotManager
 from apps.ovfiets import models
 
 
-class OvFietsRawManager(BaseRawManager):
+class OvFietsSnapshotManager(BaseSnapshotManager):
     def get_import_model(self):
         return models.OvFiets
