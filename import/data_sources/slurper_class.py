@@ -3,7 +3,6 @@ import datetime
 import requests
 
 import db_helper
-from settings import VERIFY_SSL
 
 
 class Slurper:
@@ -43,7 +42,7 @@ class Slurper:
         Sometimes the datasource return files not Json.
         """
         url = self.get_url()
-        response = requests.get(url, verify=VERIFY_SSL)
+        response = requests.get(url)
         if self.fetch_json:
             return response.json()
         return response.content

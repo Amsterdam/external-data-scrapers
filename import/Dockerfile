@@ -11,4 +11,6 @@ RUN pip install --no-cache-dir -r /requirements.txt
 
 COPY . /app/
 
+ENV REQUESTS_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
+
 WORKDIR /app
