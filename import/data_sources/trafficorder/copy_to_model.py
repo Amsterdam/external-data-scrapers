@@ -12,7 +12,6 @@ import db_helper
 from data_sources.importer_class import Importer
 from data_sources.link_areas import link_areas
 from data_sources.trafficorder.models import TrafficOrder, TrafficOrderRaw
-from settings import VERIFY_SSL
 
 log = logging.getLogger(__name__)
 logging.getLogger("urllib3").setLevel(logging.INFO)
@@ -40,7 +39,7 @@ class TrafficOrderImporter(Importer):
         return super().__init__(*args, **kwargs)
 
     def fetch(self, metadata_url):
-        response = self.http_session.get(metadata_url, verify=VERIFY_SSL)
+        response = self.http_session.get(metadata_url)
         return response.content
 
     def get_tag_name(self, tag):
