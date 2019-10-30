@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from shapely.geometry import LineString, Point
 
 import db_helper
+import settings
 from data_sources.importer_class import Importer
 from data_sources.ndw.endpoints import ENDPOINTS, ROOT_URL
 from data_sources.ndw.models import TrafficSpeedRaw, TravelTimeRaw
@@ -57,11 +58,11 @@ def get_shapefile_reader(layer):
         children = zipfile.namelist()
 
         while len(children):
-            if f'{layer}_WGS84.shp' in zipfile.namelist():
+            if f'{layer}_{settings.SHAPEFILE_NAME}.shp' in zipfile.namelist():
                 return shapefile.Reader(
-                    shp=zipfile.open(f'{layer}_WGS84.shp'),
-                    dbf=zipfile.open(f'{layer}_WGS84.dbf'),
-                    shx=zipfile.open(f'{layer}_WGS84.shx')
+                    shp=zipfile.open(f'{layer}_{settings.SHAPEFILE_NAME}.shp'),
+                    dbf=zipfile.open(f'{layer}_{settings.SHAPEFILE_NAME}.dbf'),
+                    shx=zipfile.open(f'{layer}_{settings.SHAPEFILE_NAME}.shx')
                 )
             else:
                 child = children.pop()

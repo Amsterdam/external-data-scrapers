@@ -4,6 +4,7 @@ from datetime import datetime
 from unittest.mock import patch
 
 import db_helper
+import settings
 from data_sources.ndw import copy_to_model, models, slurp
 from settings import BASE_DIR, TESTING
 
@@ -57,6 +58,7 @@ class TestSlurpNDW(unittest.TestCase):
     def setUp(self):
         global engine
         models.Base.metadata.create_all(bind=engine)
+        settings.SHAPEFILE_NAME = 'WGS84'
 
     def tearDown(self):
         global engine
