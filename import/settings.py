@@ -27,3 +27,8 @@ OBJECTSTORE_CONF = dict(
     PASSWORD=os.getenv('OS_PASSWORD'),
     REGION_NAME='NL',
 )
+
+# The name of the shapefile changes every now and then.
+# As a temporary solution, this constant is used and should be changed by developers -
+# whenever the name on the server changes. Later a regex implementation would be nicer.
+SHAPEFILE_NAME = 'WGS84-1'
