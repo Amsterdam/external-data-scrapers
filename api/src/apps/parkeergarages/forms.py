@@ -16,7 +16,7 @@ class GeoJsonPointField(forms.PointField):
 
 
 class ParkingLocationImporterForm(forms.ModelForm):
-    pub_date = forms.DateTimeField(input_formats=['%Y-%m-%dT%H:%M:%S.%fz'])
+    pub_date = forms.DateTimeField(input_formats=['%Y-%m-%dT%H:%M:%S.%f%z'])
     geometrie = GeoJsonPointField()
 
     class Meta:

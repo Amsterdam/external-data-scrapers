@@ -15,7 +15,7 @@ class TestParkingLocationImporter(TestCase):
         call_command('import_parkinglocation')
         self.assertEqual(ParkingLocation.objects.count(), 3)
 
-        parkinglocation = ParkingLocation.objects.filter(id=1)[0]
+        parkinglocation = ParkingLocation.objects.order_by('id').first()
         self.assertEqual(parkinglocation.name, 'CE-P28 PTA Touringcars')
         self.assertEqual(parkinglocation.long_capacity, None)
         self.assertEqual(parkinglocation.short_capacity, 42)
@@ -41,6 +41,23 @@ class TestParkingLocationImporter(TestCase):
 
         call_command('import_parkinglocation')
         self.assertEqual(ParkingLocation.objects.count(), 5)
+
+    def test_correct_timezone(self):
+        call_command('import_parkinglocation')
+        self.assertEqual(ParkingLocation.objects.count(), 3)
+
+        parkinglocation = ParkingLocation.objects.order_by('id').first()
+        correct_pub_date = timezone.datetime(2019, 8, 28, 13, 49)
+
+        self.assertEqual(parkinglocation.pub_date.date(), correct_pub_date.date())
+        self.assertEqual(parkinglocation.pub_date.hour, correct_pub_date.hour)
+        self.assertEqual(parkinglocation.pub_date.minute, correct_pub_date.minute)
+
+        correct_scraped_at = timezone.datetime(2019, 8, 28, 13, 50)
+
+        self.assertEqual(parkinglocation.scraped_at.date(), correct_scraped_at.date())
+        self.assertEqual(parkinglocation.scraped_at.hour, correct_scraped_at.hour)
+        self.assertEqual(parkinglocation.scraped_at.minute, correct_scraped_at.minute)
 
 
 class TestGuidanceSignImporter(TestCase):
@@ -88,3 +105,21 @@ class TestGuidanceSignImporter(TestCase):
 
         call_command('import_guidancesign')
         self.assertEqual(ParkingGuidanceDisplay.objects.count(), 11)
+
+    def test_correct_timezone(self):
+        call_command('import_guidancesign')
+        self.assertEqual(GuidanceSign.objects.count(), 3)
+        self.assertEqual(ParkingGuidanceDisplay.objects.count(), 7)
+
+        guidancesign = GuidanceSign.objects.order_by('id').first()
+        correct_pub_date = timezone.datetime(2019, 8, 28, 13, 49)
+
+        self.assertEqual(guidancesign.pub_date.date(), correct_pub_date.date())
+        self.assertEqual(guidancesign.pub_date.hour, correct_pub_date.hour)
+        self.assertEqual(guidancesign.pub_date.minute, correct_pub_date.minute)
+
+        correct_scraped_at = timezone.datetime(2019, 8, 28, 13, 50)
+
+        self.assertEqual(guidancesign.scraped_at.date(), correct_scraped_at.date())
+        self.assertEqual(guidancesign.scraped_at.hour, correct_scraped_at.hour)
+        self.assertEqual(guidancesign.scraped_at.minute, correct_scraped_at.minute)

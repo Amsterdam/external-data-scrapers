@@ -49,3 +49,19 @@ class TestBoatTrackingImporter(TestCase):
 
         call_command('import_boat_tracking')
         self.assertEqual(BoatTracking.objects.count(), 21)
+
+    def test_correct_timezone(self):
+        call_command('import_boat_tracking')
+
+        boat_tracking = BoatTracking.objects.order_by('id').first()
+        correct_pub_date = timezone.datetime(2019, 7, 24, 14, 18)
+
+        self.assertEqual(boat_tracking.lastupdate.date(), correct_pub_date.date())
+        self.assertEqual(boat_tracking.lastupdate.hour, correct_pub_date.hour)
+        self.assertEqual(boat_tracking.lastupdate.minute, correct_pub_date.minute)
+
+        correct_scraped_at = timezone.datetime(2019, 7, 24, 14, 26)
+
+        self.assertEqual(boat_tracking.scraped_at.date(), correct_scraped_at.date())
+        self.assertEqual(boat_tracking.scraped_at.hour, correct_scraped_at.hour)
+        self.assertEqual(boat_tracking.scraped_at.minute, correct_scraped_at.minute)

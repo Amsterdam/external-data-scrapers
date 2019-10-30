@@ -16,8 +16,8 @@ class CustomPointField(forms.PointField):
 
 class BoatTrackingImporterForm(forms.ModelForm):
     geo_location = CustomPointField()
-    lastupdate = forms.DateTimeField(input_formats=['%Y-%m-%dT%H:%M:%S.%fz'])
-    lastmoved = forms.DateTimeField(input_formats=['%Y-%m-%dT%H:%M:%S.%fz'], required=False)
+    lastupdate = forms.DateTimeField(input_formats=['%Y-%m-%dT%H:%M:%S.%f%z'])
+    lastmoved = forms.DateTimeField(input_formats=['%Y-%m-%dT%H:%M:%S.%f%z'], required=False)
 
     class Meta:
         model = BoatTracking
