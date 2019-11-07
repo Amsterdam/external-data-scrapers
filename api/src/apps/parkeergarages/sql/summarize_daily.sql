@@ -47,10 +47,11 @@ with tmp as (
         buurt_code,
         row_number() over (partition by "name", (cast(pub_date as date), (extract(hour from pub_date)) ) order by pub_date desc) 
         as nber -- Take only last entry in the hour
-        from public.importer_parkinglocation
-        order by pub_date desc
+    from 
+        public.importer_parkinglocation
     where
         scraped_at::date = now()::date -1
+    order by pub_date desc
     )
 insert into parkeergarages.parkinglocation_summary (
 	api_id, 
