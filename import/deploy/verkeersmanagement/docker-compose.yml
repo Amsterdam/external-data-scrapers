@@ -1,0 +1,26 @@
+version: '3.0'
+services:
+  importer:
+    image: repo.data.amsterdam.nl/datapunt/external-data-scrapers_importer:${ENVIRONMENT}
+    # build: ../..
+    environment:
+      ENVIRONMENT:
+      ADP_USE_SSL_CERT:
+      OVERRIDE_DATABASE:
+      DATABASE_OVERRIDE_HOST: 
+      DATABASE_OVERRIDE_NAME: 
+      DATABASE_OVERRIDE_USER: 
+      DATABASE_OVERRIDE_PORT: 
+      DATABASE_OVERRIDE_PASSWORD: 
+      IMPORT_LIMIT:
+      DROP:
+      WFS:
+      PYTHONPATH: "/app"
+      OS_USERNAME:
+      OS_PASSWORD:
+      OS_AUTH_URL:
+      OS_TENANT_ID:
+      OS_TENANT_NAME:
+      OS_REGION_NAME:
+      PGPASSWORD:
+
