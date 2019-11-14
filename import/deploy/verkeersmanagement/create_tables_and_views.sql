@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS verkeersmanagement.netwerkprestatie_detail (
     cijfer float8 NULL
 );
 
-CREATE or replace view verkeersmanagement.netwerkprestatie_detail_percentile_ref AS
+CREATE OR REPLACE VIEW verkeersmanagement.netwerkprestatie_detail_percentile_ref AS
     select  
         measurement_site_reference, 
 		hour, 
@@ -33,9 +33,9 @@ CREATE or replace view verkeersmanagement.netwerkprestatie_detail_percentile_ref
 	group by 
         measurement_site_reference, 
 		hour,
-	    dow	
+	    dow;
 	    
-create or replace view verkeersmanagement.visualization_view as
+CREATE OR REPLACE VIEW verkeersmanagement.visualization_view as
 	select 
 		a.*, 
 		b.p10, 
@@ -50,4 +50,4 @@ left join
 on 
 	a.measurement_site_reference = b.measurement_site_reference 
 	and a.hour = b.hour 
-	and a.dow = b.dow
+	and a.dow = b.dow;
