@@ -21,10 +21,10 @@ dc build
 
 if [ "$INSERT" = "yes" ]
 then
-    dc run --rm importer psql -U $DATABASE_OVERRIDE_USER -h $DATABASE_OVERRIDE_HOST -d $DATABASE_OVERRIDE_NAME -v ON_ERROR_STOP=1 /deploy/verkeersmanagement/create_tables_and_view.sql
-    dc run --rm importer psql -U $DATABASE_OVERRIDE_USER -h $DATABASE_OVERRIDE_HOST -d $DATABASE_OVERRIDE_NAME -v ON_ERROR_STOP=1 /deploy/verkeersmanagement/insert_hulptabel.sql
+    dc run --rm importer psql -U $DATABASE_OVERRIDE_USER -h $DATABASE_OVERRIDE_HOST -d $DATABASE_OVERRIDE_NAME -v ON_ERROR_STOP=1 -f deploy/verkeersmanagement/create_tables_and_views.sql
+    dc run --rm importer psql -U $DATABASE_OVERRIDE_USER -h $DATABASE_OVERRIDE_HOST -d $DATABASE_OVERRIDE_NAME -v ON_ERROR_STOP=1 -f deploy/verkeersmanagement/insert_hulptabel.sql
 fi
 
-dc run --rm importer psql -U $DATABASE_OVERRIDE_USER -h $DATABASE_OVERRIDE_HOST -d $DATABASE_OVERRIDE_NAME -v ON_ERROR_STOP=1 /deploy/verkeersmanagement/insert_daily_netwerkprestatie.sql
+dc run --rm importer psql -U $DATABASE_OVERRIDE_USER -h $DATABASE_OVERRIDE_HOST -d $DATABASE_OVERRIDE_NAME -v ON_ERROR_STOP=1 -f deploy/verkeersmanagement/insert_daily_netwerkprestatie.sql
 
 dc down -v
