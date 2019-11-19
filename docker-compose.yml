@@ -43,20 +43,3 @@ services:
     links:
       - database
     command: python manage.py kv6sub
-
-  mapserver:
-    build: 
-      context: mapserver/
-      dockerfile: Dockerfile_noproxy
-    ports:
-      - "8070:80"
-    links:
-      - database
-
-    environment:
-      EXTERNALDATA_DB_HOST: database
-      EXTERNALDATA_DB_NAME: externaldata
-      EXTERNALDATA_DB_USER: externaldata
-      EXTERNALDATA_DB_PASSWORD: insecure
-      MAP_URL: "http://mapserver"
-      LEGEND_URL: "http://mapserver"
