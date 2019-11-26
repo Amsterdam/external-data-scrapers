@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS verkeersmanagement.netwerkprestatie_detail (
     hour int4 NULL,
     week int4 NULL,
     dow int4 NULL,
+    iso_year integer not null,
     datum timestamp NULL,
     target_speed int4 NULL,
     cijfer float8 NULL

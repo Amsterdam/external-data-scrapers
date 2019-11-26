@@ -3,6 +3,7 @@ select 	qq.measurement_site_reference,
 			qq.hour_nr, 
 			qq.week_nr, 
 			qq.dow_nr, 
+            qq.iso_year,
 			qq.datum,
 			qq.target_speed,
 			case when sum(qq.duration - qq.target_time) / sum(target_time) + 1 > 1
@@ -15,6 +16,7 @@ select 	qq.measurement_site_reference,
 				extract('week' from q.measurement_time)::int as week_nr,
 				extract('isodow' from q.measurement_time)::int as dow_nr,
 				extract('hour' from q.measurement_time)::int as hour_nr,
+                extract('isoyear' from measurement_time) as iso_year, 
 				q.measurement_time::date as datum,
 				case when extract('hour' from q.measurement_time)::int in (7,8,16,17,18) then true else false end as spits_bool,
 				q.duration,
@@ -40,5 +42,5 @@ select 	qq.measurement_site_reference,
 			and scraped_at::date = now()::date -1 
 		) as q
 	) as qq
-	group by qq.measurement_site_reference, qq.hour_nr, qq.week_nr, qq.dow_nr, qq.datum, qq.target_speed 
+	group by qq.measurement_site_reference, qq.hour_nr, qq.week_nr, qq.dow_nr, qq.iso_year, qq.datum, qq.target_speed;
 
