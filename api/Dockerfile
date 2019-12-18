@@ -23,7 +23,8 @@ RUN mkdir -p /static && chown datapunt /static
 RUN mkdir -p /deploy && chown datapunt /deploy
 
 COPY requirements.txt /requirements.txt
-RUN pip install --no-cache-dir -r /requirements.txt
+COPY requirements-django.txt /requirements-django.txt
+RUN pip install --no-cache-dir -r /requirements.txt -r /requirements-django.txt
 
 COPY src /app/
 COPY deploy /deploy/

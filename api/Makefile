@@ -20,3 +20,6 @@ requirements.txt: | build_requirements clean2
 
 isort:
 	isort -ac -rc -sg "*migrations/*.py" -s .tox .
+
+install_requirements:
+	$(PIP) install -r requirements.txt -r requirements-django.txt

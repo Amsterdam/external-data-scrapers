@@ -1,4 +1,3 @@
-Django
 django-braces
 django-debug-toolbar
 django-extensions

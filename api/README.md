@@ -5,8 +5,16 @@ External data scrapers
 
 ### Run database in docker
 ```
-cd ..
 docker-compose up database
+```
+
+### Install dependencies (django is separate to keep it up to date with security fixes)
+```
+make install_requirements
+```
+OR
+```
+pip -r requirements.txt -r requirements-django.txt
 ```
 
 ### Create the tables
