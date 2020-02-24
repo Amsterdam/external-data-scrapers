@@ -58,7 +58,6 @@ class TestSlurpNDW(unittest.TestCase):
     def setUp(self):
         global engine
         models.Base.metadata.create_all(bind=engine)
-        settings.SHAPEFILE_NAME = 'WGS84'
 
     def tearDown(self):
         global engine
@@ -98,6 +97,7 @@ class TestSlurpNDW(unittest.TestCase):
         self.assertEqual(raw_count, 1)
 
 
+@patch("data_sources.ndw.copy_to_model.settings.SHAPEFILE_NAME", "_WGS84")
 @patch("data_sources.ndw.copy_to_model.argparse.ArgumentParser.parse_args")
 class TestCopyNDW(unittest.TestCase):
     """Test writing to database."""

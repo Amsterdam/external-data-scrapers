@@ -58,11 +58,11 @@ def get_shapefile_reader(layer):
         children = zipfile.namelist()
 
         while len(children):
-            if f'{layer}_{settings.SHAPEFILE_NAME}.shp' in zipfile.namelist():
+            if f'{layer}{settings.SHAPEFILE_NAME}.shp' in zipfile.namelist():
                 return shapefile.Reader(
-                    shp=zipfile.open(f'{layer}_{settings.SHAPEFILE_NAME}.shp'),
-                    dbf=zipfile.open(f'{layer}_{settings.SHAPEFILE_NAME}.dbf'),
-                    shx=zipfile.open(f'{layer}_{settings.SHAPEFILE_NAME}.shx')
+                    shp=zipfile.open(f'{layer}{settings.SHAPEFILE_NAME}.shp'),
+                    dbf=zipfile.open(f'{layer}{settings.SHAPEFILE_NAME}.dbf'),
+                    shx=zipfile.open(f'{layer}{settings.SHAPEFILE_NAME}.shx')
                 )
             else:
                 child = children.pop()
