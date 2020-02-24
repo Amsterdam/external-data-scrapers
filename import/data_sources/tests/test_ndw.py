@@ -4,7 +4,6 @@ from datetime import datetime
 from unittest.mock import patch
 
 import db_helper
-import settings
 from data_sources.ndw import copy_to_model, models, slurp
 from settings import BASE_DIR, TESTING
 
