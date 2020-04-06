@@ -9,6 +9,7 @@ attrs==19.3.0             # via jsonschema, pytest
 babel==2.8.0              # via oslo.i18n
 certifi==2020.4.5.1       # via requests, sentry-sdk
 chardet==3.0.4            # via requests
+click==7.1.1              # via pip-tools
 coreapi==2.3.3            # via django-rest-swagger, drf-yasg, openapi-codec
 coreschema==0.0.4         # via coreapi, drf-yasg
 coverage==5.0.4           # via pytest-cov
@@ -58,6 +59,7 @@ oslo.serialization==3.1.0  # via python-keystoneclient
 oslo.utils==4.1.0         # via oslo.serialization, python-keystoneclient
 packaging==20.3           # via drf-yasg, pytest, tox
 pbr==5.4.4                # via debtcollector, keystoneauth1, os-service-types, oslo.i18n, oslo.serialization, oslo.utils, python-keystoneclient, stevedore
+pip-tools==4.5.1          # via -r requirements.in
 pluggy==0.13.1            # via pytest, tox
 psycopg2-binary==2.8.5    # via -r requirements.in
 py==1.8.1                 # via pytest, tox
@@ -86,7 +88,7 @@ ruamel.yaml.clib==0.2.0   # via ruamel.yaml
 ruamel.yaml==0.16.10      # via drf-yasg
 sentry-sdk==0.14.3        # via -r requirements.in
 simplejson==3.17.0        # via django-rest-swagger
-six==1.14.0               # via debtcollector, django-braces, django-extensions, djangorestframework-csv, drf-yasg, jsonschema, keystoneauth1, oslo.config, oslo.i18n, oslo.serialization, oslo.utils, packaging, pyrsistent, python-dateutil, python-keystoneclient, python-swiftclient, stevedore, swagger-spec-validator, tox, virtualenv
+six==1.14.0               # via debtcollector, django-braces, django-extensions, djangorestframework-csv, drf-yasg, jsonschema, keystoneauth1, oslo.config, oslo.i18n, oslo.serialization, oslo.utils, packaging, pip-tools, pyrsistent, python-dateutil, python-keystoneclient, python-swiftclient, stevedore, swagger-spec-validator, tox, virtualenv
 sqlparse==0.3.1           # via django, django-debug-toolbar
 stevedore==1.32.0         # via keystoneauth1, oslo.config, python-keystoneclient
 swagger-spec-validator==2.5.0  # via -r requirements.in
