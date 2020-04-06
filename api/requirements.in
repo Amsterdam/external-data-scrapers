@@ -1,3 +1,4 @@
+Django<3.0
 django-braces
 django-debug-toolbar
 django-extensions
@@ -18,6 +19,14 @@ Markdown
 Pygments
 sentry-sdk
 
+pyzmq
+PyYAML>=4.2b1
+
+python-swiftclient
+python-keystoneclient
+
+# Tools for maintaining requirements.txt:
+pip-tools
 tox
 pytest
 pytest-cov
@@ -27,9 +36,3 @@ pytest-isort
 pytest-env
 pytest-mock
 pytest-django
-
-pyzmq
-PyYAML>=4.2b1
-
-python-swiftclient
-python-keystoneclient
