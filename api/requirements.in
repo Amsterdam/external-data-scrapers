@@ -1,4 +1,4 @@
-Django<3.0
+Django<4.0
 django-braces
 django-debug-toolbar
 django-extensions
