@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   api: 
-    image: repo.data.amsterdam.nl/datapunt/external-data-scrapers:${ENVIRONMENT}
+    image: docker-registry.data.amsterdam.nl/datapunt/external-data-scrapers:${ENVIRONMENT}
     ports:
       - "8001:8001"
     environment:

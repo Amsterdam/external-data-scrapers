@@ -31,7 +31,7 @@ node {
 
     stage("Build dockers") {
         tryStep "build", {
-            docker.withRegistry('https://repo.data.amsterdam.nl','docker-registry') {
+            docker.withRegistry('https://docker-registry.data.amsterdam.nl','docker_registry_auth') {
                 def importer = docker.build("datapunt/external-data-scrapers_importer:${env.BUILD_NUMBER}", "import")
                 importer.push()
                 importer.push("acceptance")
@@ -52,7 +52,7 @@ if (BRANCH == "master") {
     node {
         stage('Push acceptance image') {
             tryStep "image tagging", {
-                docker.withRegistry('https://repo.data.amsterdam.nl','docker-registry') {
+                docker.withRegistry('https://docker-registry.data.amsterdam.nl','docker_registry_auth') {
                     def image = docker.image("datapunt/external-data-scrapers:${env.BUILD_NUMBER}")
                     image.pull()
                     image.push("acceptance")
@@ -81,7 +81,7 @@ if (BRANCH == "master") {
     node {
         stage('Push production image') {
             tryStep "image tagging", {
-                docker.withRegistry('https://repo.data.amsterdam.nl','docker-registry') {
+                docker.withRegistry('https://docker-registry.data.amsterdam.nl','docker_registry_auth') {
                 def image = docker.image("datapunt/external-data-scrapers:${env.BUILD_NUMBER}")
                     image.pull()
                     image.push("production")
