@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   importer:
-    image: repo.data.amsterdam.nl/datapunt/external-data-scrapers_importer:${ENVIRONMENT}
+    image: docker-registry.data.amsterdam.nl/datapunt/external-data-scrapers_importer:${ENVIRONMENT}
     # build: ../..
     environment:
       ENVIRONMENT:

@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   api:
-    image: repo.data.amsterdam.nl/datapunt/external-data-scrapers:${ENVIRONMENT}
+    image: docker-registry.data.amsterdam.nl/datapunt/external-data-scrapers:${ENVIRONMENT}
     environment:
       ADP_USE_SSL_CERT:
       DATABASE_NAME: externaldata
