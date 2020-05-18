@@ -70,7 +70,6 @@ LOCAL_APPS = [
     'apps.parkeergarages',
     'apps.ov',
     'apps.ndw',
-    'apps.boat_tracking',
     'apps.base',
 ]
 
