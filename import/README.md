@@ -20,11 +20,7 @@ In some cases the scraped data doesn't need to be persistent and can be rebuilt 
 
 The following scripts (mostly) apply to all data sources, with some requiring specific arguments.
 
-### Move to import root
-```
-cd ..
-```
-### Set python path
+### Set python path as import directory root
 
 ```
 export PYTHONPATH=.
@@ -52,7 +48,15 @@ python data_sources/{data_source}/slurp.py {args}
 python data_sources/{data_source}/copy_to_model.py {args}
 ```
 
-### Link neighbourhoods (Not applicable for all data sources)
+### Link stadsdee/neighbourhoods (Not applicable for all data sources)
 ```
 python data_sources/{data_source}/copy_to_model.py {args} --link_areas
 ```
+
+## Deploy scripts
+
+Under `import/deploy` there are multiple directories for different scripts run by jenkins
+
+- `import/deploy/import` contains data source imports
+- `import/deploy/summarize` contains script that summarizes the data imported daily for ndw (used by tableau)
+- `import/deploy/verkeersmanagement` Specific aggregations for the verkeersmanagement team for ndw (used by tablau)
