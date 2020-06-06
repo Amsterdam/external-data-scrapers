@@ -21,7 +21,7 @@ django-debug-toolbar==2.2  # via -r ./requirements.txt
 django-extensions==2.2.9  # via -r ./requirements.txt
 django-filter==2.2.0      # via -r ./requirements.txt
 django-rest-swagger==2.2.0  # via -r ./requirements.txt
-django==2.2.12            # via -r ./requirements.txt, django-braces, django-debug-toolbar, django-filter, djangorestframework, drf-yasg
+django==2.2.13            # via -r ./requirements.txt, django-braces, django-debug-toolbar, django-filter, djangorestframework, drf-yasg
 djangorestframework-csv==2.1.0  # via -r ./requirements.txt, drf-amsterdam
 djangorestframework-gis==0.15  # via -r ./requirements.txt
 djangorestframework-xml==1.4.0  # via -r ./requirements.txt, drf-amsterdam
@@ -36,7 +36,6 @@ filelock==3.0.12          # via -r ./requirements.txt, tox, virtualenv
 flake8==3.7.9             # via -r ./requirements.txt, pytest-flake8
 graypy==0.3.2             # via -r ./requirements.txt
 idna==2.9                 # via -r ./requirements.txt, requests
-importlib-metadata==1.6.0  # via -r ./requirements.txt, jsonschema, pluggy, pytest, tox, virtualenv
 inflection==0.3.1         # via -r ./requirements.txt, drf-yasg
 iso8601==0.1.12           # via -r ./requirements.txt, keystoneauth1, oslo.utils
 isort==4.3.21             # via -r ./requirements.txt, pytest-isort
@@ -101,7 +100,6 @@ urllib3==1.25.8           # via -r ./requirements.txt, requests, sentry-sdk
 virtualenv==20.0.16       # via -r ./requirements.txt, tox
 wcwidth==0.1.9            # via -r ./requirements.txt, pytest
 wrapt==1.12.1             # via -r ./requirements.txt, debtcollector
-zipp==3.1.0               # via -r ./requirements.txt, importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

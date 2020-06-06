@@ -21,7 +21,7 @@ django-debug-toolbar==2.2  # via -r requirements.in
 django-extensions==2.2.9  # via -r requirements.in
 django-filter==2.2.0      # via -r requirements.in
 django-rest-swagger==2.2.0  # via -r requirements.in
-django==2.2.12            # via -r requirements.in, django-braces, django-debug-toolbar, django-filter, djangorestframework, drf-yasg
+django==2.2.13            # via -r requirements.in, django-braces, django-debug-toolbar, django-filter, djangorestframework, drf-yasg
 djangorestframework-csv==2.1.0  # via -r requirements.in, drf-amsterdam
 djangorestframework-gis==0.15  # via -r requirements.in
 djangorestframework-xml==1.4.0  # via -r requirements.in, drf-amsterdam
@@ -36,7 +36,6 @@ filelock==3.0.12          # via tox, virtualenv
 flake8==3.7.9             # via pytest-flake8
 graypy==0.3.2             # via -r requirements.in
 idna==2.9                 # via requests
-importlib-metadata==1.6.0  # via jsonschema, pluggy, pytest, tox, virtualenv
 inflection==0.3.1         # via drf-yasg
 iso8601==0.1.12           # via keystoneauth1, oslo.utils
 isort==4.3.21             # via pytest-isort
@@ -101,7 +100,6 @@ urllib3==1.25.8           # via requests, sentry-sdk
 virtualenv==20.0.16       # via tox
 wcwidth==0.1.9            # via pytest
 wrapt==1.12.1             # via debtcollector
-zipp==3.1.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
